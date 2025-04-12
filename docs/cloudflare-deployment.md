@@ -1,6 +1,8 @@
 # Cloudflare Pages 部署指南
 
-本文档提供在 Cloudflare Pages 上部署月光云海博客的详细步骤。
+## 简介
+
+本文档提供在 Cloudflare Pages 上部署Moonlight博客的详细步骤。
 
 ## 准备工作
 
