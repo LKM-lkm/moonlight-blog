@@ -39,17 +39,20 @@ body {
   color: var(--admin-text);
   font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
   margin: 0;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.3s ease;
+  overflow-x: hidden;
+  height: 100vh;
 }
 
 /* 玻璃态效果 */
 .glass-panel {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   border-radius: var(--border-radius);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  will-change: transform, opacity;
 }
 
 /* 背景元素 */
@@ -76,6 +79,7 @@ body {
   background-repeat: repeat;
   background-size: 200px 200px;
   opacity: 0.2;
+  transform: translateZ(0);
 }
 
 .stars2 {
@@ -84,7 +88,7 @@ body {
     radial-gradient(1px 1px at 150px 120px, #ffffff, transparent),
     radial-gradient(2px 2px at 180px 60px, #ffffff, transparent);
   background-size: 300px 300px;
-  animation: starsAnimation 120s linear infinite;
+  animation: starsAnimation 180s linear infinite;
 }
 
 .stars3 {
@@ -93,15 +97,15 @@ body {
     radial-gradient(1px 1px at 250px 180px, #ffffff, transparent),
     radial-gradient(1px 1px at 100px 250px, #ffffff, transparent);
   background-size: 400px 400px;
-  animation: starsAnimation 180s linear infinite;
+  animation: starsAnimation 240s linear infinite;
 }
 
 @keyframes starsAnimation {
   from {
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
   }
   to {
-    transform: translateY(-200px);
+    transform: translateY(-200px) translateZ(0);
   }
 }
 
@@ -113,11 +117,17 @@ body {
   width: 240px;
   height: 100vh;
   z-index: 100;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease;
   border-right: 1px solid var(--admin-border);
   background: rgba(10, 15, 35, 0.5);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  box-sizing: border-box;
+  transform: translateZ(0);
+}
+
+.sidebar.collapsed {
+  transform: translateX(-240px);
 }
 
 .sidebar-header {

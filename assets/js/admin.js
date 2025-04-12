@@ -34,6 +34,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 设置当前年份
     document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // 添加CSS样式以禁用调整大小时的动画
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .resize-animation-stopper * {
+            animation: none !important;
+            transition: none !important;
+        }
+    `;
+    document.head.appendChild(style);
 });
 
 // 检查登录状态
@@ -95,26 +105,96 @@ function updateThemeIcon() {
     }
 }
 
-// 初始化侧边栏切换
+// 初始化侧边栏切换 - 修复方式
 function initSidebarToggle() {
     const sidebarToggle = document.getElementById('sidebar-toggle');
     const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
     
-    if (!sidebarToggle || !sidebar) return;
+    if (!sidebarToggle || !sidebar || !mainContent) return;
     
+    // 检查是否有保存的折叠状态
+    const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    
+    // 应用初始状态
+    if (isSidebarCollapsed) {
+        sidebar.classList.add('collapsed');
+        mainContent.style.marginLeft = '0';
+    } else {
+        sidebar.classList.remove('collapsed');
+        mainContent.style.marginLeft = '240px';
+    }
+    
+    // 处理点击切换
     sidebarToggle.addEventListener('click', function() {
-        sidebar.classList.toggle('active');
+        // 使用特定的类名而不是toggle active
+        const isNowCollapsed = sidebar.classList.toggle('collapsed');
+        
+        // 保存状态到localStorage
+        localStorage.setItem('sidebarCollapsed', isNowCollapsed);
+        
+        // 调整主内容区域
+        if (isNowCollapsed) {
+            mainContent.style.marginLeft = '0';
+        } else {
+            mainContent.style.marginLeft = '240px';
+        }
+    });
+    
+    // 禁用在窗口调整大小时的过渡效果，防止震动
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        document.body.classList.add('resize-animation-stopper');
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            document.body.classList.remove('resize-animation-stopper');
+        }, 400);
     });
 }
 
-// 初始化导航切换
+// 初始化导航切换 - 修复版本
 function initNavigation() {
     const navLinks = document.querySelectorAll('.sidebar-nav a');
-    if (!navLinks.length) return;
+    const contentSections = document.querySelectorAll('.content-section');
+    const pageTitle = document.getElementById('page-title');
+    
+    if (!navLinks.length || !contentSections.length || !pageTitle) return;
+    
+    // 防抖函数，避免快速点击导致的震动
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            const context = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), wait);
+        };
+    }
+    
+    // 带防抖功能的切换处理
+    const switchSection = debounce(function(targetSection, linkText) {
+        // 隐藏所有部分
+        contentSections.forEach(section => {
+            section.classList.remove('active');
+            section.style.display = 'none'; // 确保完全隐藏
+        });
+        
+        // 显示目标部分
+        const section = document.getElementById(`${targetSection}-section`);
+        if (section) {
+            section.classList.add('active');
+            section.style.display = 'block'; // 确保显示
+            
+            // 更新页面标题
+            pageTitle.textContent = linkText;
+        }
+    }, 50);
     
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
+            
+            // 如果链接已经激活，不做任何事情
+            if (this.classList.contains('active')) return;
             
             // 移除所有活动状态
             navLinks.forEach(l => l.classList.remove('active'));
@@ -122,19 +202,12 @@ function initNavigation() {
             // 添加当前活动状态
             this.classList.add('active');
             
-            // 获取目标部分
+            // 获取目标部分和链接文本
             const targetSection = this.getAttribute('data-section');
+            const linkText = this.querySelector('span').textContent;
             
-            // 隐藏所有部分
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // 显示目标部分
-            document.getElementById(`${targetSection}-section`).classList.add('active');
-            
-            // 更新页面标题
-            document.getElementById('page-title').textContent = this.querySelector('span').textContent;
+            // 使用防抖处理的切换功能
+            switchSection(targetSection, linkText);
         });
     });
 }
