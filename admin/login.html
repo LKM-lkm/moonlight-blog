@@ -3,44 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:;">
-    <meta name="referrer" content="same-origin">
-    <title>Moonlight博客 | 登录</title>
-    <!-- 增加独立的登录页面样式，避免与其他样式冲突 -->
+    <title>月光云海博客 | 管理登录</title>
     <link rel="stylesheet" href="../assets/css/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="login-page">
-        <!-- 简化的背景元素 -->
-        <div class="stars-container">
+        <!-- 背景效果 -->
+        <div class="background-effect">
+            <!-- 星空效果 - 暗色主题 -->
             <div class="stars"></div>
+            
+            <!-- 气泡效果 - 亮色主题 -->
+            <div class="bubbles">
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+            </div>
         </div>
         
-        <!-- 登录表单容器 -->
+        <!-- 主题切换按钮 -->
+        <div class="theme-toggle" id="theme-toggle">
+            <i class="fas fa-moon"></i>
+        </div>
+        
+        <!-- 登录表单 -->
         <div class="login-container">
             <div class="login-card">
                 <div class="login-header">
-                    <h1>Moonlight博客</h1>
-                    <p>后台管理登录</p>
+                    <h1>月光云海</h1>
+                    <p>后台管理系统</p>
                 </div>
                 
-                <form id="login-form" autocomplete="off">
+                <form id="login-form">
                     <div class="input-group">
+                        <input type="text" id="username" name="username" placeholder="用户名" required>
                         <div class="input-icon">
                             <i class="fas fa-user"></i>
                         </div>
-                        <input type="text" id="username" name="username" placeholder="用户名" required autocomplete="username">
                     </div>
                     
                     <div class="input-group">
+                        <input type="password" id="password" name="password" placeholder="密码" required>
                         <div class="input-icon">
                             <i class="fas fa-lock"></i>
                         </div>
-                        <input type="password" id="password" name="password" placeholder="密码" required autocomplete="current-password">
                         <div class="password-requirements">
-                            密码至少8位，包含大小写字母、数字和特殊字符
+                            用户名: Likem，密码: Lkm76@#21
                         </div>
                     </div>
                     
@@ -65,7 +76,6 @@
         </div>
     </div>
     
-    <!-- 使用独立的登录脚本，避免加载整个admin.js -->
     <script src="../assets/js/login.js"></script>
 </body>
 </html>

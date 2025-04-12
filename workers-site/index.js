@@ -114,70 +114,39 @@ async function handleLogin(request) {
   try {
     const data = await request.json()
     
-    // 仅接受Likem/Lkm76@#21的组合
+    // 直接验证用户名和密码
     if (data.username === 'Likem' && data.password === 'Lkm76@#21') {
-      // 创建JWT令牌
-      const token = createJWT('user123', 'Likem')
-      
-      // 创建带有HTTP-only cookie的响应
-      const headers = new Headers({
-        'Content-Type': 'application/json',
-      })
-      
-      // 构建Cookie标头
-      const cookieValue = `auth_token=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${60*60*24*7}`
-      headers.append('Set-Cookie', cookieValue)
-      
-      return new Response(
-        JSON.stringify({
-          status: 'success',
-          data: {
-            user: {
-              id: 'user123',
-              username: 'Likem',
-              role: 'admin'
-            }
+      return new Response(JSON.stringify({
+        status: 'success',
+        data: {
+          user: {
+            id: 'user123',
+            username: 'Likem',
+            role: 'admin'
           }
-        }),
-        {
-          status: 200,
-          headers
         }
-      )
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
     } else {
-      return new Response(
-        JSON.stringify({
-          status: 'error',
-          message: '用户名或密码错误'
-        }),
-        { status: 401 }
-      )
+      return new Response(JSON.stringify({
+        status: 'error',
+        message: '用户名或密码错误'
+      }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      })
     }
   } catch (error) {
-    return new Response(
-      JSON.stringify({
-        status: 'error',
-        message: '处理请求时出错'
-      }),
-      { status: 500 }
-    )
+    return new Response(JSON.stringify({
+      status: 'error',
+      message: '处理请求时出错'
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    })
   }
-}
-
-// 创建JWT令牌
-function createJWT(userId, username) {
-  // 在真实应用中，这里应有完整的JWT实现
-  // 这里仅为模拟
-  const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-  const payload = btoa(JSON.stringify({
-    sub: userId,
-    name: username,
-    role: 'admin',
-    exp: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60) // 7天后过期
-  }))
-  const signature = btoa(`${SALT}-${header}-${payload}`) // 在实际中，这应该是使用密钥的加密函数
-  
-  return `${header}.${payload}.${signature}`
 }
 
 /**

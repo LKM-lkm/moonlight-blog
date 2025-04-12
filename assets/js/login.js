@@ -2,32 +2,38 @@
  * 登录页面专用脚本
  * 处理用户登录、验证及错误信息显示
  */
-// 添加安全检查，确保在HTTPS连接上
-if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+// 安全检查，确保在HTTPS连接上
+if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')) {
     // 如果不是本地开发环境且不是HTTPS，则重定向到HTTPS
     window.location.href = window.location.href.replace('http:', 'https:');
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // 获取DOM元素
     const loginForm = document.getElementById('login-form');
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const rememberCheckbox = document.getElementById('remember');
     const errorMessageElement = document.getElementById('error-message');
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = themeToggle.querySelector('i');
     
-    // 从localStorage加载记住的用户名（如果有）
+    // 主题设置
+    initTheme();
+    
+    // 从localStorage加载记住的用户名
     if (localStorage.getItem('rememberedUser')) {
         usernameInput.value = localStorage.getItem('rememberedUser');
         rememberCheckbox.checked = true;
     }
     
-    // 检查是否已登录，如果已登录则重定向到管理页面
+    // 检查是否已登录
     if (localStorage.getItem('isLoggedIn')) {
         window.location.href = 'index.html';
     }
     
     // 登录表单提交处理
-    loginForm.addEventListener('submit', async function(e) {
+    loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
         // 清除之前的错误信息
@@ -43,90 +49,110 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // 密码强度验证（移到服务端更好，这里只是前端简单检查）
-        if (password.length < 8) {
-            showError('密码必须至少包含8个字符');
-            return;
-        }
-        
         // 显示加载状态
         const loginButton = loginForm.querySelector('button[type="submit"]');
         const originalButtonText = loginButton.innerHTML;
         loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
         loginButton.disabled = true;
         
-        try {
-            // 获取CSRF令牌 - 在实际应用中应当实现
-            const csrfToken = 'csrf-token-placeholder';
-            
-            // 进行登录API请求
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': csrfToken
-                },
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                }),
-                credentials: 'include' // 重要：确保Cookie被发送和接收
-            });
-            
-            const data = await response.json();
-            
-            // 如果登录成功
-            if (response.ok && data.status === 'success') {
-                // 如果勾选了"记住我"，保存用户名（但不保存密码）
-                if (rememberCheckbox.checked) {
-                    localStorage.setItem('rememberedUser', username);
-                } else {
-                    localStorage.removeItem('rememberedUser');
-                }
-                
-                // 设置登录状态，但不存储敏感信息
-                localStorage.setItem('isLoggedIn', 'true');
-                
-                // 只存储非敏感信息
-                if (data.data && data.data.user) {
-                    localStorage.setItem('user', JSON.stringify({
-                        username: data.data.user.username,
-                        role: data.data.user.role
-                    }));
-                }
-                
-                // 重定向到管理页面
-                window.location.href = 'index.html';
+        // 直接客户端验证，硬编码的用户名和密码
+        if (username === 'Likem' && password === 'Lkm76@#21') {
+            // 登录成功处理
+            if (rememberCheckbox.checked) {
+                localStorage.setItem('rememberedUser', username);
             } else {
-                // 显示登录失败信息
-                showError(data.message || '登录失败，请检查用户名和密码');
-                
-                // 恢复按钮状态
+                localStorage.removeItem('rememberedUser');
+            }
+            
+            // 设置登录状态
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('user', JSON.stringify({
+                username: username,
+                role: 'admin'
+            }));
+            
+            // 保存当前主题设置
+            const isDarkTheme = document.body.classList.contains('dark-theme') || 
+                              (!document.body.classList.contains('light-theme') && 
+                               window.matchMedia('(prefers-color-scheme: dark)').matches);
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+            
+            // 重定向到管理页面
+            window.location.href = 'index.html';
+        } else {
+            // 登录失败
+            setTimeout(() => {
+                showError('用户名或密码错误');
                 loginButton.innerHTML = originalButtonText;
                 loginButton.disabled = false;
-            }
-        } catch (error) {
-            // 处理错误
-            console.error('登录过程中发生错误:', error);
-            showError('登录过程中发生错误，请稍后再试');
-            
-            // 恢复按钮状态
-            loginButton.innerHTML = originalButtonText;
-            loginButton.disabled = false;
+            }, 1000);
         }
     });
     
-    // 显示错误信息
+    // 主题切换事件监听
+    themeToggle.addEventListener('click', function() {
+        toggleTheme();
+    });
+    
+    // 显示错误信息函数
     function showError(message) {
         errorMessageElement.textContent = message;
-        // 轻微震动效果提示用户
+        // 震动效果
         loginForm.classList.add('shake');
         setTimeout(() => {
             loginForm.classList.remove('shake');
         }, 500);
     }
     
-    // 添加表单错误提示的CSS动画
+    // 初始化主题
+    function initTheme() {
+        // 检查本地存储的主题设置
+        const savedTheme = localStorage.getItem('theme');
+        
+        // 检查系统主题
+        const prefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // 根据存储的主题或系统主题设置当前主题
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            document.body.classList.remove('dark-theme');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        } else if (savedTheme === 'dark' || prefersDarkTheme) {
+            document.body.classList.add('dark-theme');
+            document.body.classList.remove('light-theme');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        } else {
+            document.body.classList.remove('light-theme');
+            document.body.classList.remove('dark-theme');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+    }
+    
+    // 切换主题
+    function toggleTheme() {
+        if (document.body.classList.contains('dark-theme') || 
+            (!document.body.classList.contains('light-theme') && 
+             window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            // 当前是暗色主题，切换到亮色
+            document.body.classList.remove('dark-theme');
+            document.body.classList.add('light-theme');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'light');
+        } else {
+            // 当前是亮色主题，切换到暗色
+            document.body.classList.remove('light-theme');
+            document.body.classList.add('dark-theme');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+    
+    // 添加shake动画样式
     const style = document.createElement('style');
     style.textContent = `
         @keyframes shake {
