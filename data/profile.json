@@ -1,0 +1,11 @@
+{
+  "name": "名",
+  "bio": "初三学生，热爱技术和创新，专注于绘画、文字排版，人工智能、云计算和大数据领域的研究与应用。喜欢探索新技术，用代码创造美好的数字世界。",
+  "focus": "绘画，文字排版，人工智能，编程，云计算，大数据",
+  "email": "lkm836972@outlook.com",
+  "socialLinks": [
+    { "platform": "github", "url": "https://github.com/LKM-lkm" },
+    { "platform": "twitter", "url": "https://twitter.com/moonlight" },
+    { "platform": "weixin", "url": "likeme2010Ming" }
+  ]
+} 

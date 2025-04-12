@@ -6,8 +6,8 @@ exports.validateEmail = (email) => {
 
 // 验证密码强度
 exports.validatePassword = (password) => {
-    // 密码至少6位，包含字母和数字
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    // 密码至少8位，必须包含大小写字母、数字和特殊字符
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
     return passwordRegex.test(password);
 };
 

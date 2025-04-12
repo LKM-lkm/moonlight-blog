@@ -78,29 +78,50 @@ exports.register = async (req, res) => {
 // 用户登录
 exports.login = async (req, res) => {
     try {
-        // 临时测试用户，无论输入什么凭证都允许登录
-        console.log('临时登录功能：允许所有登录请求');
+        const { email, password } = req.body;
+
+        // 检查是否提供了凭证
+        if (!email || !password) {
+            return res.status(400).json({
+                status: 'error',
+                message: '请提供邮箱和密码'
+            });
+        }
+
+        // 根据邮箱查找用户
+        const user = await User.findOne({ email });
         
-        // 生成临时测试用户
-        const mockUser = {
-            _id: '6400d1234567890123456789',
-            username: 'admin',
-            email: 'admin@example.com',
-            role: 'admin'
-        };
-        
+        // 如果用户不存在或密码不匹配
+        if (!user || !(await user.comparePassword(password))) {
+            return res.status(401).json({
+                status: 'error',
+                message: '邮箱或密码不正确'
+            });
+        }
+
+        // 更新最后登录时间
+        user.lastLogin = Date.now();
+        await user.save();
+
         // 生成JWT令牌
-        const token = generateToken(mockUser._id);
+        const token = generateToken(user._id);
+
+        // 设置HTTP-only cookie
+        res.cookie('auth_token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // 在生产环境中使用secure
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7天
+            sameSite: 'strict'
+        });
 
         res.json({
             status: 'success',
             data: {
-                token,
                 user: {
-                    id: mockUser._id,
-                    username: mockUser.username,
-                    email: mockUser.email,
-                    role: mockUser.role
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    role: user.role
                 }
             }
         });
@@ -115,17 +136,18 @@ exports.login = async (req, res) => {
 // 获取当前用户信息
 exports.getCurrentUser = async (req, res) => {
     try {
-        // 使用模拟数据而不是查询数据库
-        const mockUser = {
-            _id: '6400d1234567890123456789',
-            username: 'admin',
-            email: 'admin@example.com',
-            role: 'admin'
-        };
+        const user = await User.findById(req.user._id).select('-password');
+        
+        if (!user) {
+            return res.status(404).json({
+                status: 'error',
+                message: '用户不存在'
+            });
+        }
         
         res.json({
             status: 'success',
-            data: { user: mockUser }
+            data: { user }
         });
     } catch (error) {
         res.status(500).json({

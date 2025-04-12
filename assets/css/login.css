@@ -1,0 +1,302 @@
+/* 登录页面专用样式 */
+:root {
+  /* 颜色变量 */
+  --primary-color: #5272e4;
+  --primary-dark: #3a55b5;
+  --text-color: #f0f2f5;
+  --text-secondary: #a0b0d0;
+  --bg-color: #121829;
+  --card-bg: rgba(30, 40, 70, 0.8);
+  --input-bg: rgba(20, 30, 60, 0.6);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --error-color: #ff6b6b;
+  --success-color: #5cd9a6;
+}
+
+/* 基础样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* 登录页容器 */
+.login-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* 星空背景 - 简化版 */
+.stars-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
+    radial-gradient(2px 2px at 40px 70px, #ffffff, transparent),
+    radial-gradient(1px 1px at 90px 40px, #ffffff, transparent),
+    radial-gradient(2px 2px at 160px 120px, #ffffff, transparent),
+    radial-gradient(1px 1px at 200px 90px, #ffffff, transparent),
+    radial-gradient(1px 1px at 300px 200px, #ffffff, transparent);
+  background-repeat: repeat;
+  background-size: 350px 350px;
+  opacity: 0.3;
+  animation: twinkling 10s linear infinite;
+}
+
+@keyframes twinkling {
+  from { transform: translateY(0); }
+  to { transform: translateY(-100px); }
+}
+
+/* 登录卡片容器 */
+.login-container {
+  width: 100%;
+  max-width: 380px;
+  padding: 20px;
+  z-index: 10;
+}
+
+/* 登录卡片 */
+.login-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 登录头部 */
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-header h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.login-header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* 表单样式 */
+#login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 输入组 */
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  color: var(--text-secondary);
+}
+
+/* 输入框样式 */
+.input-group input {
+  width: 100%;
+  padding: 15px 15px 15px 45px;
+  border-radius: 8px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(82, 114, 228, 0.2);
+}
+
+.input-group input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* 记住我选项 */
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.remember-me input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  background: var(--input-bg);
+  cursor: pointer;
+  position: relative;
+}
+
+.remember-me input[type="checkbox"]:checked {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.remember-me input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  top: 0;
+  left: 4px;
+}
+
+.remember-me label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* 错误消息 */
+.error-message {
+  color: var(--error-color);
+  font-size: 0.85rem;
+  text-align: center;
+  min-height: 20px;
+}
+
+/* 登录按钮 */
+.login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-btn:hover {
+  background: var(--primary-dark);
+}
+
+.login-btn i {
+  font-size: 0.9rem;
+}
+
+/* 登录页脚 */
+.login-footer {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.back-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: var(--text-color);
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 25px 20px;
+  }
+  
+  .login-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .input-group input {
+    padding: 12px 12px 12px 40px;
+  }
+}
+
+/* 提高表单操作稳定性的高级选择器 */
+.input-group input:not(:placeholder-shown) {
+  border-color: var(--primary-color);
+}
+
+.input-group input:autofill,
+.input-group input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--text-color) !important;
+  caret-color: var(--text-color) !important;
+}
+
+/* 保证页面在任何状态下都不会出现滚动条引起的布局移动 */
+html {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+} 

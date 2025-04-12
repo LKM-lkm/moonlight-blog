@@ -263,26 +263,30 @@ main {
     margin-bottom: 30px;
 }
 
+/* 个人信息模块样式 */
 .profile-container {
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 30px;
+    padding: 30px;
+    margin-top: 20px;
 }
 
-.profile-image {
-    flex: 0 0 200px;
-}
-
-.image-placeholder {
-    width: 180px;
-    height: 180px;
+.profile-avatar {
+    flex-shrink: 0;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    color: var(--text-secondary);
-    background: var(--glass-bg);
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .profile-info {
@@ -290,14 +294,58 @@ main {
 }
 
 .profile-info h3 {
-    margin-bottom: 15px;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: var(--text-color);
 }
 
-.profile-info p {
+.profile-bio {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
     color: var(--text-secondary);
-    margin-bottom: 15px;
-    line-height: 1.7;
+}
+
+.profile-stats {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-color);
+}
+
+.stat-item i {
+    color: var(--accent-color);
+    font-size: 1.1rem;
+}
+
+.profile-social {
+    display: flex;
+    gap: 15px;
+}
+
+.profile-social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.profile-social a:hover {
+    background: var(--accent-color);
+    color: white;
+    transform: translateY(-3px);
 }
 
 /* 文章卡片网格 */
@@ -951,12 +999,8 @@ footer {
         text-align: center;
     }
     
-    .profile-image {
+    .profile-avatar {
         margin-bottom: 20px;
-    }
-    
-    .image-placeholder {
-        margin: 0 auto;
     }
 }
 
@@ -991,6 +1035,21 @@ footer {
     
     .footer-content {
         grid-template-columns: 1fr;
+    }
+    
+    .profile-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .profile-stats {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .profile-social {
+        justify-content: center;
     }
 }
 

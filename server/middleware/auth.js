@@ -4,8 +4,6 @@ const User = require('../models/User');
 // JWT认证中间件
 exports.authenticate = async (req, res, next) => {
     try {
-        // 注释掉原先的验证逻辑
-        /*
         // 从请求头获取token
         const token = req.header('Authorization')?.replace('Bearer ', '');
         
@@ -28,16 +26,9 @@ exports.authenticate = async (req, res, next) => {
                 message: '用户不存在'
             });
         }
-        */
-
-        // 添加一个模拟用户到请求对象
-        console.log('临时认证：跳过令牌验证，使用模拟用户');
-        req.user = {
-            _id: '6400d1234567890123456789',
-            username: 'admin',
-            email: 'admin@example.com',
-            role: 'admin'
-        };
+        
+        // 将用户信息添加到请求对象
+        req.user = user;
         
         next();
     } catch (error) {
@@ -50,10 +41,6 @@ exports.authenticate = async (req, res, next) => {
 
 // 管理员权限验证中间件
 exports.isAdmin = (req, res, next) => {
-    console.log('临时管理员权限验证：允许所有请求');
-    // 无条件放行，允许所有请求
-    next();
-    /*
     if (req.user && req.user.role === 'admin') {
         next();
     } else {
@@ -62,7 +49,6 @@ exports.isAdmin = (req, res, next) => {
             message: '需要管理员权限'
         });
     }
-    */
 };
 
 // 生成JWT令牌

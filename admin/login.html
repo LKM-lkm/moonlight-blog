@@ -3,61 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>月光云海博客 | 登录</title>
-    <link rel="stylesheet" href="../assets/css/admin.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:;">
+    <meta name="referrer" content="same-origin">
+    <title>Moonlight博客 | 登录</title>
+    <!-- 增加独立的登录页面样式，避免与其他样式冲突 -->
+    <link rel="stylesheet" href="../assets/css/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- 背景元素 -->
-    <div class="stars-container">
-        <div class="stars"></div>
-        <div class="stars2"></div>
-        <div class="stars3"></div>
-    </div>
-    
-    <div class="clouds">
-        <div class="cloud cloud1"></div>
-        <div class="cloud cloud2"></div>
-    </div>
-    
-    <div class="moonlight login-moonlight"></div>
-    
-    <div class="login-container">
-        <div class="login-form glass-panel">
-            <div class="login-header">
-                <h1>月光云海博客</h1>
-                <p>后台管理登录</p>
-            </div>
-            
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="username"><i class="fas fa-user"></i></label>
-                    <input type="text" id="username" placeholder="用户名" required>
+    <div class="login-page">
+        <!-- 简化的背景元素 -->
+        <div class="stars-container">
+            <div class="stars"></div>
+        </div>
+        
+        <!-- 登录表单容器 -->
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <h1>Moonlight博客</h1>
+                    <p>后台管理登录</p>
                 </div>
                 
-                <div class="form-group">
-                    <label for="password"><i class="fas fa-lock"></i></label>
-                    <input type="password" id="password" placeholder="密码" required>
+                <form id="login-form" autocomplete="off">
+                    <div class="input-group">
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <input type="text" id="username" name="username" placeholder="用户名" required autocomplete="username">
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <input type="password" id="password" name="password" placeholder="密码" required autocomplete="current-password">
+                        <div class="password-requirements">
+                            密码至少8位，包含大小写字母、数字和特殊字符
+                        </div>
+                    </div>
+                    
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">记住我</label>
+                    </div>
+                    
+                    <div class="error-message" id="error-message"></div>
+                    
+                    <button type="submit" class="login-btn">
+                        登录 <i class="fas fa-sign-in-alt"></i>
+                    </button>
+                </form>
+                
+                <div class="login-footer">
+                    <a href="../index.html" class="back-link">
+                        <i class="fas fa-arrow-left"></i> 返回首页
+                    </a>
                 </div>
-                
-                <div class="remember-me">
-                    <input type="checkbox" id="remember">
-                    <label for="remember">记住我</label>
-                </div>
-                
-                <button type="submit" class="login-btn">
-                    <i class="fas fa-sign-in-alt"></i> 登录
-                </button>
-                
-                <p id="error-message" class="error-message"></p>
-            </form>
-            
-            <div class="login-footer">
-                <a href="../index.html">返回首页</a>
             </div>
         </div>
     </div>
     
-    <script src="../assets/js/admin.js"></script>
+    <!-- 使用独立的登录脚本，避免加载整个admin.js -->
+    <script src="../assets/js/login.js"></script>
 </body>
 </html>

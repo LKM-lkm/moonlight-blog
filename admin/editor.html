@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>月光云海 | 编辑文章</title>
+    <title>Moonlight博客 | 文章编辑器</title>
     <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/editor.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- 添加 Markdown 编辑器样式 -->
+    <!-- 添加编辑器所需的依赖 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 </head>
 <body>
     <!-- 背景元素 -->
@@ -17,48 +19,37 @@
         <div class="stars3"></div>
     </div>
     
-    <div class="clouds">
-        <div class="cloud cloud1"></div>
-        <div class="cloud cloud2"></div>
-    </div>
-    
     <div class="moonlight admin-moonlight"></div>
     
     <!-- 侧边栏 -->
     <aside class="sidebar glass-panel">
         <div class="sidebar-header">
-            <h2>月光云海</h2>
-            <p>后台管理系统</p>
+            <h2>Moonlight博客</h2>
+            <p>文章编辑器</p>
         </div>
         
         <nav class="sidebar-nav">
             <ul>
                 <li>
-                    <a href="index.html" data-section="dashboard">
+                    <a href="index.html">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>仪表盘</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html#articles" class="active" data-section="articles">
+                    <a href="index.html#articles" class="active">
                         <i class="fas fa-file-alt"></i>
                         <span>文章管理</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html#profile" data-section="profile">
+                    <a href="index.html#profile">
                         <i class="fas fa-user"></i>
                         <span>个人信息</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html#chatbot" data-section="chatbot">
-                        <i class="fas fa-robot"></i>
-                        <span>聊天机器人</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html#settings" data-section="settings">
+                    <a href="index.html#settings">
                         <i class="fas fa-cog"></i>
                         <span>系统设置</span>
                     </a>
@@ -85,97 +76,182 @@
                 <button type="button" id="sidebar-toggle" class="sidebar-toggle">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h2 id="editor-title">编辑文章</h2>
+                <h2>文章编辑器</h2>
             </div>
             
             <div class="header-right">
-                <button type="button" class="btn secondary-btn" id="preview-article-btn">
-                    <i class="fas fa-eye"></i> 预览
-                </button>
-                <button type="button" class="btn secondary-btn" id="save-draft-btn">
-                    <i class="fas fa-save"></i> 保存草稿
-                </button>
-                <button type="button" class="btn primary-btn" id="publish-btn">
-                    <i class="fas fa-paper-plane"></i> 发布文章
-                </button>
+                <a href="../index.html" class="preview-btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i>
+                    预览网站
+                </a>
+                
+                <div class="admin-avatar">
+                    <img src="../assets/img/avatar.jpg" alt="管理员头像">
+                    <span>Likem</span>
+                </div>
             </div>
         </header>
         
+        <!-- 编辑器内容 -->
         <div class="editor-container">
-            <div class="editor-sidebar glass-panel">
+            <!-- 文章基本信息 -->
+            <div class="article-info glass-panel">
                 <div class="form-group">
                     <label for="article-title">文章标题</label>
-                    <input type="text" id="article-title" placeholder="输入文章标题">
+                    <input type="text" id="article-title" placeholder="请输入文章标题..." required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="article-category">分类</label>
+                        <select id="article-category">
+                            <option value="">-- 选择分类 --</option>
+                            <option value="technology">技术</option>
+                            <option value="life">生活</option>
+                            <option value="travel">旅行</option>
+                            <option value="thoughts">随想</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="article-tags">标签</label>
+                        <input type="text" id="article-tags" placeholder="标签之间用逗号分隔">
+                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="article-excerpt">文章摘要</label>
-                    <textarea id="article-excerpt" placeholder="输入文章摘要（可选）"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="article-category">分类</label>
-                    <select id="article-category">
-                        <option value="technology">技术</option>
-                        <option value="life">生活</option>
-                        <option value="thoughts">思考</option>
-                        <option value="other">其他</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="article-tags">标签</label>
-                    <input type="text" id="article-tags" placeholder="输入标签，用逗号分隔">
+                    <label for="article-description">文章简介</label>
+                    <textarea id="article-description" rows="3" placeholder="简短介绍文章内容..."></textarea>
                 </div>
                 
                 <div class="form-group">
                     <label for="article-cover">封面图片</label>
                     <div class="cover-upload">
-                        <div class="cover-preview" id="cover-preview">
+                        <div id="cover-preview" class="cover-preview">
                             <i class="fas fa-image"></i>
-                            <span>暂无封面</span>
+                            <span>未选择图片</span>
                         </div>
-                        <button type="button" class="btn secondary-btn" id="select-cover-btn">
+                        <input type="file" id="article-cover" accept="image/*">
+                        <button type="button" id="cover-upload-btn" class="btn secondary-btn">
                             <i class="fas fa-upload"></i> 选择图片
                         </button>
                     </div>
-                    <input type="file" id="cover-upload" accept="image/*" hidden>
                 </div>
             </div>
             
+            <!-- Markdown编辑器 -->
             <div class="editor-main glass-panel">
                 <textarea id="markdown-editor"></textarea>
+            </div>
+            
+            <!-- 附件上传区域 -->
+            <div class="attachments-section glass-panel">
+                <h3>附件管理</h3>
+                <p class="section-desc">上传文件供文章下载，支持PDF、压缩包等常见格式</p>
+                
+                <div class="attachments-container">
+                    <div class="attachment-list" id="attachment-list">
+                        <div class="no-attachments">
+                            <i class="fas fa-file-upload"></i>
+                            <p>尚未添加附件</p>
+                        </div>
+                    </div>
+                    
+                    <div class="attachment-upload">
+                        <div class="upload-zone" id="upload-zone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>拖放文件到此处，或</p>
+                            <label for="file-upload" class="upload-btn">选择文件</label>
+                            <input type="file" id="file-upload" multiple>
+                        </div>
+                        
+                        <div class="upload-info">
+                            <p>支持的文件类型：PDF、ZIP、RAR、DOC、XLS、PPT等</p>
+                            <p>单个文件最大：10MB</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 发布选项 -->
+            <div class="publish-options glass-panel">
+                <div class="options-container">
+                    <div class="form-group toggle-group">
+                        <label for="article-status">状态</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="article-status" checked>
+                            <label for="article-status">
+                                <span class="toggle-label on">发布</span>
+                                <span class="toggle-label off">草稿</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group toggle-group">
+                        <label for="article-comments">评论</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="article-comments" checked>
+                            <label for="article-comments">
+                                <span class="toggle-label on">开启</span>
+                                <span class="toggle-label off">关闭</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="article-date">发布日期</label>
+                        <input type="datetime-local" id="article-date">
+                    </div>
+                </div>
+                
+                <div class="actions-container">
+                    <button type="button" id="preview-btn" class="btn secondary-btn">
+                        <i class="fas fa-eye"></i> 预览
+                    </button>
+                    <button type="button" id="draft-btn" class="btn secondary-btn">
+                        <i class="fas fa-save"></i> 保存草稿
+                    </button>
+                    <button type="button" id="publish-btn" class="btn primary-btn">
+                        <i class="fas fa-paper-plane"></i> 发布文章
+                    </button>
+                </div>
             </div>
         </div>
     </main>
     
     <!-- 预览模态框 -->
-    <div class="preview-modal" id="preview-modal">
-        <div class="preview-content glass-panel">
-            <div class="preview-header">
-                <h2>文章预览</h2>
-                <button type="button" class="close-preview-btn">
+    <div class="modal" id="preview-modal">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>文章预览</h3>
+                <button class="modal-close" id="preview-close">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="preview-body">
-                <div class="article-preview-container">
+            <div class="modal-body">
+                <div class="article-preview">
                     <h1 id="preview-title">文章标题</h1>
                     <div class="article-meta">
-                        <span><i class="fas fa-calendar"></i> <span id="preview-date"></span></span>
                         <span><i class="fas fa-folder"></i> <span id="preview-category">分类</span></span>
                         <span><i class="fas fa-tags"></i> <span id="preview-tags">标签</span></span>
+                        <span><i class="fas fa-calendar-alt"></i> <span id="preview-date">日期</span></span>
                     </div>
                     <div class="article-content" id="preview-content">
-                        <!-- 文章内容将在这里渲染 -->
+                        <!-- 预览内容将在这里显示 -->
+                    </div>
+                    
+                    <div class="article-attachments" id="preview-attachments">
+                        <h3>附件列表</h3>
+                        <ul class="attachments-preview-list">
+                            <!-- 附件将在这里显示 -->
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../assets/js/admin.js"></script>
     <script src="../assets/js/editor.js"></script>
 </body>

@@ -111,45 +111,73 @@ async function handleApiRequest(request) {
  * 处理登录请求
  */
 async function handleLogin(request) {
-  // 在实际应用中应该验证用户凭据
-  // 这里我们使用硬编码的用户名和密码
   try {
     const data = await request.json()
     
-    // 仅接受Likem/lkm123的组合
-    if (data.email === 'Likem' && data.password === 'lkm123') {
-      return new Response(JSON.stringify({
-        status: 'success',
-        data: {
-          token: 'mock-token-12345',
-          user: {
-            id: '1',
-            username: 'Likem',
-            email: 'admin@example.com',
-            role: 'admin'
+    // 仅接受Likem/Lkm76@#21的组合
+    if (data.username === 'Likem' && data.password === 'Lkm76@#21') {
+      // 创建JWT令牌
+      const token = createJWT('user123', 'Likem')
+      
+      // 创建带有HTTP-only cookie的响应
+      const headers = new Headers({
+        'Content-Type': 'application/json',
+      })
+      
+      // 构建Cookie标头
+      const cookieValue = `auth_token=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${60*60*24*7}`
+      headers.append('Set-Cookie', cookieValue)
+      
+      return new Response(
+        JSON.stringify({
+          status: 'success',
+          data: {
+            user: {
+              id: 'user123',
+              username: 'Likem',
+              role: 'admin'
+            }
           }
+        }),
+        {
+          status: 200,
+          headers
         }
-      }), {
-        headers: { 'Content-Type': 'application/json' }
-      })
+      )
     } else {
-      return new Response(JSON.stringify({
-        status: 'error',
-        message: '用户名或密码错误'
-      }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' }
-      })
+      return new Response(
+        JSON.stringify({
+          status: 'error',
+          message: '用户名或密码错误'
+        }),
+        { status: 401 }
+      )
     }
   } catch (error) {
-    return new Response(JSON.stringify({
-      status: 'error',
-      message: '请求处理失败'
-    }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' }
-    })
+    return new Response(
+      JSON.stringify({
+        status: 'error',
+        message: '处理请求时出错'
+      }),
+      { status: 500 }
+    )
   }
+}
+
+// 创建JWT令牌
+function createJWT(userId, username) {
+  // 在真实应用中，这里应有完整的JWT实现
+  // 这里仅为模拟
+  const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+  const payload = btoa(JSON.stringify({
+    sub: userId,
+    name: username,
+    role: 'admin',
+    exp: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60) // 7天后过期
+  }))
+  const signature = btoa(`${SALT}-${header}-${payload}`) // 在实际中，这应该是使用密钥的加密函数
+  
+  return `${header}.${payload}.${signature}`
 }
 
 /**
@@ -163,10 +191,10 @@ async function handleGetCurrentUser(request) {
       user: {
         id: '1',
         username: 'Likem',
-        email: 'admin@example.com',
+        email: 'lkm836972@outlook.com',
         role: 'admin',
         avatar: '/assets/img/avatar.jpg',
-        bio: '初三学生，热爱技术和创新，专注于人工智能、云计算和大数据领域的研究与应用。'
+        bio: '初三学生，热爱技术和创新，专注于绘画、文字排版，人工智能、云计算和大数据领域的研究与应用。喜欢探索新技术，用代码创造美好的数字世界。'
       }
     }
   }), {
@@ -418,7 +446,7 @@ async function handleChatbotQuery(request) {
       },
       {
         keywords: ['联系', '邮箱', '邮件', '联络'],
-        response: '你可以通过邮箱 moonlight@example.com 联系博客的主人。'
+        response: '你可以通过邮箱 lkm836972@outlook.com 联系博客的主人。'
       },
       {
         keywords: ['技术', '编程', '开发'],
@@ -442,11 +470,15 @@ async function handleChatbotQuery(request) {
       },
       {
         keywords: ['作者', '博主', '名'],
-        response: '博客的作者是名，一名初三学生，热爱技术和创新，专注于人工智能、云计算和大数据领域的研究与应用。'
+        response: '博客的作者是名，一名初三学生，热爱技术和创新，专注于绘画、文字排版，人工智能、云计算和大数据领域的研究与应用。喜欢探索新技术，用代码创造美好的数字世界。'
       },
       {
         keywords: ['谢谢', '感谢', 'thanks'],
         response: '不客气！如果还有其他问题，随时可以问我。'
+      },
+      {
+        keywords: ['微信', '添加微信', '微信号'],
+        response: '你可以添加博主的微信号：likeme2010Ming'
       }
     ]
     

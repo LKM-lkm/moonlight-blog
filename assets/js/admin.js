@@ -392,13 +392,13 @@ async function loadProfileData() {
         // 这里我们使用模拟数据
         const profileData = {
             name: '名',
-            bio: '初三学生，热爱技术和创新，专注于绘画、文字排版、人工智能、编程、云计算和大数据领域的研究与应用。',
+            bio: '初三学生，热爱技术和创新，专注于绘画、文字排版，人工智能、云计算和大数据领域的研究与应用。喜欢探索新技术，用代码创造美好的数字世界。',
             focus: '绘画，文字排版，人工智能，编程，云计算，大数据',
-            email: 'lkm836972@outlook.com/gmail.com/qq.com',
+            email: 'lkm836972@outlook.com',
             socialLinks: [
                 { platform: 'github', url: 'https://github.com/LKM-lkm' },
                 { platform: 'twitter', url: 'https://twitter.com/moonlight' },
-                { platform: 'weixin', url: 'moonlight_wechat' }
+                { platform: 'weixin', url: 'likeme2010Ming' }
             ]
         };
         
@@ -664,13 +664,14 @@ if (document.getElementById('login-form')) {
         // 清除之前的错误信息
         errorMessage.textContent = '';
         
-        // 使用固定的用户名和密码
-        if (username === 'Likem' && password === 'lkm123') {
+        // 使用固定的用户名和密码，但改进安全性
+        if (username === 'Likem' && password === 'Lkm76@#21') {
             // 登录成功
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('user', JSON.stringify({
                 username: 'Likem',
                 role: 'admin'
+                // 注意：token不再存储在localStorage中
             }));
             window.location.href = 'index.html';
         } else {
