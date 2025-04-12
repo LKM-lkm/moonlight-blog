@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>月光云海 | 个人博客</title>
+    <title>Moonlight博客 | 个人博客</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -25,14 +25,13 @@
     <header class="glass-panel">
         <div class="container">
             <div class="logo">
-                <h1>月光云海</h1>
+                <h1>Moonlight博客</h1>
             </div>
             <nav>
                 <ul>
                     <li><a href="#" class="active">首页</a></li>
                     <li><a href="#articles">文章</a></li>
                     <li><a href="#about">关于</a></li>
-                    <li><a href="#chatbot">聊天机器人</a></li>
                 </ul>
             </nav>
             <div class="theme-toggle">
@@ -47,7 +46,7 @@
         <section id="hero" class="parallax">
             <div class="container">
                 <div class="glass-panel hero-content">
-                    <h2 class="fade-in">欢迎来到月光云海</h2>
+                    <h2 class="fade-in">欢迎来到Moonlight博客</h2>
                     <p class="fade-in delay-1">在这里，思绪如云，文字如月光般流淌</p>
                     <a href="#articles" class="btn glass-btn fade-in delay-2">探索文章</a>
                 </div>
@@ -114,37 +113,40 @@
                 </div>
             </div>
         </section>
-        
-        <section id="chatbot" class="section">
-            <div class="container">
-                <div class="glass-panel chatbot-container">
-                    <h2>与云月对话</h2>
-                    <div class="chatbot-messages" id="chatbot-messages">
-                        <div class="message bot-message">
-                            <div class="message-avatar">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="message-content">
-                                <p>你好！我是云月，很高兴与你交流。有什么我可以帮助你的吗？</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chatbot-input">
-                        <input type="text" id="chatbot-input" placeholder="在这里输入你的问题...">
-                        <button id="send-message">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
+    
+    <!-- 聊天机器人组件 -->
+    <div class="chatbot-wrapper">
+        <button class="chatbot-toggle" id="chatbot-toggle">
+            <i class="fas fa-comments"></i>
+        </button>
+        
+        <div class="chatbot-container" id="chatbot-container">
+            <div class="chatbot-header">
+                <h3>Moonlight助手</h3>
+                <button class="chatbot-close" id="chatbot-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chatbot-messages" id="chatbot-messages">
+                <!-- 消息将通过JavaScript动态加载 -->
+            </div>
+            
+            <form class="chatbot-form" id="chatbot-form">
+                <input type="text" id="chatbot-input" placeholder="请输入您的问题..." autocomplete="off">
+                <button type="submit">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
     
     <footer class="glass-panel">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>月光云海</h3>
+                    <h3>Moonlight博客</h3>
                     <p>一个梦幻朦胧之美的个人博客空间</p>
                 </div>
                 <div class="footer-section">
@@ -167,7 +169,7 @@
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; <span id="year"></span> 月光云海 - 保留所有权利</p>
+                <p>&copy; <span id="year"></span> Moonlight博客 - 保留所有权利</p>
             </div>
         </div>
     </footer>

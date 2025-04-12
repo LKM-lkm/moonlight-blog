@@ -1,20 +1,20 @@
 /* 管理后台样式 */
 :root {
-  /* 颜色变量 */
-  --admin-bg: linear-gradient(135deg, #0f1729 0%, #1a2236 100%);
-  --admin-card-bg: rgba(255, 255, 255, 0.07);
-  --admin-text: #e0e0ff;
-  --admin-text-secondary: #a0a0c0;
-  --admin-border: rgba(255, 255, 255, 0.1);
-  --admin-accent: #5d7de9;
-  --admin-success: #4caf50;
-  --admin-warning: #ff9800;
-  --admin-danger: #f44336;
+  /* 颜色变量 - 与主页风格一致 */
+  --admin-bg: linear-gradient(135deg, #1a1c35 0%, #0f1729 100%);
+  --admin-card-bg: rgba(255, 255, 255, 0.05);
+  --admin-text: #e0e6ff;
+  --admin-text-secondary: #a0b0d0;
+  --admin-border: rgba(255, 255, 255, 0.08);
+  --admin-accent: #6d8aff;
+  --admin-success: #5cd9a6;
+  --admin-warning: #ffae4d;
+  --admin-danger: #ff6b6b;
   
   /* 背景色变量 */
   --bg-primary: rgba(255, 255, 255, 0.05);
-  --bg-secondary: rgba(255, 255, 255, 0.1);
-  --bg-hover: rgba(255, 255, 255, 0.15);
+  --bg-secondary: rgba(255, 255, 255, 0.08);
+  --bg-hover: rgba(255, 255, 255, 0.12);
   
   /* 文本颜色变量 */
   --text-primary: var(--admin-text);
@@ -29,14 +29,80 @@
   
   /* 布局变量 */
   --card-padding: 1.5rem;
-  --border-radius: 10px;
-  --border-radius-lg: 15px;
-  --border-radius-sm: 4px;
+  --border-radius: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-sm: 6px;
 }
 
 body {
   background: var(--admin-bg);
   color: var(--admin-text);
+  font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+  margin: 0;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* 玻璃态效果 */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 背景元素 */
+.stars-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.stars, .stars2, .stars3 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
+    radial-gradient(2px 2px at 40px 70px, #ffffff, transparent),
+    radial-gradient(1px 1px at 90px 40px, #ffffff, transparent);
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  opacity: 0.2;
+}
+
+.stars2 {
+  background-image: 
+    radial-gradient(1px 1px at 50px 80px, #ffffff, transparent),
+    radial-gradient(1px 1px at 150px 120px, #ffffff, transparent),
+    radial-gradient(2px 2px at 180px 60px, #ffffff, transparent);
+  background-size: 300px 300px;
+  animation: starsAnimation 120s linear infinite;
+}
+
+.stars3 {
+  background-image: 
+    radial-gradient(1px 1px at 200px 200px, #ffffff, transparent),
+    radial-gradient(1px 1px at 250px 180px, #ffffff, transparent),
+    radial-gradient(1px 1px at 100px 250px, #ffffff, transparent);
+  background-size: 400px 400px;
+  animation: starsAnimation 180s linear infinite;
+}
+
+@keyframes starsAnimation {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-200px);
+  }
 }
 
 /* 侧边栏样式 */
@@ -49,6 +115,9 @@ body {
   z-index: 100;
   transition: all 0.3s ease;
   border-right: 1px solid var(--admin-border);
+  background: rgba(10, 15, 35, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .sidebar-header {

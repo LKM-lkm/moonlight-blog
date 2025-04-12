@@ -1,0 +1,230 @@
+/**
+ * 聊天机器人样式
+ */
+
+/* 聊天机器人样式 */
+:root {
+    --chatbot-primary: #4a6bdf;
+    --chatbot-primary-dark: #3a55b5;
+    --chatbot-bg: #ffffff;
+    --chatbot-user-msg: #e9f0ff;
+    --chatbot-bot-msg: #f0f2f5;
+    --chatbot-text: #333333;
+    --chatbot-secondary-text: #666666;
+    --chatbot-border: #e0e0e0;
+    --chatbot-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* 聊天机器人容器 */
+#chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    height: 450px;
+    background-color: var(--chatbot-bg);
+    border-radius: 10px;
+    box-shadow: 0 5px 25px var(--chatbot-shadow);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    transform: translateY(calc(100% + 20px));
+    z-index: 1000;
+    overflow: hidden;
+}
+
+#chatbot-container.active {
+    transform: translateY(0);
+}
+
+/* 聊天机器人开关按钮 */
+#chatbot-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: var(--chatbot-primary);
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 3px 10px var(--chatbot-shadow);
+    z-index: 1001;
+    transition: all 0.3s ease;
+}
+
+#chatbot-toggle:hover {
+    background-color: var(--chatbot-primary-dark);
+    transform: scale(1.05);
+}
+
+#chatbot-toggle i {
+    font-size: 24px;
+}
+
+/* 聊天头部 */
+#chatbot-header {
+    padding: 15px;
+    background-color: var(--chatbot-primary);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#chatbot-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#chatbot-close {
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.2s;
+}
+
+#chatbot-close:hover {
+    transform: scale(1.2);
+}
+
+/* 聊天消息区域 */
+#chatbot-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.bot-message {
+    align-self: flex-start;
+    background-color: var(--chatbot-bot-msg);
+    color: var(--chatbot-text);
+    border-bottom-left-radius: 5px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.bot-avatar {
+    width: 30px;
+    height: 30px;
+    background-color: var(--chatbot-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.user-message {
+    align-self: flex-end;
+    background-color: var(--chatbot-user-msg);
+    color: var(--chatbot-text);
+    border-bottom-right-radius: 5px;
+}
+
+.message-content {
+    flex: 1;
+}
+
+/* 聊天输入区域 */
+#chatbot-input-area {
+    padding: 15px;
+    border-top: 1px solid var(--chatbot-border);
+    background-color: var(--chatbot-bg);
+}
+
+#chatbot-form {
+    display: flex;
+    gap: 10px;
+}
+
+#chatbot-input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid var(--chatbot-border);
+    border-radius: 20px;
+    outline: none;
+    font-size: 14px;
+}
+
+#chatbot-input:focus {
+    border-color: var(--chatbot-primary);
+}
+
+#chatbot-submit {
+    background-color: var(--chatbot-primary);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+#chatbot-submit:hover {
+    background-color: var(--chatbot-primary-dark);
+}
+
+/* 打字指示器 */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    padding: 5px 0;
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    background-color: var(--chatbot-secondary-text);
+    border-radius: 50%;
+    display: inline-block;
+    animation: bounce 1.3s ease infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes bounce {
+    0%, 60%, 100% {
+        transform: translateY(0);
+    }
+    30% {
+        transform: translateY(-4px);
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    #chatbot-container {
+        width: calc(100% - 40px);
+        height: 400px;
+    }
+} 

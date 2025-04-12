@@ -51,6 +51,13 @@ app.use((err, req, res, next) => {
     });
 });
 
+// 临时注释掉MongoDB连接，直接启动服务器
+console.log('注意：MongoDB连接已被注释掉，仅用于前端测试');
+app.listen(PORT, () => {
+    console.log(`服务器运行在 http://localhost:${PORT}`);
+});
+
+/* 
 // 连接数据库
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
@@ -66,3 +73,4 @@ mongoose.connect(process.env.MONGODB_URI, {
 .catch((error) => {
     console.error('数据库连接失败:', error);
 }); 
+*/ 

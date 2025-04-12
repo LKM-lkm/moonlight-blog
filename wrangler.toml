@@ -1,1 +1,11 @@
- 
+name = "moonlight-blog"
+type = "webpack"
+account_id = "" # 部署时会自动填充
+workers_dev = true
+route = ""
+zone_id = "" # 部署时会自动填充
+compatibility_date = "2023-01-01"
+
+[site]
+bucket = "./"
+entry-point = "workers-site" 

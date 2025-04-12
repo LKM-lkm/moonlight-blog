@@ -9,14 +9,28 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="sidebar">
+    <!-- 背景元素 -->
+    <div class="stars-container">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+    </div>
+    
+    <div class="clouds">
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+    </div>
+    
+    <div class="moonlight admin-moonlight"></div>
+
+    <div class="sidebar glass-panel">
         <div class="sidebar-header">
-            <h2>月光云海</h2>
+            <h2>月光云海博客</h2>
             <p>博客管理系统</p>
         </div>
         <nav class="sidebar-nav">
             <ul>
-                <li><a href="dashboard.html"><i class="fas fa-home"></i> 仪表盘</a></li>
+                <li><a href="index.html"><i class="fas fa-home"></i> 仪表盘</a></li>
                 <li><a href="articles.html"><i class="fas fa-newspaper"></i> 文章管理</a></li>
                 <li><a href="comments.html"><i class="fas fa-comments"></i> 评论管理</a></li>
                 <li><a href="stats.html" class="active"><i class="fas fa-chart-line"></i> 统计分析</a></li>
@@ -30,7 +44,7 @@
     </div>
 
     <div class="main-content">
-        <div class="admin-header">
+        <div class="admin-header glass-panel">
             <div class="header-left">
                 <button class="sidebar-toggle">
                     <i class="fas fa-bars"></i>
@@ -214,6 +228,7 @@
         </div>
     </div>
 
-    <script src="../assets/js/admin/stats.js" type="module"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script src="../assets/js/admin/stats.js"></script>
 </body>
 </html>

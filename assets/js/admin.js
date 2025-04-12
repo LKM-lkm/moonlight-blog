@@ -318,12 +318,12 @@ async function loadProfileData() {
         // 在实际应用中,这里应该从后端 API 获取数据
         // 这里我们使用模拟数据
         const profileData = {
-            name: '月影',
-            bio: '热爱技术和创新，专注于人工智能、云计算和大数据领域的研究与应用。',
-            focus: '人工智能, 云计算, 大数据',
-            email: 'moonlight@example.com',
+            name: '名',
+            bio: '初三学生，热爱技术和创新，专注于绘画、文字排版、人工智能、编程、云计算和大数据领域的研究与应用。',
+            focus: '绘画，文字排版，人工智能，编程，云计算，大数据',
+            email: 'lkm836972@outlook.com/gmail.com/qq.com',
             socialLinks: [
-                { platform: 'github', url: 'https://github.com/moonlight' },
+                { platform: 'github', url: 'https://github.com/LKM-lkm' },
                 { platform: 'twitter', url: 'https://twitter.com/moonlight' },
                 { platform: 'weixin', url: 'moonlight_wechat' }
             ]
@@ -586,16 +586,23 @@ if (document.getElementById('login-form')) {
         
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
+        const errorMessage = document.getElementById('error-message');
         
-        // 在实际应用中,这里应该向后端 API 发送登录请求
-        // 这里我们简单地检查用户名和密码
-        if (username === 'admin' && password === 'password') {
+        // 清除之前的错误信息
+        errorMessage.textContent = '';
+        
+        // 使用固定的用户名和密码
+        if (username === 'Likem' && password === 'lkm123') {
             // 登录成功
             localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('user', JSON.stringify({
+                username: 'Likem',
+                role: 'admin'
+            }));
             window.location.href = 'index.html';
         } else {
             // 登录失败
-            document.getElementById('error-message').textContent = '用户名或密码错误';
+            errorMessage.textContent = '用户名或密码错误';
         }
     });
 }
