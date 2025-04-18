@@ -1,0 +1,306 @@
+/* 背景动画 */
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.stars {
+    background: #000 url('../img/stars.png') repeat top center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    animation: move-stars 200s linear infinite;
+}
+
+.twinkling {
+    background: transparent url('../img/twinkling.png') repeat top center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    animation: move-twinkle 200s linear infinite;
+}
+
+.clouds {
+    background: transparent url('../img/clouds.png') repeat top center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    opacity: 0.4;
+    animation: move-clouds 200s linear infinite;
+}
+
+@keyframes move-stars {
+    from { background-position: 0 0; }
+    to { background-position: -10000px 5000px; }
+}
+
+@keyframes move-twinkle {
+    from { background-position: 0 0; }
+    to { background-position: -10000px 5000px; }
+}
+
+@keyframes move-clouds {
+    from { background-position: 0 0; }
+    to { background-position: 10000px 0; }
+}
+
+/* 登录容器 */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing);
+}
+
+.login-box {
+    width: 100%;
+    max-width: 420px;
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+    animation: slideUp 0.5s ease-out;
+}
+
+/* 登录头部 */
+.login-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--spacing);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-lg);
+}
+
+.logo i {
+    font-size: 2.5rem;
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+.login-header h1 {
+    font-size: 1.8rem;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-primary);
+}
+
+.login-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: var(--spacing-lg);
+    position: relative;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group i {
+    position: absolute;
+    left: var(--spacing);
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    transition: var(--transition);
+}
+
+.input-group input {
+    width: 100%;
+    padding: var(--spacing) var(--spacing) var(--spacing) calc(var(--spacing) * 3);
+    background: var(--bg-light);
+    border: none;
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.input-group input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.input-group input:focus + i {
+    color: var(--primary);
+}
+
+.input-border {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: var(--transition);
+    transform: translateX(-50%);
+}
+
+.input-group input:focus ~ .input-border {
+    width: 100%;
+}
+
+/* 验证码 */
+.captcha-image {
+    width: 100px;
+    height: 36px;
+    margin-left: var(--spacing);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.captcha-image:hover {
+    opacity: 0.8;
+}
+
+/* 表单选项 */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.remember-me input {
+    margin-right: var(--spacing-xs);
+}
+
+.remember-me span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.forgot-password {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.forgot-password:hover {
+    color: var(--primary-dark);
+}
+
+/* 登录按钮 */
+.login-button {
+    width: 100%;
+    padding: var(--spacing);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border: none;
+    border-radius: var(--border-radius);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing);
+    transition: var(--transition);
+}
+
+.login-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.login-button i {
+    transition: var(--transition);
+}
+
+.login-button:hover i {
+    transform: translateX(5px);
+}
+
+/* 页脚 */
+.login-footer {
+    margin-top: var(--spacing-xl);
+    text-align: center;
+}
+
+.back-to-site {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    transition: var(--transition);
+}
+
+.back-to-site:hover {
+    color: var(--text-primary);
+}
+
+/* 错误消息 */
+.error-message {
+    display: none;
+    color: var(--danger);
+    text-align: center;
+    margin-top: var(--spacing);
+    padding: var(--spacing);
+    border-radius: var(--border-radius);
+    background: rgba(255, 59, 48, 0.1);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.error-message.show {
+    display: block;
+}
+
+/* 响应式设计 */
+@media (max-width: 576px) {
+    .login-box {
+        padding: var(--spacing-lg);
+    }
+    
+    .logo {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .logo i {
+        font-size: 2rem;
+    }
+    
+    .login-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        gap: var(--spacing);
+        align-items: flex-start;
+    }
+} 
