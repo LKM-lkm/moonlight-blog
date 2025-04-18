@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章管理 - 月光云海博客</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/articles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-moon"></i>
+                    <span>月光云海</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class="fas fa-chart-line"></i>
+                            <span>仪表盘</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="articles.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>文章管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="comments.html">
+                            <i class="fas fa-comments"></i>
+                            <span>评论管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="users.html">
+                            <i class="fas fa-users"></i>
+                            <span>用户管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html">
+                            <i class="fas fa-cog"></i>
+                            <span>系统设置</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部导航 -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>文章管理</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <input type="text" placeholder="搜索文章...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </div>
+                    <div class="user-menu">
+                        <img src="../assets/img/avatar.jpg" alt="用户头像" class="avatar">
+                        <div class="dropdown-menu">
+                            <a href="profile.html"><i class="fas fa-user"></i> 个人资料</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 文章管理工具栏 -->
+            <div class="articles-toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-primary" id="newArticleBtn">
+                        <i class="fas fa-plus"></i> 新建文章
+                    </button>
+                    <div class="filter-group">
+                        <select id="categoryFilter">
+                            <option value="">所有分类</option>
+                            <option value="tech">技术</option>
+                            <option value="life">生活</option>
+                            <option value="travel">旅行</option>
+                        </select>
+                        <select id="statusFilter">
+                            <option value="">所有状态</option>
+                            <option value="published">已发布</option>
+                            <option value="draft">草稿</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="toolbar-right">
+                    <button class="btn btn-outline" id="batchDeleteBtn">
+                        <i class="fas fa-trash"></i> 批量删除
+                    </button>
+                </div>
+            </div>
+
+            <!-- 文章列表 -->
+            <div class="articles-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="40"><input type="checkbox" id="selectAll"></th>
+                            <th width="60">封面</th>
+                            <th>标题</th>
+                            <th width="100">分类</th>
+                            <th width="100">状态</th>
+                            <th width="120">发布时间</th>
+                            <th width="100">阅读量</th>
+                            <th width="100">评论数</th>
+                            <th width="150">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="articlesTableBody">
+                        <!-- 文章列表将通过JavaScript动态加载 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <button class="btn btn-outline" id="prevPage">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="page-numbers">
+                    <button class="btn btn-outline active">1</button>
+                    <button class="btn btn-outline">2</button>
+                    <button class="btn btn-outline">3</button>
+                    <span>...</span>
+                    <button class="btn btn-outline">10</button>
+                </div>
+                <button class="btn btn-outline" id="nextPage">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- 文章编辑模态框 -->
+    <div class="modal" id="articleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>编辑文章</h2>
+                <button class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="articleForm">
+                    <div class="form-group">
+                        <label for="articleTitle">标题</label>
+                        <input type="text" id="articleTitle" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="articleCategory">分类</label>
+                            <select id="articleCategory" required>
+                                <option value="tech">技术</option>
+                                <option value="life">生活</option>
+                                <option value="travel">旅行</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="articleStatus">状态</label>
+                            <select id="articleStatus">
+                                <option value="draft">草稿</option>
+                                <option value="published">发布</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="articleTags">标签</label>
+                        <input type="text" id="articleTags" placeholder="用逗号分隔多个标签">
+                    </div>
+                    <div class="form-group">
+                        <label for="articleSummary">摘要</label>
+                        <textarea id="articleSummary" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="articleContent">内容</label>
+                        <textarea id="articleContent"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="articleCover">封面图片</label>
+                        <div class="cover-upload">
+                            <input type="file" id="articleCover" accept="image/*">
+                            <div class="upload-placeholder">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>点击或拖拽上传图片</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelBtn">取消</button>
+                <button class="btn btn-primary" id="saveBtn">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入脚本 -->
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+    <script src="../assets/js/articles.js"></script>
+</body>
+</html> 

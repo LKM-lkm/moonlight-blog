@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理 - 月光博客管理系统</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/users.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>用户管理</h1>
+            <button id="createUserBtn" class="btn btn-primary">创建用户</button>
+        </header>
+        
+        <div class="content">
+            <div class="filters">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="搜索用户名或邮箱...">
+                    <button id="searchBtn" class="btn">搜索</button>
+                </div>
+                
+                <div class="filter-box">
+                    <select id="roleFilter">
+                        <option value="">所有角色</option>
+                        <option value="admin">管理员</option>
+                        <option value="editor">编辑</option>
+                        <option value="user">用户</option>
+                    </select>
+                    
+                    <select id="statusFilter">
+                        <option value="-1">所有状态</option>
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>用户名</th>
+                            <th>邮箱</th>
+                            <th>角色</th>
+                            <th>状态</th>
+                            <th>最后登录</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <!-- 用户数据将通过JavaScript动态加载 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination">
+                <button id="prevPage" class="btn">上一页</button>
+                <span id="pageInfo">第 <span id="currentPage">1</span> 页，共 <span id="totalPages">1</span> 页</span>
+                <button id="nextPage" class="btn">下一页</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 创建/编辑用户模态框 -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">创建用户</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" id="userId">
+                    
+                    <div class="form-group">
+                        <label for="username">用户名 <span class="required">*</span></label>
+                        <input type="text" id="username" name="username" required>
+                        <div class="form-tip">用户名只能包含字母、数字和下划线，长度3-20个字符</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">邮箱 <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">密码 <span class="required">*</span></label>
+                        <div class="password-field">
+                            <input type="password" id="password" name="password" required>
+                            <button type="button" class="toggle-password" title="显示/隐藏密码">
+                                <i class="icon-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-tip">密码长度至少8个字符</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="role">角色 <span class="required">*</span></label>
+                        <select id="role" name="role" required>
+                            <option value="user">用户</option>
+                            <option value="editor">编辑</option>
+                            <option value="admin">管理员</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status">状态</label>
+                        <select id="status" name="status">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="avatar">头像</label>
+                        <input type="text" id="avatar" name="avatar" placeholder="头像URL">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio">个人简介</label>
+                        <textarea id="bio" name="bio" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn" id="cancelBtn">取消</button>
+                        <button type="submit" class="btn btn-primary" id="saveBtn">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 删除确认模态框 -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>确认删除</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>您确定要删除用户 <span id="deleteUsername"></span> 吗？此操作无法撤销。</p>
+                <div class="form-actions">
+                    <button type="button" class="btn" id="cancelDeleteBtn">取消</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 加载指示器 -->
+    <div id="loadingIndicator" class="loading-indicator">
+        <div class="spinner"></div>
+        <p>加载中...</p>
+    </div>
+    
+    <!-- 消息提示 -->
+    <div id="messageBox" class="message-box"></div>
+    
+    <script src="../assets/js/users.js"></script>
+</body>
+</html> 

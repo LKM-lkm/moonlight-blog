@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统设置 - 月光云海博客</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/settings.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-moon"></i>
+                    <span>月光云海</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class="fas fa-chart-line"></i>
+                            <span>仪表盘</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="articles.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>文章管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="comments.html">
+                            <i class="fas fa-comments"></i>
+                            <span>评论管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="users.html">
+                            <i class="fas fa-users"></i>
+                            <span>用户管理</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="settings.html">
+                            <i class="fas fa-cog"></i>
+                            <span>系统设置</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部导航 -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>系统设置</h1>
+                </div>
+                <div class="header-right">
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </div>
+                    <div class="user-menu">
+                        <img src="../assets/img/avatar.jpg" alt="用户头像" class="avatar">
+                        <div class="dropdown-menu">
+                            <a href="profile.html"><i class="fas fa-user"></i> 个人资料</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 设置导航 -->
+            <div class="settings-nav">
+                <button class="nav-item active" data-panel="basic">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>基本设置</span>
+                </button>
+                <button class="nav-item" data-panel="security">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>安全设置</span>
+                </button>
+                <button class="nav-item" data-panel="email">
+                    <i class="fas fa-envelope"></i>
+                    <span>邮件设置</span>
+                </button>
+                <button class="nav-item" data-panel="storage">
+                    <i class="fas fa-database"></i>
+                    <span>存储设置</span>
+                </button>
+                <button class="nav-item" data-panel="backup">
+                    <i class="fas fa-save"></i>
+                    <span>备份设置</span>
+                </button>
+                <button class="nav-item" data-panel="advanced">
+                    <i class="fas fa-code"></i>
+                    <span>高级设置</span>
+                </button>
+            </div>
+
+            <!-- 设置内容 -->
+            <div class="settings-content">
+                <!-- 基本设置 -->
+                <div class="settings-panel active" id="basic">
+                    <div class="panel-header">
+                        <h2>基本设置</h2>
+                        <p>配置网站的基本信息和显示选项</p>
+                    </div>
+                    <div class="panel-body">
+                        <form id="basicSettingsForm">
+                            <div class="form-group">
+                                <label for="siteName">网站名称</label>
+                                <input type="text" id="siteName" name="siteName" value="月光云海博客">
+                            </div>
+                            <div class="form-group">
+                                <label for="siteUrl">网站地址</label>
+                                <input type="url" id="siteUrl" name="siteUrl" value="https://moonlight-blog.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="siteDescription">网站描述</label>
+                                <textarea id="siteDescription" name="siteDescription" rows="3">一个分享技术、生活和思考的个人博客</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="siteKeywords">关键词</label>
+                                <input type="text" id="siteKeywords" name="siteKeywords" value="博客,技术,生活,思考">
+                                <small class="form-text">多个关键词用英文逗号分隔</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="siteLogo">网站Logo</label>
+                                <div class="logo-upload">
+                                    <img src="../assets/img/logo.png" alt="网站Logo" id="logoPreview">
+                                    <div class="upload-controls">
+                                        <input type="file" id="siteLogo" name="siteLogo" accept="image/*">
+                                        <button type="button" class="btn btn-outline" id="uploadLogoBtn">
+                                            <i class="fas fa-upload"></i> 上传Logo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="siteFavicon">网站图标</label>
+                                <div class="favicon-upload">
+                                    <img src="../assets/img/favicon.ico" alt="网站图标" id="faviconPreview">
+                                    <div class="upload-controls">
+                                        <input type="file" id="siteFavicon" name="siteFavicon" accept="image/x-icon,image/png">
+                                        <button type="button" class="btn btn-outline" id="uploadFaviconBtn">
+                                            <i class="fas fa-upload"></i> 上传图标
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="siteTheme">网站主题</label>
+                                <select id="siteTheme" name="siteTheme">
+                                    <option value="light">浅色主题</option>
+                                    <option value="dark">深色主题</option>
+                                    <option value="auto">跟随系统</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="siteLanguage">默认语言</label>
+                                <select id="siteLanguage" name="siteLanguage">
+                                    <option value="zh-CN">简体中文</option>
+                                    <option value="en-US">English</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="timezone">时区</label>
+                                <select id="timezone" name="timezone">
+                                    <option value="Asia/Shanghai">中国标准时间 (UTC+8)</option>
+                                    <option value="America/New_York">美国东部时间 (UTC-5)</option>
+                                    <option value="Europe/London">格林威治标准时间 (UTC+0)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="dateFormat">日期格式</label>
+                                <select id="dateFormat" name="dateFormat">
+                                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="timeFormat">时间格式</label>
+                                <select id="timeFormat" name="timeFormat">
+                                    <option value="24">24小时制</option>
+                                    <option value="12">12小时制</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="postsPerPage">每页文章数</label>
+                                <input type="number" id="postsPerPage" name="postsPerPage" min="1" max="50" value="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="commentsPerPage">每页评论数</label>
+                                <input type="number" id="commentsPerPage" name="commentsPerPage" min="1" max="100" value="20">
+                            </div>
+                            <div class="form-group">
+                                <label for="enableComments">评论功能</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="enableComments" name="enableComments" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="enableRegistration">用户注册</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="enableRegistration" name="enableRegistration" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="enableCaptcha">验证码</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="enableCaptcha" name="enableCaptcha" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-outline" id="resetBasicBtn">重置</button>
+                                <button type="submit" class="btn btn-primary" id="saveBasicBtn">保存设置</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 安全设置 -->
+                <div class="settings-panel" id="security">
+                    <div class="panel-header">
+                        <h2>安全设置</h2>
+                        <p>配置网站的安全选项和访问控制</p>
+                    </div>
+                    <div class="panel-body">
+                        <form id="securitySettingsForm">
+                            <div class="form-group">
+                                <label for="loginAttempts">最大登录尝试次数</label>
+                                <input type="number" id="loginAttempts" name="loginAttempts" min="3" max="10" value="5">
+                                <small class="form-text">超过此次数后账户将被临时锁定</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="lockoutTime">账户锁定时间（分钟）</label>
+                                <input type="number" id="lockoutTime" name="lockoutTime" min="5" max="1440" value="30">
+                            </div>
+                            <div class="form-group">
+                                <label for="passwordExpiry">密码有效期（天）</label>
+                                <input type="number" id="passwordExpiry" name="passwordExpiry" min="0" max="365" value="90">
+                                <small class="form-text">设置为0表示密码永不过期</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="passwordMinLength">密码最小长度</label>
+                                <input type="number" id="passwordMinLength" name="passwordMinLength" min="6" max="20" value="8">
+                            </div>
+                            <div class="form-group">
+                                <label for="passwordComplexity">密码复杂度要求</label>
+                                <select id="passwordComplexity" name="passwordComplexity">
+                                    <option value="low">低（仅字母和数字）</option>
+                                    <option value="medium" selected>中（必须包含字母、数字和特殊字符）</option>
+                                    <option value="high">高（必须包含大小写字母、数字和特殊字符）</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="enableTwoFactor">两步验证</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="enableTwoFactor" name="enableTwoFactor">
+                                    <span class="toggle-slider"></span>
+                                </div>
+                                <small class="form-text">启用后，登录时需要额外的验证码</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="sessionTimeout">会话超时时间（分钟）</label>
+                                <input type="number" id="sessionTimeout" name="sessionTimeout" min="5" max="1440" value="60">
+                            </div>
+                            <div class="form-group">
+                                <label for="enableIpBlocking">IP封禁</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="enableIpBlocking" name="enableIpBlocking" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                                <small class="form-text">启用后，系统将自动封禁频繁尝试登录的IP</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="enableSsl">强制SSL</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="enableSsl" name="enableSsl" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                                <small class="form-text">启用后，所有HTTP请求将重定向到HTTPS</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="allowedFileTypes">允许上传的文件类型</label>
+                                <input type="text" id="allowedFileTypes" name="allowedFileTypes" value="jpg,jpeg,png,gif,pdf,doc,docx,xls,xlsx,zip,rar">
+                                <small class="form-text">多个文件类型用英文逗号分隔</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="maxFileSize">最大文件大小（MB）</label>
+                                <input type="number" id="maxFileSize" name="maxFileSize" min="1" max="50" value="10">
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-outline" id="resetSecurityBtn">重置</button>
+                                <button type="submit" class="btn btn-primary" id="saveSecurityBtn">保存设置</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 邮件设置 -->
+                <div class="settings-panel" id="email">
+                    <div class="panel-header">
+                        <h2>邮件设置</h2>
+                        <p>配置网站的邮件发送选项</p>
+                    </div>
+                    <div class="panel-body">
+                        <form id="emailSettingsForm">
+                            <div class="form-group">
+                                <label for="smtpEnabled">启用SMTP</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="smtpEnabled" name="smtpEnabled" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="smtpHost">SMTP服务器</label>
+                                <input type="text" id="smtpHost" name="smtpHost" value="smtp.example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="smtpPort">SMTP端口</label>
+                                <input type="number" id="smtpPort" name="smtpPort" value="587">
+                            </div>
+                            <div class="form-group">
+                                <label for="smtpUser">SMTP用户名</label>
+                                <input type="text" id="smtpUser" name="smtpUser" value="noreply@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="smtpPass">SMTP密码</label>
+                                <div class="password-input">
+                                    <input type="password" id="smtpPass" name="smtpPass" value="********">
+                                    <button type="button" class="password-toggle">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="smtpSecure">加密连接</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="smtpSecure" name="smtpSecure" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="fromEmail">发件人邮箱</label>
+                                <input type="email" id="fromEmail" name="fromEmail" value="noreply@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="fromName">发件人名称</label>
+                                <input type="text" id="fromName" name="fromName" value="月光云海博客">
+                            </div>
+                            <div class="form-group">
+                                <label for="enableEmailNotifications">邮件通知</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="enableEmailNotifications" name="enableEmailNotifications" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="notifyNewComments">新评论通知</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="notifyNewComments" name="notifyNewComments" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="notifyNewUsers">新用户注册通知</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="notifyNewUsers" name="notifyNewUsers" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="notifyPasswordReset">密码重置通知</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="notifyPasswordReset" name="notifyPasswordReset" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-outline" id="testEmailBtn">测试邮件</button>
+                                <button type="button" class="btn btn-outline" id="resetEmailBtn">重置</button>
+                                <button type="submit" class="btn btn-primary" id="saveEmailBtn">保存设置</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 存储设置 -->
+                <div class="settings-panel" id="storage">
+                    <div class="panel-header">
+                        <h2>存储设置</h2>
+                        <p>配置网站的文件存储选项</p>
+                    </div>
+                    <div class="panel-body">
+                        <form id="storageSettingsForm">
+                            <div class="form-group">
+                                <label for="storageType">存储类型</label>
+                                <select id="storageType" name="storageType">
+                                    <option value="local" selected>本地存储</option>
+                                    <option value="s3">Amazon S3</option>
+                                    <option value="oss">阿里云OSS</option>
+                                    <option value="cos">腾讯云COS</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 本地存储设置 -->
+                            <div class="storage-settings" id="localStorageSettings">
+                                <div class="form-group">
+                                    <label for="uploadPath">上传路径</label>
+                                    <input type="text" id="uploadPath" name="uploadPath" value="/uploads">
+                                </div>
+                                <div class="form-group">
+                                    <label for="maxStorage">最大存储空间（GB）</label>
+                                    <input type="number" id="maxStorage" name="maxStorage" min="1" max="1000" value="10">
+                                </div>
+                                <div class="form-group">
+                                    <label for="storageUsage">当前存储使用情况</label>
+                                    <div class="progress-bar">
+                                        <div class="progress" style="width: 35%;">35%</div>
+                                    </div>
+                                    <small class="form-text">已使用 3.5GB / 10GB</small>
+                                </div>
+                            </div>
+                            
+                            <!-- S3存储设置 -->
+                            <div class="storage-settings" id="s3Settings" style="display: none;">
+                                <div class="form-group">
+                                    <label for="s3Bucket">Bucket名称</label>
+                                    <input type="text" id="s3Bucket" name="s3Bucket" value="my-blog-bucket">
+                                </div>
+                                <div class="form-group">
+                                    <label for="s3Region">区域</label>
+                                    <input type="text" id="s3Region" name="s3Region" value="us-east-1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="s3AccessKey">Access Key</label>
+                                    <input type="text" id="s3AccessKey" name="s3AccessKey" value="AKIAXXXXXXXXXXXXXXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label for="s3SecretKey">Secret Key</label>
+                                    <div class="password-input">
+                                        <input type="password" id="s3SecretKey" name="s3SecretKey" value="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                                        <button type="button" class="password-toggle">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="s3Endpoint">自定义端点（可选）</label>
+                                    <input type="text" id="s3Endpoint" name="s3Endpoint" placeholder="https://s3.example.com">
+                                </div>
+                            </div>
+                            
+                            <!-- 阿里云OSS设置 -->
+                            <div class="storage-settings" id="ossSettings" style="display: none;">
+                                <div class="form-group">
+                                    <label for="ossBucket">Bucket名称</label>
+                                    <input type="text" id="ossBucket" name="ossBucket" value="my-blog-bucket">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ossRegion">区域</label>
+                                    <input type="text" id="ossRegion" name="ossRegion" value="oss-cn-hangzhou">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ossAccessKey">Access Key ID</label>
+                                    <input type="text" id="ossAccessKey" name="ossAccessKey" value="LTAIXXXXXXXXXXXXXXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ossSecretKey">Access Key Secret</label>
+                                    <div class="password-input">
+                                        <input type="password" id="ossSecretKey" name="ossSecretKey" value="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                                        <button type="button" class="password-toggle">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ossEndpoint">自定义端点（可选）</label>
+                                    <input type="text" id="ossEndpoint" name="ossEndpoint" placeholder="https://oss-cn-hangzhou.aliyuncs.com">
+                                </div>
+                            </div>
+                            
+                            <!-- 腾讯云COS设置 -->
+                            <div class="storage-settings" id="cosSettings" style="display: none;">
+                                <div class="form-group">
+                                    <label for="cosBucket">Bucket名称</label>
+                                    <input type="text" id="cosBucket" name="cosBucket" value="my-blog-bucket">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cosRegion">区域</label>
+                                    <input type="text" id="cosRegion" name="cosRegion" value="ap-guangzhou">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cosAppId">AppID</label>
+                                    <input type="text" id="cosAppId" name="cosAppId" value="1250000000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cosSecretId">SecretId</label>
+                                    <input type="text" id="cosSecretId" name="cosSecretId" value="AKIDXXXXXXXXXXXXXXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cosSecretKey">SecretKey</label>
+                                    <div class="password-input">
+                                        <input type="password" id="cosSecretKey" name="cosSecretKey" value="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                                        <button type="button" class="password-toggle">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="enableCdn">启用CDN</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="enableCdn" name="enableCdn">
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cdnUrl">CDN URL</label>
+                                <input type="text" id="cdnUrl" name="cdnUrl" placeholder="https://cdn.example.com">
+                                <small class="form-text">启用CDN后，静态资源将通过此URL访问</small>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-outline" id="resetStorageBtn">重置</button>
+                                <button type="submit" class="btn btn-primary" id="saveStorageBtn">保存设置</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 备份设置 -->
+                <div class="settings-panel" id="backup">
+                    <div class="panel-header">
+                        <h2>备份设置</h2>
+                        <p>配置网站的自动备份选项</p>
+                    </div>
+                    <div class="panel-body">
+                        <form id="backupSettingsForm">
+                            <div class="form-group">
+                                <label for="autoBackup">启用自动备份</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="autoBackup" name="autoBackup" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="backupSchedule">备份计划</label>
+                                <input type="text" id="backupSchedule" name="backupSchedule" value="0 0 * * *">
+                                <small class="form-text">使用Cron表达式格式，默认为每天凌晨执行</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="backupRetention">备份保留时间（天）</label>
+                                <input type="number" id="backupRetention" name="backupRetention" min="1" max="365" value="30">
+                            </div>
+                            <div class="form-group">
+                                <label for="backupType">备份内容</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="backupDatabase" name="backupDatabase" checked>
+                                        <span>数据库</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="backupFiles" name="backupFiles" checked>
+                                        <span>文件</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="backupSettings" name="backupSettings" checked>
+                                        <span>设置</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="backupStorage">备份存储位置</label>
+                                <select id="backupStorage" name="backupStorage">
+                                    <option value="local" selected>本地存储</option>
+                                    <option value="s3">Amazon S3</option>
+                                    <option value="oss">阿里云OSS</option>
+                                    <option value="cos">腾讯云COS</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="backupPath">备份路径</label>
+                                <input type="text" id="backupPath" name="backupPath" value="/backups">
+                            </div>
+                            <div class="form-group">
+                                <label for="backupCompression">备份压缩</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="backupCompression" name="backupCompression" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="backupEncryption">备份加密</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="backupEncryption" name="backupEncryption">
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="backupEncryptionKey">加密密钥</label>
+                                <div class="password-input">
+                                    <input type="password" id="backupEncryptionKey" name="backupEncryptionKey">
+                                    <button type="button" class="password-toggle">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <small class="form-text">启用备份加密后，请妥善保管此密钥</small>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-outline" id="createBackupBtn">立即备份</button>
+                                <button type="button" class="btn btn-outline" id="resetBackupBtn">重置</button>
+                                <button type="submit" class="btn btn-primary" id="saveBackupBtn">保存设置</button>
+                            </div>
+                        </form>
+                        
+                        <!-- 备份历史 -->
+                        <div class="backup-history">
+                            <h3>备份历史</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>备份时间</th>
+                                        <th>类型</th>
+                                        <th>大小</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="backupHistoryBody">
+                                    <tr>
+                                        <td>2024-03-20 03:00</td>
+                                        <td>自动备份</td>
+                                        <td>256MB</td>
+                                        <td><span class="status-badge success">成功</span></td>
+                                        <td>
+                                            <button class="btn-icon" title="下载"><i class="fas fa-download"></i></button>
+                                            <button class="btn-icon" title="恢复"><i class="fas fa-undo"></i></button>
+                                            <button class="btn-icon" title="删除"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-03-13 03:00</td>
+                                        <td>自动备份</td>
+                                        <td>248MB</td>
+                                        <td><span class="status-badge success">成功</span></td>
+                                        <td>
+                                            <button class="btn-icon" title="下载"><i class="fas fa-download"></i></button>
+                                            <button class="btn-icon" title="恢复"><i class="fas fa-undo"></i></button>
+                                            <button class="btn-icon" title="删除"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-03-06 03:00</td>
+                                        <td>自动备份</td>
+                                        <td>242MB</td>
+                                        <td><span class="status-badge success">成功</span></td>
+                                        <td>
+                                            <button class="btn-icon" title="下载"><i class="fas fa-download"></i></button>
+                                            <button class="btn-icon" title="恢复"><i class="fas fa-undo"></i></button>
+                                            <button class="btn-icon" title="删除"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 高级设置 -->
+                <div class="settings-panel" id="advanced">
+                    <div class="panel-header">
+                        <h2>高级设置</h2>
+                        <p>配置网站的高级选项和自定义代码</p>
+                    </div>
+                    <div class="panel-body">
+                        <form id="advancedSettingsForm">
+                            <div class="form-group">
+                                <label for="customCss">自定义CSS</label>
+                                <textarea id="customCss" name="customCss" rows="5" placeholder="/* 在此添加自定义CSS */"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="customJs">自定义JavaScript</label>
+                                <textarea id="customJs" name="customJs" rows="5" placeholder="// 在此添加自定义JavaScript"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="headerCode">头部代码</label>
+                                <textarea id="headerCode" name="headerCode" rows="5" placeholder="<!-- 在此添加头部代码，如Meta标签、统计代码等 -->"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="footerCode">底部代码</label>
+                                <textarea id="footerCode" name="footerCode" rows="5" placeholder="<!-- 在此添加底部代码，如统计代码、第三方脚本等 -->"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="robotsTxt">Robots.txt</label>
+                                <textarea id="robotsTxt" name="robotsTxt" rows="5">User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Sitemap: https://example.com/sitemap.xml</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="enableDebug">调试模式</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="enableDebug" name="enableDebug">
+                                    <span class="toggle-slider"></span>
+                                </div>
+                                <small class="form-text">启用后将显示详细的错误信息和调试日志</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="enableCache">启用缓存</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="enableCache" name="enableCache" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cacheTime">缓存时间（分钟）</label>
+                                <input type="number" id="cacheTime" name="cacheTime" min="1" max="1440" value="60">
+                            </div>
+                            <div class="form-group">
+                                <label for="enableGzip">启用Gzip压缩</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="enableGzip" name="enableGzip" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="enableMinify">启用代码压缩</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="enableMinify" name="enableMinify" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-outline" id="clearCacheBtn">清除缓存</button>
+                                <button type="button" class="btn btn-outline" id="resetAdvancedBtn">重置</button>
+                                <button type="submit" class="btn btn-primary" id="saveAdvancedBtn">保存设置</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 引入脚本 -->
+    <script src="../assets/js/settings.js"></script>
+</body>
+</html> 
