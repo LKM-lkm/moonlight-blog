@@ -1,11 +1,11 @@
-/* 管理后台样式 */
+/* 管理后台全局样式 */
 :root {
   /* 颜色变量 - 与主页风格一致 */
   --admin-bg: linear-gradient(135deg, #1a1c35 0%, #0f1729 100%);
   --admin-card-bg: rgba(255, 255, 255, 0.05);
-  --admin-text: #e0e6ff;
+  --admin-text: #ffffff;
   --admin-text-secondary: #a0b0d0;
-  --admin-border: rgba(255, 255, 255, 0.08);
+  --admin-border: rgba(255, 255, 255, 0.1);
   --admin-accent: #6d8aff;
   --admin-success: #5cd9a6;
   --admin-warning: #ffae4d;
@@ -34,6 +34,15 @@
   --border-radius-sm: 6px;
 }
 
+/* 通用样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 body {
   background: var(--admin-bg);
   color: var(--admin-text);
@@ -47,8 +56,8 @@ body {
 /* 玻璃态效果 */
 .glass-panel {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border-radius: var(--border-radius);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -117,11 +126,11 @@ body {
   width: 240px;
   height: 100vh;
   z-index: 100;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
   border-right: 1px solid var(--admin-border);
   background: rgba(10, 15, 35, 0.5);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   box-sizing: border-box;
   transform: translateZ(0);
 }
@@ -389,8 +398,8 @@ body {
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.1);
   color: var(--admin-text);
-  appearance: none;
   -webkit-appearance: none;
+  appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 10px center;
@@ -829,6 +838,7 @@ body {
     padding: 1.5rem;
     border-radius: 15px;
     background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
 
@@ -1267,6 +1277,7 @@ body {
     padding: var(--card-padding);
     border-radius: var(--border-radius-lg);
     background: var(--bg-primary);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
 
