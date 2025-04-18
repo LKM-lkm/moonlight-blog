@@ -3,144 +3,59 @@
     --primary-color: #4a90e2;
     --error-color: #e74c3c;
     --text-color: #333;
-    --bg-color: #1a1a2e;
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
+    --bg-color: #f5f6fa;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
     min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    background: var(--bg-color);
-    font-family: 'Arial', sans-serif;
-    overflow: hidden;
-    position: relative;
+    justify-content: center;
 }
 
-/* 星空背景 */
-.stars-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-
-.stars, .stars2, .stars3 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-}
-
-.stars {
-    background: url('../images/stars.png') repeat;
-    animation: animateStars 50s linear infinite;
-}
-
-.stars2 {
-    background: url('../images/stars2.png') repeat;
-    animation: animateStars 100s linear infinite;
-}
-
-.stars3 {
-    background: url('../images/stars3.png') repeat;
-    animation: animateStars 150s linear infinite;
-}
-
-/* 云海效果 */
-.clouds {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-}
-
-.cloud {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    filter: blur(20px);
-}
-
-.cloud1 {
-    width: 300px;
-    height: 100px;
-    top: 20%;
-    left: 10%;
-    animation: floatCloud 20s linear infinite;
-}
-
-.cloud2 {
-    width: 200px;
-    height: 80px;
-    top: 40%;
-    right: 10%;
-    animation: floatCloud 15s linear infinite reverse;
-}
-
-/* 月光效果 */
-.login-moonlight {
-    position: fixed;
-    top: -50%;
-    right: -50%;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    transform: rotate(-45deg);
-    z-index: 3;
-    pointer-events: none;
-}
-
-/* 登录容器 */
 .login-container {
-    position: relative;
-    z-index: 4;
     width: 100%;
     max-width: 400px;
     padding: 20px;
 }
 
-/* 玻璃态面板 */
-.glass-panel {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+.login-form {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
 }
 
-/* 登录表单 */
 .login-header {
     text-align: center;
     margin-bottom: 30px;
-    color: white;
 }
 
 .login-header h1 {
-    font-size: 2em;
-    margin: 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    color: var(--primary-color);
+    font-size: 24px;
+    margin-bottom: 10px;
 }
 
 .login-header p {
-    margin: 10px 0;
-    opacity: 0.8;
+    color: #666;
+    font-size: 14px;
 }
 
 .form-group {
-    position: relative;
     margin-bottom: 20px;
+    position: relative;
 }
 
 .form-group label {
@@ -148,31 +63,28 @@ body {
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: white;
+    color: #999;
 }
 
 .form-group input {
     width: 100%;
     padding: 12px 40px;
-    border: 1px solid var(--glass-border);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-size: 16px;
-    transition: all 0.3s ease;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
 }
 
 .form-group input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
 }
 
 .remember-me {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    color: white;
+    color: #666;
 }
 
 .remember-me input {
@@ -182,25 +94,27 @@ body {
 .login-btn {
     width: 100%;
     padding: 12px;
-    background: var(--primary-color);
-    border: none;
-    border-radius: 8px;
+    background-color: var(--primary-color);
     color: white;
+    border: none;
+    border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s;
 }
 
 .login-btn:hover {
-    background: #357abd;
-    transform: translateY(-2px);
+    background-color: #357abd;
 }
 
 .error-message {
     color: var(--error-color);
+    font-size: 14px;
+    margin-top: 10px;
     text-align: center;
-    margin-top: 15px;
     min-height: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .login-footer {
@@ -209,75 +123,19 @@ body {
 }
 
 .login-footer a {
-    color: white;
+    color: var(--primary-color);
     text-decoration: none;
-    opacity: 0.8;
+    font-size: 14px;
     transition: opacity 0.3s ease;
 }
 
 .login-footer a:hover {
-    opacity: 1;
-}
-
-/* 动画 */
-@keyframes animateStars {
-    from {
-        transform: translateY(0);
-    }
-    to {
-        transform: translateY(-1000px);
-    }
-}
-
-@keyframes floatCloud {
-    from {
-        transform: translateX(-100%);
-    }
-    to {
-        transform: translateX(100vw);
-    }
+    opacity: 0.8;
 }
 
 /* 响应式设计 */
 @media (max-width: 480px) {
-    .login-container {
-        padding: 10px;
-    }
-    
-    .glass-panel {
+    .login-form {
         padding: 20px;
     }
-    
-    .login-header h1 {
-        font-size: 1.5em;
-    }
-}
-
-/* 验证码容器 */
-.captcha-container {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.captcha-container img {
-    height: 40px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: opacity 0.3s;
-}
-
-.captcha-container img:hover {
-    opacity: 0.8;
-}
-
-/* 密码强度指示器 */
-.password-strength {
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    background-color: rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
 } 
