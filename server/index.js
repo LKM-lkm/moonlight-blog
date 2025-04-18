@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 require('dotenv').config();
+const setHeaders = require('./middleware/headers');
 
 const articleRoutes = require('./routes/articles');
 const chatbotRoutes = require('./routes/chatbot');
@@ -18,7 +19,8 @@ const PORT = process.env.PORT || 3000;
 
 // 安全配置
 app.use(helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" } // 允许跨域访问上传的文件
+    crossOriginResourcePolicy: { policy: "cross-origin" }, // 允许跨域访问上传的文件
+    contentSecurityPolicy: false // 暂时禁用CSP以便于开发
 }));
 app.use(cors());
 app.use(express.json());
@@ -30,8 +32,21 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// 自定义头部中间件
+app.use(setHeaders);
+
 // 静态文件服务
-app.use(express.static(path.join(__dirname, '../')));
+app.use(express.static(path.join(__dirname, '../'), {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.css')) {
+            res.setHeader('Content-Type', 'text/css');
+        } else if (filePath.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript');
+        } else if (filePath.endsWith('.woff2')) {
+            res.setHeader('Content-Type', 'font/woff2');
+        }
+    }
+}));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads'))); // 上传文件目录
 
 // API路由

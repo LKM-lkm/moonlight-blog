@@ -11,6 +11,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-appearance: none;
 }
 
 body {
@@ -19,8 +20,11 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     min-height: 100vh;
+    display: -webkit-flex;
     display: flex;
+    -webkit-align-items: center;
     align-items: center;
+    -webkit-justify-content: center;
     justify-content: center;
 }
 
@@ -28,6 +32,8 @@ body {
     width: 100%;
     max-width: 400px;
     padding: 20px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 
 .login-form {
@@ -35,6 +41,8 @@ body {
     padding: 40px;
     border-radius: 10px;
     box-shadow: var(--box-shadow);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .login-header {
