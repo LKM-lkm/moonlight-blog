@@ -102,241 +102,201 @@ body {
 
 /* 登录框 */
 .login-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 40px;
     width: 100%;
     max-width: 420px;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-xl);
-    box-shadow: var(--shadow-lg);
-    animation: slide-up 0.5s ease-out;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-out;
 }
 
 /* Logo */
-.logo {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto var(--spacing);
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header .logo {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: var(--shadow-lg);
-    position: relative;
-    overflow: hidden;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.logo::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-        45deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        transparent 100%
-    );
-    animation: shine 2s infinite;
-}
-
-.logo i {
-    font-size: 2.5rem;
-    color: white;
-    animation: pulse 2s infinite;
-}
-
-/* 登录头部 */
-.login-header {
-    text-align: center;
-    margin-bottom: var(--spacing-xl);
+.login-header .logo i {
+    font-size: 28px;
+    color: #fff;
 }
 
 .login-header h1 {
-    font-size: 1.8rem;
-    margin-bottom: var(--spacing-xs);
-    color: var(--text-primary);
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #fff;
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: 500;
 }
 
 .login-header p {
-    color: var(--text-secondary);
-    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
 }
 
 /* 表单样式 */
 .form-group {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: var(--spacing-xs);
-    color: var(--text-secondary);
-    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 8px;
+    font-size: 14px;
 }
 
 .input-group {
     position: relative;
-    display: flex;
-    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.input-group:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .input-group i {
     position: absolute;
-    left: var(--spacing);
-    color: var(--text-light);
-    transition: var(--transition);
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 16px;
 }
 
 .input-group input {
     width: 100%;
-    padding: var(--spacing) var(--spacing) var(--spacing) calc(var(--spacing) * 3);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-    transition: var(--transition);
-    background: rgba(255, 255, 255, 0.9);
+    padding: 12px 15px 12px 45px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+}
+
+.input-group input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .input-group input:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
-.input-group input:focus + i {
-    color: var(--primary);
-}
-
-.toggle-password {
-    position: absolute;
-    right: var(--spacing);
-    color: var(--text-light);
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.toggle-password:hover {
-    color: var(--primary);
+.input-group:focus-within {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
 /* 记住我选项 */
 .remember-me {
     display: flex;
     align-items: center;
-    gap: var(--spacing-xs);
+    gap: 8px;
 }
 
 .remember-me input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    cursor: pointer;
+    accent-color: #fff;
 }
 
 .remember-me label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
     margin: 0;
-    cursor: pointer;
 }
 
 /* 登录按钮 */
 .login-button {
     width: 100%;
-    padding: var(--spacing);
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.2);
     border: none;
-    border-radius: var(--border-radius);
-    color: white;
-    font-size: 1rem;
-    font-weight: 500;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-sm);
-    cursor: pointer;
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
-}
-
-.login-button::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-        45deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        transparent 100%
-    );
-    transform: translateX(-100%);
-    transition: var(--transition);
-}
-
-.login-button:hover::after {
-    transform: translateX(100%);
+    gap: 10px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .login-button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.login-button:active {
+    transform: translateY(1px);
+}
+
+.login-button i {
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.login-button:hover i {
+    transform: translateX(3px);
 }
 
 .login-button:disabled {
     opacity: 0.7;
     cursor: not-allowed;
-    transform: none;
 }
 
-.login-button i {
-    transition: var(--transition);
-}
-
-.login-button:not(:disabled):hover i {
-    transform: translateX(4px);
-}
-
-/* 错误消息 */
 .error-message {
-    display: none;
-    margin-top: var(--spacing);
-    padding: var(--spacing);
-    border-radius: var(--border-radius);
-    font-size: 0.9rem;
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
     text-align: center;
-    transition: var(--transition);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .error-message.show {
-    display: block;
-    animation: fade-in 0.3s ease-out;
+    opacity: 1;
 }
 
 .error-message.error {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
-    border: 1px solid rgba(231, 76, 60, 0.2);
+    color: #ff4d4d;
 }
 
 .error-message.success {
-    background-color: rgba(46, 204, 113, 0.1);
-    color: var(--success);
-    border: 1px solid rgba(46, 204, 113, 0.2);
+    color: #4dff4d;
 }
 
 /* 动画 */
-@keyframes slide-up {
+@keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(-10px);
     }
     to {
         opacity: 1;
@@ -344,65 +304,24 @@ body {
     }
 }
 
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes shine {
-    0% {
-        transform: translateX(-100%) rotate(45deg);
-    }
-    100% {
-        transform: translateX(100%) rotate(45deg);
-    }
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
 /* 响应式设计 */
 @media (max-width: 480px) {
     .login-box {
-        padding: var(--spacing-lg);
+        margin: 20px;
+        padding: 30px;
     }
     
-    .logo {
-        width: 60px;
-        height: 60px;
+    .login-header .logo {
+        width: 50px;
+        height: 50px;
     }
     
-    .logo i {
-        font-size: 2rem;
+    .login-header .logo i {
+        font-size: 24px;
     }
     
     .login-header h1 {
-        font-size: 1.5rem;
-    }
-    
-    .login-header p {
-        font-size: 0.9rem;
-    }
-    
-    .input-group input {
-        font-size: 0.9rem;
-    }
-    
-    .login-button {
-        font-size: 0.9rem;
+        font-size: 20px;
     }
 }
 
@@ -488,67 +407,15 @@ body {
     }
 }
 
-.input-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-    margin-top: 8px;
-}
-
-.input-group input {
+/* 确保背景动画在毛玻璃效果下正常显示 */
+.stars, .twinkling, .clouds {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
-    padding: 12px 40px 12px 35px;
-    background: var(--bg-light);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    color: var(--text-primary);
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.input-group input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
-    outline: none;
-}
-
-.input-group i {
-    position: absolute;
-    color: var(--text-secondary);
-    transition: all 0.3s ease;
-}
-
-.input-group i:first-child {
-    left: 12px;
-    font-size: 1.1rem;
-}
-
-.toggle-password {
-    right: 12px;
-    cursor: pointer;
-    font-size: 1.1rem;
-}
-
-.toggle-password:hover {
-    color: var(--primary);
-}
-
-.input-group input:focus + i {
-    color: var(--primary);
-}
-
-/* 添加动画效果 */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.error-message.show {
-    animation: fadeIn 0.3s ease forwards;
+    height: 100%;
+    display: block;
+    z-index: -1;
 } 
