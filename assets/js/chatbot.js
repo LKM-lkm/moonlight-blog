@@ -3,13 +3,13 @@
  * 实现基本的聊天界面交互功能
  */
 
-// 聊天机器人DOM元素
-const chatbotToggle = document.getElementById('chatbot-toggle');
-const chatbotContainer = document.getElementById('chatbot-container');
-const chatbotClose = document.getElementById('chatbot-close');
-    const chatbotMessages = document.getElementById('chatbot-messages');
-const chatbotForm = document.getElementById('chatbot-form');
-    const chatbotInput = document.getElementById('chatbot-input');
+// DOM 元素
+let chatbotToggle;
+let chatbotContainer;
+let chatbotMessages;
+let chatbotForm;
+let chatbotInput;
+let chatbotClose;
 
 // 预设的回复
 const responses = {
@@ -29,123 +29,103 @@ const responses = {
 const defaultResponse = '抱歉，我无法理解您的问题。您可以尝试询问关于网站的基本信息，或者使用更简单的表述方式。';
 
 // 初始化聊天机器人
-function initChatbot() {
-    // 聊天框开关事件
+document.addEventListener('DOMContentLoaded', function() {
+    // 获取DOM元素
+    chatbotToggle = document.getElementById('chatbot-toggle');
+    chatbotContainer = document.getElementById('chatbot-container');
+    chatbotMessages = document.getElementById('chatbot-messages');
+    chatbotForm = document.getElementById('chatbot-form');
+    chatbotInput = document.getElementById('chatbot-input');
+    chatbotClose = document.getElementById('chatbot-close');
+
+    if (!chatbotToggle || !chatbotContainer || !chatbotMessages || !chatbotForm || !chatbotInput || !chatbotClose) {
+        console.error('聊天机器人初始化失败：找不到必要的DOM元素');
+        return;
+    }
+
+    // 绑定事件
     chatbotToggle.addEventListener('click', toggleChatbot);
     chatbotClose.addEventListener('click', toggleChatbot);
-    
-    // 发送消息事件
-    chatbotForm.addEventListener('submit', handleMessageSubmit);
+    chatbotForm.addEventListener('submit', handleSubmit);
     
     // 添加欢迎消息
-    addWelcomeMessage();
-    
-    // 存储聊天记录
-    loadChatHistory();
-}
+    addBotMessage('你好！我是Moonlight的智能助手，很高兴为您服务。您可以询问我关于网站的任何问题。');
+});
 
-// 打开/关闭聊天框
+// 切换聊天窗口显示状态
 function toggleChatbot() {
     chatbotContainer.classList.toggle('active');
-    chatbotToggle.classList.toggle('active');
-    
-    // 如果打开聊天框，则聚焦到输入框
     if (chatbotContainer.classList.contains('active')) {
         chatbotInput.focus();
-        // 滚动到最新消息
         scrollToBottom();
     }
 }
 
 // 处理消息提交
-function handleMessageSubmit(e) {
+function handleSubmit(e) {
     e.preventDefault();
-    
     const message = chatbotInput.value.trim();
-    if (!message) return;
     
-    // 添加用户消息
-    addUserMessage(message);
-
-    // 清空输入框
-    chatbotInput.value = '';
-
-    // 显示"正在输入"指示器
-    showTypingIndicator();
-    
-    // 模拟延迟后响应
-    setTimeout(() => {
-        removeTypingIndicator();
+    if (message) {
+        // 添加用户消息
+        addUserMessage(message);
+        chatbotInput.value = '';
+        
+        // 处理回复
         processUserMessage(message);
-    }, 1000);
+    }
 }
 
 // 添加用户消息
 function addUserMessage(text) {
-    const messageElement = createMessageElement('user', text);
+    const messageElement = document.createElement('div');
+    messageElement.className = 'message user-message';
+    messageElement.innerHTML = `
+        <div class="message-content">
+            <p>${text}</p>
+        </div>
+    `;
     chatbotMessages.appendChild(messageElement);
     scrollToBottom();
-    
-    // 保存聊天记录
-    saveChatHistory();
 }
 
 // 添加机器人消息
-function addBotMessage(text, delay = 0) {
+function addBotMessage(text, delay = 1000) {
     // 添加"正在输入"指示器
     const typingIndicator = document.createElement('div');
     typingIndicator.className = 'message bot-message typing';
-    typingIndicator.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+    typingIndicator.innerHTML = `
+        <div class="typing-indicator">
+            <span></span><span></span><span></span>
+        </div>
+    `;
     chatbotMessages.appendChild(typingIndicator);
     scrollToBottom();
     
     // 延迟后显示实际消息
     setTimeout(() => {
-        // 移除"正在输入"指示器
         chatbotMessages.removeChild(typingIndicator);
         
-        // 添加机器人消息
-        const messageElement = createMessageElement('bot', text);
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message bot-message';
+        messageElement.innerHTML = `
+            <div class="message-content">
+                <p>${text}</p>
+            </div>
+        `;
         chatbotMessages.appendChild(messageElement);
         scrollToBottom();
-        
-        // 保存聊天记录
-        saveChatHistory();
-    }, delay || 1000);
-}
-
-// 创建消息元素
-function createMessageElement(type, text) {
-    const messageElement = document.createElement('div');
-    messageElement.className = `message ${type}-message`;
-    
-    const avatar = document.createElement('div');
-    avatar.className = 'message-avatar';
-    
-    const icon = document.createElement('i');
-    icon.className = type === 'user' ? 'fas fa-user' : 'fas fa-robot';
-    avatar.appendChild(icon);
-    
-    const content = document.createElement('div');
-    content.className = 'message-content';
-    
-    const paragraph = document.createElement('p');
-    paragraph.textContent = text;
-    content.appendChild(paragraph);
-    
-    messageElement.appendChild(avatar);
-    messageElement.appendChild(content);
-    
-    return messageElement;
+    }, delay);
 }
 
 // 处理用户消息
 function processUserMessage(message) {
     let hasResponse = false;
+    const lowerMessage = message.toLowerCase();
     
     // 检查是否有匹配的预设回复
     for (const key in responses) {
-        if (message.toLowerCase().includes(key.toLowerCase())) {
+        if (lowerMessage.includes(key.toLowerCase())) {
             addBotMessage(responses[key]);
             hasResponse = true;
             break;
@@ -158,49 +138,7 @@ function processUserMessage(message) {
     }
 }
 
-// 添加欢迎消息
-function addWelcomeMessage() {
-    setTimeout(() => {
-        addBotMessage('你好！欢迎来到Moonlight博客。有什么可以帮到您的吗？');
-    }, 500);
-}
-
-// 显示"正在输入"指示器
-function showTypingIndicator() {
-    const typingElement = document.createElement('div');
-    typingElement.id = 'typing-indicator';
-    typingElement.className = 'message bot-message typing';
-    typingElement.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
-    chatbotMessages.appendChild(typingElement);
-    scrollToBottom();
-}
-
-// 移除"正在输入"指示器
-function removeTypingIndicator() {
-    const typingIndicator = document.getElementById('typing-indicator');
-    if (typingIndicator) {
-        typingIndicator.remove();
-    }
-}
-
 // 滚动到底部
 function scrollToBottom() {
     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 }
-
-// 保存聊天记录
-function saveChatHistory() {
-    const messages = chatbotMessages.innerHTML;
-    localStorage.setItem('chatHistory', messages);
-}
-
-// 加载聊天记录
-function loadChatHistory() {
-    const savedHistory = localStorage.getItem('chatHistory');
-    if (savedHistory) {
-        chatbotMessages.innerHTML = savedHistory;
-    }
-}
-
-// 页面加载时初始化聊天机器人
-document.addEventListener('DOMContentLoaded', initChatbot);
