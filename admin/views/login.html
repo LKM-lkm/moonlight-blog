@@ -63,9 +63,7 @@
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const remember = document.getElementById('remember').checked;
+            const formData = new FormData(e.target);
             const errorMessage = document.getElementById('errorMessage');
             const submitButton = document.querySelector('.login-button');
             
@@ -76,21 +74,14 @@
                 
                 const response = await fetch('/admin/api/auth/login.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username,
-                        password,
-                        remember
-                    })
+                    body: formData
                 });
                 
                 const data = await response.json();
                 
                 if (data.success) {
                     errorMessage.classList.remove('show', 'error');
-                    errorMessage.classList.add('success');
+                    errorMessage.classList.add('show', 'success');
                     errorMessage.textContent = '登录成功，正在跳转...';
                     window.location.href = '/admin/dashboard';
                 } else {

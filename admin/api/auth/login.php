@@ -14,12 +14,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    // 获取JSON输入
-    $json = file_get_contents('php://input');
-    $data = json_decode($json, true);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('无效的JSON数据');
+    // 获取输入数据
+    $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+    
+    // 根据Content-Type处理数据
+    if (strpos($contentType, 'application/json') !== false) {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+        
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception('无效的JSON数据');
+        }
+    } else {
+        // 处理表单数据
+        $data = $_POST;
     }
     
     // 获取并验证输入
