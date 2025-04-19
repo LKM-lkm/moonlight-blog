@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `user_login_logs` (
 
 -- 插入默认管理员用户
 INSERT INTO `users` (`username`, `email`, `password`, `role`, `status`, `created_at`) VALUES
-('admin', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 1, NOW());
+('likem', 'lkm836972@outlook.com', '$2y$12$K8HKs.PvDfc27jkwMCOzgu6Zg9YH4pQSYEBpDQpzh4WqKmPqUz7Aq', 'admin', 1, NOW());
 
 -- 插入默认权限
 INSERT INTO `user_permissions` (`user_id`, `permission`) VALUES
