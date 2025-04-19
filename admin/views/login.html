@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理员登录 - Moonlight Blog</title>
+    <title>管理员登录 - Moonlight</title>
     <link rel="stylesheet" href="/assets/css/admin/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -19,41 +19,63 @@
                 <div class="logo">
                     <i class="fas fa-moon"></i>
                 </div>
-                <h1>管理员登录</h1>
+                <h2>管理员登录</h2>
                 <p>欢迎回来，请登录您的账号</p>
             </div>
-            <form class="login-form" id="loginForm">
+            
+            <form id="loginForm" class="login-form">
+                <input type="hidden" name="csrf_token" value="<?php echo Security::getInstance()->generateCsrfToken(); ?>">
+                
                 <div class="form-group">
-                    <label for="username">用户名</label>
                     <div class="input-group">
                         <i class="fas fa-user"></i>
-                        <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+                        <input type="text" id="username" name="username" placeholder="用户名" required>
                     </div>
                 </div>
+                
                 <div class="form-group">
-                    <label for="password">密码</label>
-                    <div class="input-group password-input">
-                        <i class="fas fa-lock icon-left"></i>
-                        <input type="password" id="password" name="password" placeholder="请输入密码" required>
-                        <div class="input-border"></div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="密码" required>
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
                     </div>
                 </div>
+                
                 <div class="form-group">
-                    <div class="remember-me">
+                    <label class="checkbox-container">
                         <input type="checkbox" id="remember" name="remember">
-                        <label for="remember">记住我</label>
-                    </div>
+                        <span class="checkmark"></span>
+                        记住我
+                    </label>
                 </div>
+
+                <div id="errorMessage" class="error-message"></div>
+                
                 <button type="submit" class="login-button">
                     <span>登录</span>
-                    <i class="fas fa-arrow-right"></i>
                 </button>
-                <div class="error-message" id="errorMessage"></div>
             </form>
         </div>
     </div>
 
     <script>
+        // 切换密码可见性
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // 处理表单提交
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -66,42 +88,53 @@
                 submitButton.disabled = true;
                 submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
                 
-                const response = await fetch('/api/auth/login.php', {
+                const response = await fetch('/admin/api/auth/login.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify(Object.fromEntries(formData))
+                    body: JSON.stringify({
+                        username: formData.get('username'),
+                        password: formData.get('password'),
+                        remember: formData.get('remember') === 'on',
+                        csrf_token: formData.get('csrf_token')
+                    })
                 });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
                 
                 const data = await response.json();
                 
                 if (data.success) {
-                    errorMessage.classList.remove('show', 'error');
-                    errorMessage.classList.add('show', 'success');
+                    // 显示成功消息
+                    errorMessage.classList.remove('error');
+                    errorMessage.classList.add('success');
                     errorMessage.textContent = '登录成功，正在跳转...';
-                    window.location.href = '/admin/dashboard';
+                    
+                    // 跳转到仪表板
+                    setTimeout(() => {
+                        window.location.href = '/admin/dashboard';
+                    }, 1000);
                 } else {
-                    errorMessage.classList.add('show', 'error');
+                    // 显示错误消息
+                    errorMessage.classList.remove('success');
+                    errorMessage.classList.add('error');
                     errorMessage.textContent = data.message || '登录失败，请检查用户名和密码';
+                    
+                    // 重置按钮状态
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = '<span>登录</span>';
                 }
             } catch (error) {
-                console.error('登录错误:', error);
-                errorMessage.classList.add('show', 'error');
-                if (error.message.includes('HTTP error!')) {
-                    errorMessage.textContent = '服务器错误，请联系管理员';
-                } else {
-                    errorMessage.textContent = '登录过程中发生错误，请稍后重试';
-                }
-            } finally {
-                // 恢复提交按钮
+                // 显示错误消息
+                errorMessage.classList.remove('success');
+                errorMessage.classList.add('error');
+                errorMessage.textContent = '登录过程中发生错误，请稍后重试';
+                
+                // 重置按钮状态
                 submitButton.disabled = false;
-                submitButton.innerHTML = '<span>登录</span><i class="fas fa-arrow-right"></i>';
+                submitButton.innerHTML = '<span>登录</span>';
+                
+                console.error('登录错误:', error);
             }
         });
     </script>
