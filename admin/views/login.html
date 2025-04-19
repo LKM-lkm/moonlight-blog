@@ -23,7 +23,7 @@
                 <p>欢迎回来，请登录您的账号</p>
             </div>
             
-            <form id="loginForm" class="login-form">
+            <form id="loginForm" class="login-form" method="post">
                 <input type="hidden" name="csrf_token" value="<?php echo Security::getInstance()->generateCsrfToken(); ?>">
                 
                 <div class="form-group">
@@ -37,7 +37,9 @@
                     <div class="input-group">
                         <i class="fas fa-lock"></i>
                         <input type="password" id="password" name="password" placeholder="密码" required>
-                        <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
+                        <button type="button" class="toggle-password" aria-label="切换密码显示">
+                            <i class="fas fa-eye"></i>
+                        </button>
                     </div>
                 </div>
                 
@@ -59,83 +61,88 @@
     </div>
 
     <script>
-        // 切换密码可见性
-        function togglePassword() {
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
             const passwordInput = document.getElementById('password');
-            const toggleIcon = document.querySelector('.toggle-password');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            }
-        }
-
-        // 处理表单提交
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(e.target);
+            const togglePasswordButton = document.querySelector('.toggle-password');
             const errorMessage = document.getElementById('errorMessage');
             const submitButton = document.querySelector('.login-button');
-            
-            try {
+
+            // 切换密码可见性
+            togglePasswordButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+
+            // 处理表单提交
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
                 // 禁用提交按钮
                 submitButton.disabled = true;
                 submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
                 
-                const response = await fetch('/admin/api/auth/login.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
+                try {
+                    const formData = new FormData(this);
+                    const data = {
                         username: formData.get('username'),
                         password: formData.get('password'),
                         remember: formData.get('remember') === 'on',
                         csrf_token: formData.get('csrf_token')
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    // 显示成功消息
-                    errorMessage.classList.remove('error');
-                    errorMessage.classList.add('success');
-                    errorMessage.textContent = '登录成功，正在跳转...';
+                    };
+
+                    const response = await fetch('/admin/api/auth/login.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
                     
-                    // 跳转到仪表板
-                    setTimeout(() => {
-                        window.location.href = '/admin/dashboard';
-                    }, 1000);
-                } else {
+                    if (result.success) {
+                        // 显示成功消息
+                        errorMessage.classList.remove('error');
+                        errorMessage.classList.add('success');
+                        errorMessage.textContent = '登录成功，正在跳转...';
+                        
+                        // 跳转到仪表板
+                        setTimeout(() => {
+                            window.location.href = '/admin/dashboard';
+                        }, 1000);
+                    } else {
+                        // 显示错误消息
+                        errorMessage.classList.remove('success');
+                        errorMessage.classList.add('error');
+                        errorMessage.textContent = result.message || '登录失败，请检查用户名和密码';
+                        
+                        // 重置按钮状态
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = '<span>登录</span>';
+                    }
+                } catch (error) {
                     // 显示错误消息
                     errorMessage.classList.remove('success');
                     errorMessage.classList.add('error');
-                    errorMessage.textContent = data.message || '登录失败，请检查用户名和密码';
+                    errorMessage.textContent = '登录过程中发生错误，请稍后重试';
                     
                     // 重置按钮状态
                     submitButton.disabled = false;
                     submitButton.innerHTML = '<span>登录</span>';
+                    
+                    console.error('登录错误:', error);
                 }
-            } catch (error) {
-                // 显示错误消息
-                errorMessage.classList.remove('success');
-                errorMessage.classList.add('error');
-                errorMessage.textContent = '登录过程中发生错误，请稍后重试';
-                
-                // 重置按钮状态
-                submitButton.disabled = false;
-                submitButton.innerHTML = '<span>登录</span>';
-                
-                console.error('登录错误:', error);
-            }
+            });
         });
     </script>
 </body>
