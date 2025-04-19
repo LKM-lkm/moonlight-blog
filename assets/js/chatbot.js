@@ -10,6 +10,7 @@ let chatbotMessages;
 let chatbotForm;
 let chatbotInput;
 let chatbotClose;
+let chatbotSubmit;
 
 // 预设的回复
 const responses = {
@@ -34,11 +35,12 @@ document.addEventListener('DOMContentLoaded', function() {
     chatbotToggle = document.getElementById('chatbot-toggle');
     chatbotContainer = document.getElementById('chatbot-container');
     chatbotMessages = document.getElementById('chatbot-messages');
-    chatbotForm = document.getElementById('chatbot-form');
+    chatbotForm = document.querySelector('.chatbot-form');
     chatbotInput = document.getElementById('chatbot-input');
     chatbotClose = document.getElementById('chatbot-close');
+    chatbotSubmit = document.getElementById('chatbot-submit');
 
-    if (!chatbotToggle || !chatbotContainer || !chatbotMessages || !chatbotForm || !chatbotInput || !chatbotClose) {
+    if (!chatbotToggle || !chatbotContainer || !chatbotMessages || !chatbotForm || !chatbotInput || !chatbotClose || !chatbotSubmit) {
         console.error('聊天机器人初始化失败：找不到必要的DOM元素');
         return;
     }
