@@ -62,18 +62,18 @@ body {
 }
 
 .stars {
-    background: #000 url('../../../assets/images/stars.svg') repeat top center;
+    background: #000B1F url(../../../assets/images/stars.svg) repeat top center;
     z-index: 0;
 }
 
 .twinkling {
-    background: transparent url('../../../assets/images/twinkling.png') repeat top center;
+    background: transparent url(../../../assets/images/twinkling.svg) repeat top center;
     z-index: 1;
     animation: move-twinkle 200s linear infinite;
 }
 
 .clouds {
-    background: transparent url('../../../assets/images/clouds.png') repeat top center;
+    background: transparent url(../../../assets/images/clouds.svg) repeat-x top center;
     z-index: 2;
     opacity: 0.4;
     animation: move-clouds 200s linear infinite;
@@ -81,7 +81,7 @@ body {
 
 @keyframes move-twinkle {
     from {background-position: 0 0;}
-    to {background-position: -10000px 5000px;}
+    to {background-position: -10000px 0;}
 }
 
 @keyframes move-clouds {
