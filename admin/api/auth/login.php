@@ -14,9 +14,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
+    // 获取JSON输入
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new Exception('无效的JSON数据');
+    }
+    
     // 获取并验证输入
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
+    $username = $data['username'] ?? '';
+    $password = $data['password'] ?? '';
     
     if (empty($username) || empty($password)) {
         throw new Exception('用户名和密码不能为空');
