@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理员登录 - Moonlight Blog</title>
     <link rel="stylesheet" href="/css/admin/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="login-container">
@@ -15,11 +16,18 @@
             <form class="login-form" id="loginForm">
                 <div class="form-group">
                     <label for="username">用户名</label>
-                    <input type="text" id="username" name="username" required>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" required>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="password">密码</label>
-                    <input type="password" id="password" name="password" required>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" required>
+                        <i class="fas fa-eye-slash toggle-password" onclick="togglePassword()"></i>
+                    </div>
                 </div>
                 <div class="form-group">
                     <div class="remember-me">
@@ -27,23 +35,45 @@
                         <label for="remember">记住我</label>
                     </div>
                 </div>
-                <button type="submit" class="login-button">登录</button>
-                <div class="forgot-password">
-                    <a href="/admin/forgot-password">忘记密码？</a>
-                </div>
+                <button type="submit" class="login-button">
+                    <span>登录</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <div class="error-message" id="errorMessage"></div>
             </form>
         </div>
     </div>
 
     <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            }
+        }
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const remember = document.getElementById('remember').checked;
+            const errorMessage = document.getElementById('errorMessage');
+            const submitButton = document.querySelector('.login-button');
             
             try {
+                // 禁用提交按钮
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
+                
                 const response = await fetch('/admin/api/auth/login.php', {
                     method: 'POST',
                     headers: {
@@ -59,13 +89,22 @@
                 const data = await response.json();
                 
                 if (data.success) {
+                    errorMessage.classList.remove('show', 'error');
+                    errorMessage.classList.add('success');
+                    errorMessage.textContent = '登录成功，正在跳转...';
                     window.location.href = '/admin/dashboard';
                 } else {
-                    alert(data.message || '登录失败，请检查用户名和密码');
+                    errorMessage.classList.add('show', 'error');
+                    errorMessage.textContent = data.message || '登录失败，请检查用户名和密码';
                 }
             } catch (error) {
                 console.error('登录错误:', error);
-                alert('登录过程中发生错误，请稍后重试');
+                errorMessage.classList.add('show', 'error');
+                errorMessage.textContent = '登录过程中发生错误，请稍后重试';
+            } finally {
+                // 恢复提交按钮
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<span>登录</span><i class="fas fa-arrow-right"></i>';
             }
         });
     </script>

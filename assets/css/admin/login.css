@@ -80,25 +80,65 @@ body {
 }
 
 .login-button {
-    background-color: var(--primary-color);
-    color: white;
+    width: 100%;
     padding: 12px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     border: none;
     border-radius: 4px;
+    color: white;
     font-size: 16px;
-    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.login-button:hover {
-    background-color: #357abd;
+.login-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.login-button i {
+    transition: transform 0.3s ease;
+}
+
+.login-button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.login-button:not(:disabled):hover i {
+    transform: translateX(4px);
 }
 
 .error-message {
-    color: var(--error-color);
-    font-size: 14px;
-    margin-top: 4px;
+    display: none;
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.error-message.show {
+    display: block;
+}
+
+.error-message.error {
+    background-color: rgba(255, 59, 48, 0.1);
+    color: #ff3b30;
+    border: 1px solid rgba(255, 59, 48, 0.2);
+}
+
+.error-message.success {
+    background-color: rgba(52, 199, 89, 0.1);
+    color: #34c759;
+    border: 1px solid rgba(52, 199, 89, 0.2);
 }
 
 .remember-me {
@@ -239,4 +279,69 @@ body {
     to {
         opacity: 0;
     }
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 40px 12px 35px;
+    background: var(--bg-light);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.1);
+    outline: none;
+}
+
+.input-group i {
+    position: absolute;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.input-group i:first-child {
+    left: 12px;
+    font-size: 1.1rem;
+}
+
+.toggle-password {
+    right: 12px;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+}
+
+.input-group input:focus + i {
+    color: var(--primary-color);
+}
+
+/* 添加动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.error-message.show {
+    animation: fadeIn 0.3s ease forwards;
 } 
