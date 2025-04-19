@@ -10,37 +10,30 @@
     background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
 }
 
-.stars {
-    background: url('../img/stars.svg') repeat top center;
+.stars, .twinkling, .clouds {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.stars {
+    background: #000B1F url('../../../assets/images/stars.svg') repeat top center;
     z-index: 0;
-    opacity: 0.6;
-    -webkit-animation: twinkle 4s ease-in-out infinite;
-    animation: twinkle 4s ease-in-out infinite;
 }
 
 .twinkling {
-    background: transparent url('../img/twinkling.png') repeat top center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    background: transparent url('../../../assets/images/twinkling.svg') repeat top center;
     z-index: 1;
     animation: move-twinkle 200s linear infinite;
 }
 
 .clouds {
-    background: transparent url('../img/clouds.png') repeat top center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    background: transparent url('../../../assets/images/clouds.svg') repeat-x top center;
     z-index: 2;
     opacity: 0.4;
     animation: move-clouds 200s linear infinite;
@@ -57,13 +50,13 @@
 }
 
 @keyframes move-twinkle {
-    from { background-position: 0 0; }
-    to { background-position: -10000px 5000px; }
+    from {background-position: 0 0;}
+    to {background-position: -10000px 0;}
 }
 
 @keyframes move-clouds {
-    from { background-position: 0 0; }
-    to { background-position: 10000px 0; }
+    from {background-position: 0 0;}
+    to {background-position: 10000px 0;}
 }
 
 /* 登录容器 */
