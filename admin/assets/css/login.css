@@ -168,11 +168,19 @@
 
 .input-group i {
     position: absolute;
-    left: var(--spacing);
     color: var(--text-secondary);
     font-size: 1.1rem;
     -webkit-transition: var(--transition);
     transition: var(--transition);
+}
+
+.input-group i.icon-left {
+    left: var(--spacing);
+}
+
+.input-group i.icon-right {
+    right: var(--spacing);
+    cursor: pointer;
 }
 
 .input-group input {
@@ -213,6 +221,20 @@
 
 .input-group input:focus ~ .input-border {
     width: 100%;
+}
+
+/* 密码输入框特殊处理 */
+.input-group.password-input input {
+    padding-right: calc(var(--spacing) * 3); /* 为右侧图标留出空间 */
+}
+
+.input-group.password-input i.icon-left {
+    left: var(--spacing);
+}
+
+.input-group.password-input i.icon-right {
+    right: var(--spacing);
+    cursor: pointer;
 }
 
 /* 验证码 */

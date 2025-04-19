@@ -247,4 +247,18 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.addEventListener('mousemove', resetInactivityTimer);
     document.addEventListener('keypress', resetInactivityTimer);
+
+    // 密码显示/隐藏功能
+    const togglePassword = document.getElementById('togglePassword');
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+            // 切换密码显示/隐藏
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // 切换图标
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    }
 }); 
