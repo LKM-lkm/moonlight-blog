@@ -33,9 +33,8 @@
                 <div class="form-group">
                     <label for="password">密码</label>
                     <div class="input-group password-input">
-                        <input type="password" id="password" name="password" placeholder="请输入密码" required>
                         <i class="fas fa-lock icon-left"></i>
-                        <i class="fas fa-eye icon-right" id="togglePassword"></i>
+                        <input type="password" id="password" name="password" placeholder="请输入密码" required>
                         <div class="input-border"></div>
                     </div>
                 </div>
@@ -55,21 +54,6 @@
     </div>
 
     <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.querySelector('.toggle-password');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            }
-        }
-
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -82,10 +66,18 @@
                 submitButton.disabled = true;
                 submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
                 
-                const response = await fetch('/admin/api/auth/login.php', {
+                const response = await fetch('/api/auth/login.php', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData))
                 });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 
                 const data = await response.json();
                 
@@ -101,7 +93,11 @@
             } catch (error) {
                 console.error('登录错误:', error);
                 errorMessage.classList.add('show', 'error');
-                errorMessage.textContent = '登录过程中发生错误，请稍后重试';
+                if (error.message.includes('HTTP error!')) {
+                    errorMessage.textContent = '服务器错误，请联系管理员';
+                } else {
+                    errorMessage.textContent = '登录过程中发生错误，请稍后重试';
+                }
             } finally {
                 // 恢复提交按钮
                 submitButton.disabled = false;

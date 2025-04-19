@@ -1,187 +1,190 @@
 <?php
-
+/**
+ * 日志类
+ */
 class Logger {
     private static $instance = null;
-    private $logPath;
     private $config;
-    
+    private $logFile;
+    private $logLevel;
+
+    const EMERGENCY = 'emergency';
+    const ALERT     = 'alert';
+    const CRITICAL  = 'critical';
+    const ERROR     = 'error';
+    const WARNING   = 'warning';
+    const NOTICE    = 'notice';
+    const INFO      = 'info';
+    const DEBUG     = 'debug';
+
+    private $levels = [
+        self::EMERGENCY => 0,
+        self::ALERT     => 1,
+        self::CRITICAL  => 2,
+        self::ERROR     => 3,
+        self::WARNING   => 4,
+        self::NOTICE    => 5,
+        self::INFO      => 6,
+        self::DEBUG     => 7,
+    ];
+
     private function __construct() {
-        $this->config = require_once ROOT_PATH . '/config/config.php';
-        $this->logPath = ROOT_PATH . '/logs/';
+        global $config;
+        $this->config = $config;
+        $this->logFile = $config['log']['file'] ?? __DIR__ . '/../../logs/app.log';
+        $this->logLevel = $config['log']['level'] ?? self::DEBUG;
         
-        if (!is_dir($this->logPath)) {
-            mkdir($this->logPath, 0755, true);
+        // 确保日志目录存在
+        $logDir = dirname($this->logFile);
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0755, true);
         }
     }
-    
+
     public static function getInstance() {
         if (self::$instance === null) {
             self::$instance = new self();
         }
         return self::$instance;
     }
-    
-    // 写入日志
+
+    /**
+     * 记录日志
+     * @param string $level 日志级别
+     * @param string $message 日志消息
+     * @param array $context 上下文信息
+     */
     public function log($level, $message, array $context = []) {
-        if (!$this->config['log']['enabled']) {
-            return false;
+        if (!isset($this->levels[$level])) {
+            throw new \InvalidArgumentException('无效的日志级别');
         }
+
+        if ($this->levels[$level] > $this->levels[$this->logLevel]) {
+            return;
+        }
+
+        $logEntry = $this->formatLogEntry($level, $message, $context);
+        $this->write($logEntry);
+    }
+
+    /**
+     * 格式化日志条目
+     * @param string $level 日志级别
+     * @param string $message 日志消息
+     * @param array $context 上下文信息
+     * @return string
+     */
+    private function formatLogEntry($level, $message, array $context) {
+        $timestamp = date('Y-m-d H:i:s');
+        $message = $this->interpolate($message, $context);
         
-        $logFile = $this->logPath . date('Y-m-d') . '.log';
-        $time = date('Y-m-d H:i:s');
-        $ip = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
-        $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Guest';
-        
-        // 格式化上下文数据
-        $contextStr = empty($context) ? '' : json_encode($context, JSON_UNESCAPED_UNICODE);
-        
-        // 格式化日志消息
-        $logMessage = sprintf(
-            "[%s] [%s] [%s] [User:%s] %s %s\n",
-            $time,
+        $contextStr = '';
+        if (!empty($context)) {
+            $contextStr = ' ' . json_encode($context, JSON_UNESCAPED_UNICODE);
+        }
+
+        return sprintf(
+            "[%s] %s.%s: %s%s\n",
+            $timestamp,
             strtoupper($level),
-            $ip,
-            $userId,
+            str_pad('', 9 - strlen($level)),
             $message,
             $contextStr
         );
-        
-        // 写入日志文件
-        return file_put_contents($logFile, $logMessage, FILE_APPEND | LOCK_EX);
     }
-    
-    // 记录信息日志
-    public function info($message, array $context = []) {
-        return $this->log('info', $message, $context);
+
+    /**
+     * 替换消息中的占位符
+     * @param string $message 消息模板
+     * @param array $context 上下文数据
+     * @return string
+     */
+    private function interpolate($message, array $context) {
+        $replace = [];
+        foreach ($context as $key => $val) {
+            if (is_string($val) || method_exists($val, '__toString')) {
+                $replace['{' . $key . '}'] = $val;
+            }
+        }
+        return strtr($message, $replace);
     }
-    
-    // 记录警告日志
-    public function warning($message, array $context = []) {
-        return $this->log('warning', $message, $context);
+
+    /**
+     * 写入日志
+     * @param string $entry 日志条目
+     */
+    private function write($entry) {
+        $result = file_put_contents(
+            $this->logFile,
+            $entry,
+            FILE_APPEND | LOCK_EX
+        );
+
+        if ($result === false) {
+            error_log('无法写入日志文件: ' . $this->logFile);
+        }
     }
-    
-    // 记录错误日志
+
+    /**
+     * 清理旧日志
+     * @param int $days 保留天数
+     */
+    public function cleanup($days = 30) {
+        if (!file_exists($this->logFile)) {
+            return;
+        }
+
+        $maxSize = $this->config['log']['max_size'] ?? 10 * 1024 * 1024; // 默认10MB
+        $currentSize = filesize($this->logFile);
+
+        if ($currentSize > $maxSize) {
+            $backupFile = $this->logFile . '.' . date('Y-m-d-His');
+            rename($this->logFile, $backupFile);
+            touch($this->logFile);
+            chmod($this->logFile, 0644);
+        }
+
+        // 删除超过指定天数的备份文件
+        $pattern = $this->logFile . '.*';
+        $backupFiles = glob($pattern);
+        $now = time();
+        foreach ($backupFiles as $file) {
+            if (is_file($file) && ($now - filemtime($file)) > ($days * 86400)) {
+                unlink($file);
+            }
+        }
+    }
+
+    // 便捷方法
+    public function emergency($message, array $context = []) {
+        $this->log(self::EMERGENCY, $message, $context);
+    }
+
+    public function alert($message, array $context = []) {
+        $this->log(self::ALERT, $message, $context);
+    }
+
+    public function critical($message, array $context = []) {
+        $this->log(self::CRITICAL, $message, $context);
+    }
+
     public function error($message, array $context = []) {
-        return $this->log('error', $message, $context);
+        $this->log(self::ERROR, $message, $context);
     }
-    
-    // 记录调试日志
+
+    public function warning($message, array $context = []) {
+        $this->log(self::WARNING, $message, $context);
+    }
+
+    public function notice($message, array $context = []) {
+        $this->log(self::NOTICE, $message, $context);
+    }
+
+    public function info($message, array $context = []) {
+        $this->log(self::INFO, $message, $context);
+    }
+
     public function debug($message, array $context = []) {
-        if ($this->config['debug']) {
-            return $this->log('debug', $message, $context);
-        }
-        return false;
-    }
-    
-    // 记录系统日志
-    public function system($message, array $context = []) {
-        return $this->log('system', $message, $context);
-    }
-    
-    // 记录安全相关日志
-    public function security($message, array $context = []) {
-        return $this->log('security', $message, $context);
-    }
-    
-    // 记录数据库操作日志
-    public function database($message, array $context = []) {
-        return $this->log('database', $message, $context);
-    }
-    
-    // 记录API请求日志
-    public function api($message, array $context = []) {
-        return $this->log('api', $message, $context);
-    }
-    
-    // 获取最近的日志
-    public function getRecentLogs($lines = 100, $level = null) {
-        $logFile = $this->logPath . date('Y-m-d') . '.log';
-        if (!file_exists($logFile)) {
-            return [];
-        }
-        
-        $logs = [];
-        $handle = fopen($logFile, 'r');
-        if ($handle) {
-            $position = -1;
-            $line = '';
-            $count = 0;
-            
-            while ($count < $lines && fseek($handle, $position, SEEK_END) !== -1) {
-                $char = fgetc($handle);
-                if ($char === false) {
-                    break;
-                }
-                
-                if ($char === "\n") {
-                    if ($line !== '') {
-                        if ($level === null || strpos($line, '[' . strtoupper($level) . ']') !== false) {
-                            array_unshift($logs, $line);
-                            $count++;
-                        }
-                    }
-                    $line = '';
-                } else {
-                    $line = $char . $line;
-                }
-                $position--;
-            }
-            fclose($handle);
-        }
-        
-        return $logs;
-    }
-    
-    // 清理旧日志
-    public function cleanOldLogs($days = 30) {
-        $files = glob($this->logPath . '*.log');
-        $now = time();
-        
-        foreach ($files as $file) {
-            if (is_file($file)) {
-                if ($now - filemtime($file) >= 60 * 60 * 24 * $days) {
-                    unlink($file);
-                }
-            }
-        }
-    }
-    
-    // 获取日志统计信息
-    public function getStats($days = 7) {
-        $stats = [];
-        $now = time();
-        
-        for ($i = 0; $i < $days; $i++) {
-            $date = date('Y-m-d', $now - ($i * 86400));
-            $logFile = $this->logPath . $date . '.log';
-            
-            $stats[$date] = [
-                'info' => 0,
-                'warning' => 0,
-                'error' => 0,
-                'debug' => 0,
-                'system' => 0,
-                'security' => 0,
-                'database' => 0,
-                'api' => 0
-            ];
-            
-            if (file_exists($logFile)) {
-                $handle = fopen($logFile, 'r');
-                if ($handle) {
-                    while (($line = fgets($handle)) !== false) {
-                        foreach (array_keys($stats[$date]) as $level) {
-                            if (strpos($line, '[' . strtoupper($level) . ']') !== false) {
-                                $stats[$date][$level]++;
-                                break;
-                            }
-                        }
-                    }
-                    fclose($handle);
-                }
-            }
-        }
-        
-        return $stats;
+        $this->log(self::DEBUG, $message, $context);
     }
 }
