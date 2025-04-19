@@ -5,12 +5,14 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: {
     main: './src/index.js',
-    admin: './admin/assets/js/admin.js'
+    admin: './admin/assets/js/admin.js',
+    'admin/login': './assets/css/admin/login.css'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
-    clean: true
+    clean: true,
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -29,24 +31,40 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: '[name].css'
+      filename: 'css/[name].css'
     }),
     new CopyWebpackPlugin({
       patterns: [
         {
+          from: 'admin/views/login.html',
+          to: 'admin/login/index.html'
+        },
+        {
           from: 'admin/views',
-          to: 'admin/views'
+          to: 'admin/views',
+          globOptions: {
+            ignore: ['**/login.html']
+          }
+        },
+        {
+          from: 'assets/css/admin',
+          to: 'assets/css/admin'
         }
       ]
     })
   ],
   devServer: {
     static: {
-      directory: path.join(__dirname, '/')
+      directory: path.join(__dirname, 'dist')
     },
     compress: true,
     port: 9000,
-    hot: true
+    hot: true,
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/admin\/login/, to: '/admin/login/index.html' }
+      ]
+    }
   },
   resolve: {
     extensions: ['.js', '.css'],
