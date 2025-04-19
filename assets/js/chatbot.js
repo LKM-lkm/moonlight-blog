@@ -7,9 +7,9 @@
 const chatbotToggle = document.getElementById('chatbot-toggle');
 const chatbotContainer = document.getElementById('chatbot-container');
 const chatbotClose = document.getElementById('chatbot-close');
-const chatbotMessages = document.getElementById('chatbot-messages');
+    const chatbotMessages = document.getElementById('chatbot-messages');
 const chatbotForm = document.getElementById('chatbot-form');
-const chatbotInput = document.getElementById('chatbot-input');
+    const chatbotInput = document.getElementById('chatbot-input');
 
 // 预设的回复
 const responses = {
@@ -66,10 +66,10 @@ function handleMessageSubmit(e) {
     
     // 添加用户消息
     addUserMessage(message);
-    
+
     // 清空输入框
     chatbotInput.value = '';
-    
+
     // 显示"正在输入"指示器
     showTypingIndicator();
     

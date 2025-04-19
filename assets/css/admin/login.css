@@ -1,0 +1,242 @@
+/* 管理员登录页面样式 */
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #2c3e50;
+    --success-color: #2ecc71;
+    --error-color: #e74c3c;
+    --text-color: #333;
+    --light-gray: #f5f6fa;
+    --border-color: #dcdde1;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #4a90e2 0%, #2c3e50 100%);
+    color: var(--text-color);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 400px;
+    animation: slideUp 0.5s ease-out;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h1 {
+    color: var(--secondary-color);
+    margin: 0;
+    font-size: 24px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+.form-group input {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.login-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #357abd;
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.remember-me input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.forgot-password {
+    text-align: right;
+    font-size: 14px;
+}
+
+.forgot-password a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+/* 动画效果 */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    .login-box {
+        padding: 20px;
+    }
+    
+    .login-header h1 {
+        font-size: 20px;
+    }
+    
+    .form-group input {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .login-button {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+/* 加载动画 */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    color: white;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 消息提示 */
+.message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+}
+
+.message.info {
+    background-color: var(--primary-color);
+}
+
+.message.error {
+    background-color: var(--error-color);
+}
+
+.message.success {
+    background-color: var(--success-color);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+} 
