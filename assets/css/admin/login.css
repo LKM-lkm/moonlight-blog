@@ -52,7 +52,7 @@ body {
 
 /* 背景动画 */
 .stars, .twinkling, .clouds {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -63,23 +63,26 @@ body {
 }
 
 .stars {
-    background: #e6f0ff;
-    z-index: 0;
+    background: #000 url(../../images/stars.svg) repeat top center;
+    z-index: -3;
 }
 
 .twinkling {
-    opacity: 0.5;
-    z-index: 1;
+    background: transparent url(../../images/twinkling.png) repeat top center;
+    z-index: -2;
+    animation: move-twinkle 200s linear infinite;
 }
 
 .clouds {
-    opacity: 0.2;
-    z-index: 2;
+    background: transparent url(../../images/clouds.png) repeat top center;
+    z-index: -1;
+    opacity: 0.4;
+    animation: move-clouds 200s linear infinite;
 }
 
 @keyframes move-twinkle {
     from {background-position: 0 0;}
-    to {background-position: -10000px 0;}
+    to {background-position: -10000px 5000px;}
 }
 
 @keyframes move-clouds {
@@ -100,15 +103,14 @@ body {
 
 /* 登录框 */
 .login-box {
-    background: rgba(255, 255, 255, 0.7);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    border-radius: 20px;
-    padding: 40px;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     width: 100%;
     max-width: 420px;
-    box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1);
     animation: fadeIn 0.5s ease-out;
 }
 
@@ -122,30 +124,27 @@ body {
     width: 60px;
     height: 60px;
     margin: 0 auto 20px;
-    background: rgba(74, 144, 226, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    -webkit-backdrop-filter: blur(5px);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(74, 144, 226, 0.2);
 }
 
 .login-header .logo i {
-    font-size: 28px;
-    color: #4a90e2;
+    font-size: 30px;
+    color: #fff;
 }
 
-.login-header h1 {
-    color: #4a90e2;
+.login-header h2 {
+    color: #fff;
+    margin: 0 0 10px;
     font-size: 24px;
-    margin-bottom: 10px;
-    font-weight: 500;
 }
 
 .login-header p {
-    color: #666;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
     font-size: 14px;
 }
 
@@ -165,20 +164,19 @@ body {
     position: relative;
     display: flex;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(74, 144, 226, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
     border-radius: 5px;
     padding: 0 15px;
     transition: all 0.3s ease;
 }
 
 .input-group:focus-within {
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+    background-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
 
-.input-group i:not(.toggle-password i) {
-    color: #4a90e2;
+.input-group i {
+    color: rgba(255, 255, 255, 0.7);
     font-size: 1.2em;
     margin-right: 10px;
 }
@@ -187,36 +185,33 @@ body {
     flex: 1;
     background: none;
     border: none;
-    color: #333;
+    color: white;
     padding: 15px 0;
     font-size: 16px;
     outline: none;
 }
 
 .input-group input::placeholder {
-    color: #999;
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .toggle-password {
     background: none;
     border: none;
-    color: #4a90e2;
+    color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
     padding: 5px;
     font-size: 1.2em;
     transition: color 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .toggle-password:hover {
-    color: #357abd;
+    color: white;
 }
 
 .toggle-password:focus {
     outline: none;
-    color: #357abd;
+    color: white;
 }
 
 /* 记住我选项 */
@@ -241,71 +236,42 @@ body {
 /* 登录按钮 */
 .login-button {
     width: 100%;
-    padding: 12px;
-    background: #4a90e2;
+    padding: 15px;
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
     border: none;
-    border-radius: 10px;
-    color: #fff;
+    border-radius: 5px;
+    color: white;
     font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
     transition: all 0.3s ease;
-    -webkit-backdrop-filter: blur(5px);
-    backdrop-filter: blur(5px);
 }
 
 .login-button:hover {
-    background: #357abd;
-    transform: translateY(-1px);
-}
-
-.login-button:active {
-    transform: translateY(1px);
-}
-
-.login-button i {
-    font-size: 14px;
-    transition: transform 0.3s ease;
-}
-
-.login-button:hover i {
-    transform: translateX(3px);
+    background: linear-gradient(135deg, #357abd 0%, #2868a5 100%);
 }
 
 .login-button:disabled {
-    opacity: 0.7;
+    background: #cccccc;
     cursor: not-allowed;
 }
 
 .error-message {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 8px;
+    color: #ff4d4d;
     font-size: 14px;
+    margin-bottom: 15px;
     text-align: center;
+    min-height: 20px;
     opacity: 0;
     transition: opacity 0.3s ease;
-    background: rgba(255, 255, 255, 0.9);
-    -webkit-backdrop-filter: blur(5px);
-    backdrop-filter: blur(5px);
-    color: #666;
 }
 
 .error-message.show {
     opacity: 1;
 }
 
-.error-message.error {
-    color: #e74c3c;
-    background: rgba(231, 76, 60, 0.1);
-}
-
 .error-message.success {
-    color: #2ecc71;
-    background: rgba(46, 204, 113, 0.1);
+    color: #4CAF50;
 }
 
 /* 动画 */
@@ -322,9 +288,12 @@ body {
 
 /* 响应式设计 */
 @media (max-width: 480px) {
+    .login-container {
+        padding: 10px;
+    }
+    
     .login-box {
-        margin: 20px;
-        padding: 30px;
+        padding: 20px;
     }
     
     .login-header .logo {
@@ -336,8 +305,18 @@ body {
         font-size: 24px;
     }
     
-    .login-header h1 {
+    .login-header h2 {
         font-size: 20px;
+    }
+    
+    .input-group input {
+        font-size: 14px;
+        padding: 12px 0;
+    }
+    
+    .login-button {
+        padding: 12px;
+        font-size: 14px;
     }
 }
 
