@@ -12,19 +12,26 @@
  */
 
 class Auth {
-    private $db;
+    private static $instance = null;
+    private $db = null;
+    private $security = null;
+    private $logger = null;
     private $user = null;
     private $isLoggedIn = false;
     private $permissions = [];
     
-    /**
-     * 构造函数
-     * 
-     * @param PDO $db 数据库连接
-     */
-    public function __construct($db) {
-        $this->db = $db;
+    private function __construct() {
+        $this->db = Database::getInstance()->getConnection();
+        $this->security = Security::getInstance();
+        $this->logger = Logger::getInstance($this->db);
         $this->checkSession();
+    }
+
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
     
     /**
@@ -81,121 +88,67 @@ class Auth {
      * @return array 登录结果
      */
     public function login($username, $password) {
-        // 检查登录尝试次数
-        if (!$this->checkLoginAttempts($username)) {
-            return [
-                'success' => false,
-                'message' => '登录尝试次数过多，请稍后再试'
-            ];
-        }
-        
-        // 查询用户
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE (username = ? OR email = ?) AND status = 1");
-        $stmt->execute([$username, $username]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if (!$user) {
-            $this->recordLoginAttempt($username, false);
-            return [
-                'success' => false,
-                'message' => '用户名或密码错误'
-            ];
-        }
-        
-        // 验证密码
-        if (!password_verify($password, $user['password'])) {
-            $this->recordLoginAttempt($username, false);
-            return [
-                'success' => false,
-                'message' => '用户名或密码错误'
-            ];
-        }
-        
-        // 登录成功
-        $this->user = $user;
-        $this->isLoggedIn = true;
-        $this->loadPermissions();
-        
-        // 更新用户信息
-        $stmt = $this->db->prepare("UPDATE users SET last_login = NOW(), login_attempts = 0, last_attempt_time = NULL WHERE id = ?");
-        $stmt->execute([$user['id']]);
-        
-        // 记录登录日志
-        $this->recordLoginAttempt($username, true, $user['id']);
-        
-        // 设置会话
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
-        
-        return [
-            'success' => true,
-            'message' => '登录成功',
-            'user' => $this->getUserInfo()
-        ];
-    }
-    
-    /**
-     * 检查登录尝试次数
-     * 
-     * @param string $username 用户名
-     * @return bool 是否允许登录
-     */
-    private function checkLoginAttempts($username) {
-        $stmt = $this->db->prepare("SELECT login_attempts, last_attempt_time FROM users WHERE username = ? OR email = ?");
-        $stmt->execute([$username, $username]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if (!$result) {
-            return true;
-        }
-        
-        $maxAttempts = 5;
-        $lockoutTime = 15; // 分钟
-        
-        if ($result['login_attempts'] >= $maxAttempts) {
-            $lastAttempt = new DateTime($result['last_attempt_time']);
-            $now = new DateTime();
-            $diff = $now->diff($lastAttempt);
-            
-            if ($diff->i < $lockoutTime) {
-                return false;
-            } else {
-                // 重置登录尝试次数
-                $stmt = $this->db->prepare("UPDATE users SET login_attempts = 0, last_attempt_time = NULL WHERE username = ? OR email = ?");
-                $stmt->execute([$username, $username]);
-                return true;
+        try {
+            // 检查登录尝试次数
+            if (!$this->security->checkLoginAttempts($username)) {
+                throw new Exception('登录尝试次数过多，请稍后再试');
             }
-        }
-        
-        return true;
-    }
-    
-    /**
-     * 记录登录尝试
-     * 
-     * @param string $username 用户名
-     * @param bool $success 是否成功
-     * @param int|null $userId 用户ID
-     */
-    private function recordLoginAttempt($username, $success, $userId = null) {
-        $ipAddress = $_SERVER['REMOTE_ADDR'];
-        $userAgent = $_SERVER['HTTP_USER_AGENT'];
-        
-        if ($success) {
-            // 记录成功登录
-            $stmt = $this->db->prepare("INSERT INTO user_login_logs (user_id, ip_address, user_agent, success) VALUES (?, ?, ?, 1)");
-            $stmt->execute([$userId, $ipAddress, $userAgent]);
-        } else {
-            // 记录失败登录
-            if ($userId) {
-                $stmt = $this->db->prepare("INSERT INTO user_login_logs (user_id, ip_address, user_agent, success) VALUES (?, ?, ?, 0)");
-                $stmt->execute([$userId, $ipAddress, $userAgent]);
-            }
-            
-            // 更新登录尝试次数
-            $stmt = $this->db->prepare("UPDATE users SET login_attempts = login_attempts + 1, last_attempt_time = NOW() WHERE username = ? OR email = ?");
+
+            // 查询用户信息
+            $stmt = $this->db->prepare('
+                SELECT id, username, email, password, status, role
+                FROM users 
+                WHERE username = ? OR email = ?
+            ');
             $stmt->execute([$username, $username]);
+            $user = $stmt->fetch();
+
+            if (!$user) {
+                $this->security->incrementLoginAttempts($username);
+                throw new Exception('用户名或密码错误');
+            }
+
+            // 验证密码
+            if (!$this->security->verifyPassword($password, $user['password'])) {
+                $this->security->incrementLoginAttempts($username);
+                throw new Exception('用户名或密码错误');
+            }
+
+            // 检查用户状态
+            if ($user['status'] != 1) {
+                throw new Exception('账号已被禁用');
+            }
+
+            // 重置登录尝试次数
+            $this->security->resetLoginAttempts($username);
+
+            // 记录登录日志
+            $this->logLogin($user['id'], true);
+
+            // 设置会话
+            $this->setUserSession($user);
+
+            return [
+                'success' => true,
+                'message' => '登录成功',
+                'data' => [
+                    'id' => $user['id'],
+                    'username' => $user['username'],
+                    'email' => $user['email'],
+                    'role' => $user['role']
+                ]
+            ];
+
+        } catch (Exception $e) {
+            $this->logger->error('登录失败', [
+                'username' => $username,
+                'error' => $e->getMessage()
+            ]);
+
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
         }
     }
     
@@ -457,12 +410,24 @@ class Auth {
      * 用户注销
      */
     public function logout() {
-        $this->user = null;
-        $this->isLoggedIn = false;
-        $this->permissions = [];
-        
+        if (isset($_SESSION['user_id'])) {
+            $userId = $_SESSION['user_id'];
+            $this->logLogin($userId, false);
+        }
+
+        // 清除所有会话数据
         session_unset();
         session_destroy();
+        
+        // 删除会话Cookie
+        if (isset($_COOKIE[session_name()])) {
+            setcookie(session_name(), '', time() - 3600, '/');
+        }
+
+        return [
+            'success' => true,
+            'message' => '已成功退出登录'
+        ];
     }
     
     /**
@@ -511,4 +476,37 @@ class Auth {
     public function isAdmin() {
         return $this->isLoggedIn && $this->user['role'] === 'admin';
     }
+
+    private function setUserSession($user) {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role'];
+        $_SESSION['last_activity'] = time();
+    }
+
+    private function logLogin($userId, $isLogin = true) {
+        $ip = $this->security->getClientIp();
+        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+        
+        $stmt = $this->db->prepare('
+            INSERT INTO user_login_logs (
+                user_id, ip_address, user_agent, action, created_at
+            ) VALUES (?, ?, ?, ?, NOW())
+        ');
+        
+        $action = $isLogin ? 'login' : 'logout';
+        $stmt->execute([$userId, $ip, $userAgent, $action]);
+
+        $this->logger->info(
+            $isLogin ? '用户登录' : '用户退出', 
+            [
+                'user_id' => $userId,
+                'ip' => $ip,
+                'user_agent' => $userAgent
+            ]
+        );
+    }
+
+    private function __clone() {}
+    private function __wakeup() {}
 } 

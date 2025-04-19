@@ -10,9 +10,14 @@
  * - 安全设置
  */
 
-// 设置错误报告
+// 错误报告设置
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', DEBUG_MODE ? 1 : 0);
+ini_set('log_errors', 1);
+ini_set('error_log', LOG_FILE);
+
+// 加载常量定义
+require_once __DIR__ . '/constants.php';
 
 // 设置时区
 date_default_timezone_set('Asia/Shanghai');
@@ -30,7 +35,7 @@ define('CACHE_PATH', ROOT_PATH . '/cache');
 require_once CONFIG_PATH . '/config.php';
 require_once CONFIG_PATH . '/database.php';
 
-// 注册自动加载函数
+// 自动加载类
 spl_autoload_register(function ($class) {
     $file = INCLUDES_PATH . '/' . $class . '.php';
     if (file_exists($file)) {
@@ -39,128 +44,64 @@ spl_autoload_register(function ($class) {
 });
 
 // 启动会话
+session_name(SESSION_NAME);
+session_set_cookie_params(
+    SESSION_LIFETIME,
+    SESSION_PATH,
+    SESSION_DOMAIN,
+    SESSION_SECURE,
+    SESSION_HTTPONLY
+);
 session_start();
 
-// 设置会话cookie参数
-$secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
-$httponly = true;
-$samesite = 'Lax';
-
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'domain' => '',
-    'secure' => $secure,
-    'httponly' => $httponly,
-    'samesite' => $samesite
-]);
+// 检查会话过期
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > SESSION_LIFETIME)) {
+    session_unset();
+    session_destroy();
+    session_start();
+}
+$_SESSION['last_activity'] = time();
 
 // 初始化数据库连接
 try {
-    $db = Database::getInstance()->getConnection();
+    $db = Database::getInstance();
 } catch (Exception $e) {
-    die('数据库连接失败: ' . $e->getMessage());
+    error_log('数据库连接失败: ' . $e->getMessage());
+    die('系统维护中，请稍后再试');
 }
 
-// 初始化安全类
+// 初始化安全实例
 $security = Security::getInstance();
 
-// 初始化日志类
-$logger = Logger::getInstance($db);
+// 初始化日志实例
+$logger = Logger::getInstance($db->getConnection());
 
-// 初始化认证类
-$auth = Auth::getInstance($db);
+// 初始化认证实例
+$auth = Auth::getInstance();
 
-// 设置错误处理函数
-set_error_handler(function ($errno, $errstr, $errfile, $errline) use ($logger) {
-    $message = sprintf(
-        '错误 [%d]: %s in %s on line %d',
-        $errno,
-        $errstr,
-        $errfile,
-        $errline
-    );
-    
-    $logger->error($message);
-    
-    if (error_reporting() & $errno) {
-        throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
-    }
-    
-    return true;
-});
+// 过滤输入数据
+$_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING) ?? [];
+$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING) ?? [];
 
-// 设置异常处理函数
-set_exception_handler(function ($exception) use ($logger) {
-    $message = sprintf(
-        '异常: %s in %s on line %d',
-        $exception->getMessage(),
-        $exception->getFile(),
-        $exception->getLine()
-    );
-    
-    $logger->error($message, [
-        'trace' => $exception->getTraceAsString()
-    ]);
-    
-    if (DEBUG_MODE) {
-        echo '<h1>系统错误</h1>';
-        echo '<p>' . $message . '</p>';
-        echo '<pre>' . $exception->getTraceAsString() . '</pre>';
-    } else {
-        echo '<h1>系统错误</h1>';
-        echo '<p>抱歉，系统发生错误。请稍后再试。</p>';
-    }
-});
-
-// 设置关闭处理函数
-register_shutdown_function(function () use ($logger) {
-    $error = error_get_last();
-    if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
-        $message = sprintf(
-            '致命错误: %s in %s on line %d',
-            $error['message'],
-            $error['file'],
-            $error['line']
-        );
-        
-        $logger->critical($message);
-    }
-});
-
-// 过滤请求数据
-$_GET = $security->xssFilter($_GET);
-$_POST = $security->xssFilter($_POST);
-$_COOKIE = $security->xssFilter($_COOKIE);
-
-// 检查CSRF令牌
+// CSRF保护
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $token = $_POST['csrf_token'] ?? '';
-    if (!$security->validateCsrfToken($token)) {
-        $logger->warning('CSRF令牌验证失败', [
-            'ip' => $security->getClientIp(),
-            'url' => $_SERVER['REQUEST_URI']
-        ]);
-        
-        if (DEBUG_MODE) {
-            die('CSRF令牌验证失败');
-        } else {
-            die('请求无效，请刷新页面重试');
-        }
+    if (!isset($_POST[CSRF_TOKEN_NAME]) || !$security->validateCsrfToken($_POST[CSRF_TOKEN_NAME])) {
+        http_response_code(403);
+        die('无效的请求');
     }
 }
 
-// 记录请求日志
-$logger->info('请求', [
+// 记录请求
+$logger->info('收到请求', [
     'method' => $_SERVER['REQUEST_METHOD'],
-    'url' => $_SERVER['REQUEST_URI'],
+    'uri' => $_SERVER['REQUEST_URI'],
     'ip' => $security->getClientIp(),
     'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
 ]);
 
 // 返回配置
 return [
-    'database' => $db,
+    'db' => $db,
     'security' => $security,
     'logger' => $logger,
     'auth' => $auth
