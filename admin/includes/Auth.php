@@ -16,14 +16,23 @@ class Auth {
     private $db = null;
     private $security = null;
     private $logger = null;
+    private $config = [];
     private $user = null;
     private $isLoggedIn = false;
     private $permissions = [];
     
+    /**
+     * 构造函数
+     * 
+     * @param Database $db 数据库实例
+     * @param Security $security 安全实例
+     * @param Logger $logger 日志实例
+     */
     private function __construct() {
-        $this->db = Database::getInstance()->getConnection();
+        $this->db = Database::getInstance();
         $this->security = Security::getInstance();
-        $this->logger = Logger::getInstance($this->db);
+        $this->logger = Logger::getInstance();
+        $this->config = require ROOT_PATH . '/config/config.php';
         $this->checkSession();
     }
 
@@ -87,68 +96,27 @@ class Auth {
      * @param string $password 密码
      * @return array 登录结果
      */
-    public function login($username, $password) {
+    public function authenticate($username, $password) {
         try {
-            // 检查登录尝试次数
-            if (!$this->security->checkLoginAttempts($username)) {
+            // 检查登录频率限制
+            $ipKey = 'login_attempts:' . $_SERVER['REMOTE_ADDR'];
+            if (!$this->security->rateLimit($ipKey, 5, 300)) {
                 throw new Exception('登录尝试次数过多，请稍后再试');
             }
 
-            // 查询用户信息
-            $stmt = $this->db->prepare('
-                SELECT id, username, email, password, status, role
-                FROM users 
-                WHERE username = ? OR email = ?
-            ');
-            $stmt->execute([$username, $username]);
-            $user = $stmt->fetch();
-
-            if (!$user) {
-                $this->security->incrementLoginAttempts($username);
-                throw new Exception('用户名或密码错误');
+            // 验证输入
+            $username = $this->security->sanitizeInput($username);
+            if (empty($username) || empty($password)) {
+                throw new Exception('用户名和密码不能为空');
             }
 
-            // 验证密码
-            if (!$this->security->verifyPassword($password, $user['password'])) {
-                $this->security->incrementLoginAttempts($username);
-                throw new Exception('用户名或密码错误');
-            }
-
-            // 检查用户状态
-            if ($user['status'] != 1) {
-                throw new Exception('账号已被禁用');
-            }
-
-            // 重置登录尝试次数
-            $this->security->resetLoginAttempts($username);
-
-            // 记录登录日志
-            $this->logLogin($user['id'], true);
-
-            // 设置会话
-            $this->setUserSession($user);
-
-            return [
-                'success' => true,
-                'message' => '登录成功',
-                'data' => [
-                    'id' => $user['id'],
-                    'username' => $user['username'],
-                    'email' => $user['email'],
-                    'role' => $user['role']
-                ]
-            ];
-
+            return $this->security->login($username, $password);
         } catch (Exception $e) {
-            $this->logger->error('登录失败', [
+            $this->logger->error('Authentication failed: ' . $e->getMessage(), [
                 'username' => $username,
-                'error' => $e->getMessage()
+                'ip' => $_SERVER['REMOTE_ADDR']
             ]);
-
-            return [
-                'success' => false,
-                'message' => $e->getMessage()
-            ];
+            throw $e;
         }
     }
     
@@ -278,31 +246,40 @@ class Auth {
      * @return array 重置结果
      */
     public function resetPassword($email) {
-        $stmt = $this->db->prepare("SELECT id FROM users WHERE email = ? AND status = 1");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if (!$user) {
-            return [
-                'success' => false,
-                'message' => '邮箱不存在或账户已禁用'
-            ];
+        try {
+            $user = $this->db->fetch(
+                "SELECT * FROM users WHERE email = ?",
+                [$email]
+            );
+
+            if (!$user) {
+                throw new Exception('用户不存在');
+            }
+
+            $token = $this->security->generateRandomToken();
+            $expiry = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+            $this->db->insert('password_resets', [
+                'user_id' => $user['id'],
+                'token' => $token,
+                'expires_at' => $expiry
+            ]);
+
+            // TODO: 发送重置密码邮件
+            $resetLink = $this->config['site']['url'] . '/reset-password?token=' . $token;
+
+            $this->logger->info('Password reset requested', [
+                'user_id' => $user['id'],
+                'email' => $email
+            ]);
+
+            return true;
+        } catch (Exception $e) {
+            $this->logger->error('Password reset failed: ' . $e->getMessage(), [
+                'email' => $email
+            ]);
+            throw $e;
         }
-        
-        // 生成重置令牌
-        $token = bin2hex(random_bytes(32));
-        $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
-        
-        $stmt = $this->db->prepare("UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?");
-        $stmt->execute([$token, $expires, $user['id']]);
-        
-        // 发送重置邮件
-        // TODO: 实现邮件发送功能
-        
-        return [
-            'success' => true,
-            'message' => '重置密码链接已发送到您的邮箱'
-        ];
     }
     
     /**
@@ -509,4 +486,64 @@ class Auth {
 
     private function __clone() {}
     private function __wakeup() {}
+
+    public function confirmPasswordReset($token, $newPassword) {
+        try {
+            $reset = $this->db->fetch(
+                "SELECT * FROM password_resets 
+                WHERE token = ? AND expires_at > NOW() AND used = 0",
+                [$token]
+            );
+
+            if (!$reset) {
+                throw new Exception('无效或已过期的重置链接');
+            }
+
+            if (!$this->security->validatePassword($newPassword)) {
+                throw new Exception('新密码不符合安全要求');
+            }
+
+            $hashedPassword = $this->security->hashPassword($newPassword);
+
+            $this->db->beginTransaction();
+            try {
+                $this->db->update('users',
+                    ['password' => $hashedPassword],
+                    'id = ?',
+                    [$reset['user_id']]
+                );
+
+                $this->db->update('password_resets',
+                    ['used' => 1],
+                    'id = ?',
+                    [$reset['id']]
+                );
+
+                $this->db->commit();
+                
+                $this->logger->info('Password reset completed', [
+                    'user_id' => $reset['user_id']
+                ]);
+                
+                return true;
+            } catch (Exception $e) {
+                $this->db->rollback();
+                throw $e;
+            }
+        } catch (Exception $e) {
+            $this->logger->error('Password reset confirmation failed: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function updateLastActivity() {
+        if ($this->isAuthenticated()) {
+            $user = $this->getCurrentUser();
+            $this->db->update('users',
+                ['last_activity' => date('Y-m-d H:i:s')],
+                'id = ?',
+                [$user['id']]
+            );
+        }
+    }
 } 

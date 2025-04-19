@@ -1,52 +1,53 @@
 <?php
-require_once '../../includes/init.php';
+/**
+ * 登录API
+ */
+require_once __DIR__ . '/../../includes/init.php';
 
-header('Content-Type: application/json');
-
-// 检查请求方法
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode([
-        'success' => false,
-        'message' => '不支持的请求方法'
-    ]);
-    exit;
-}
+header('Content-Type: application/json; charset=utf-8');
 
 try {
-    // 获取输入数据
-    $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
-    
-    // 根据Content-Type处理数据
-    if (strpos($contentType, 'application/json') !== false) {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json, true);
-        
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception('无效的JSON数据');
-        }
-    } else {
-        // 处理表单数据
-        $data = $_POST;
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        throw new Exception('请求方法不允许');
     }
-    
-    // 获取并验证输入
-    $username = $data['username'] ?? '';
-    $password = $data['password'] ?? '';
-    
-    if (empty($username) || empty($password)) {
+
+    // 获取POST数据
+    $postData = json_decode(file_get_contents('php://input'), true);
+    if (!$postData) {
+        $postData = $_POST;
+    }
+
+    // 验证必要参数
+    if (empty($postData['username']) || empty($postData['password'])) {
         throw new Exception('用户名和密码不能为空');
     }
 
-    // 尝试登录
-    $result = $auth->login($username, $password);
-    
-    if ($result['success']) {
-        // 生成新的CSRF令牌
-        $result['csrf_token'] = $security->generateCsrfToken();
+    // 验证CSRF Token
+    $security = Security::getInstance();
+    if (!$security->validateCSRF()) {
+        throw new Exception('无效的请求');
     }
 
-    echo json_encode($result);
+    // 获取认证实例
+    $auth = Auth::getInstance();
+
+    // 尝试登录
+    $auth->authenticate($postData['username'], $postData['password']);
+
+    // 获取当前用户信息
+    $user = $auth->getCurrentUser();
+
+    // 返回成功响应
+    echo json_encode([
+        'success' => true,
+        'message' => '登录成功',
+        'data' => [
+            'username' => $user['username'],
+            'email' => $user['email'],
+            'role' => $user['role'],
+            'csrf_token' => $security->getCSRFToken()
+        ]
+    ]);
 
 } catch (Exception $e) {
     http_response_code(400);

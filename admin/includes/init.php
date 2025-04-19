@@ -37,9 +37,18 @@ require_once CONFIG_PATH . '/database.php';
 
 // 自动加载类
 spl_autoload_register(function ($class) {
-    $file = INCLUDES_PATH . '/' . $class . '.php';
-    if (file_exists($file)) {
-        require_once $file;
+    $paths = [
+        INCLUDES_PATH,
+        ROOT_PATH . '/includes',
+        ADMIN_PATH . '/includes'
+    ];
+
+    foreach ($paths as $path) {
+        $file = $path . '/' . $class . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
     }
 });
 
