@@ -36,6 +36,10 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         {
+          from: 'index.html',
+          to: 'index.html'
+        },
+        {
           from: 'admin/views/login.html',
           to: 'admin/login/index.html'
         },
