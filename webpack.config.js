@@ -48,15 +48,15 @@ module.exports = {
           to: 'admin/login/index.html'
         },
         {
+          from: 'assets/img',
+          to: 'assets/img'
+        },
+        {
           from: 'admin/views',
           to: 'admin/views',
           globOptions: {
             ignore: ['**/login.html']
           }
-        },
-        {
-          from: 'assets/css/admin',
-          to: 'assets/css/admin'
         }
       ]
     })
