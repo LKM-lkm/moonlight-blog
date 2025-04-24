@@ -40,6 +40,10 @@ module.exports = {
           to: 'index.html'
         },
         {
+          from: 'admin/dashboard/index.html',
+          to: 'admin/dashboard/index.html'
+        },
+        {
           from: 'admin/views/login.html',
           to: 'admin/login/index.html'
         },

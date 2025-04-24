@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仪表盘 - Moonlight</title>
+    <!-- 引用 Admin CSS -->
+    <link rel="stylesheet" href="../../css/admin.css">
+    <!-- 可以在这里添加仪表盘特定的 CSS 或 JS -->
+    <style>
+        /* 临时添加一些简单样式 */
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f7f9; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; margin-bottom: 20px; }
+        p { color: #666; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .logout-link { display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #dc3545; color: white; border-radius: 4px; }
+        .logout-link:hover { background-color: #c82333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>仪表盘</h1>
+        <p>欢迎来到管理员仪表盘。</p>
+        
+        <!-- 退出登录链接 (注意：这个链接可能需要调整以适应纯静态部署的认证方式) -->
+        <p><a href="../api/auth/logout.php" class="logout-link">退出登录</a></p>
+
+        <!-- 仪表盘的其他内容 -->
+    </div>
+</body>
+</html> 
