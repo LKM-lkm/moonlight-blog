@@ -1,22 +1,4 @@
 # Cloudflare Pages Configuration
 name = "moonlight-blog"
-# type = "webpack" # 注释掉，Pages不需要
-account_id = "" # 部署时会自动填充
-# workers_dev = true # 注释掉，Pages 使用不同的机制
-route = ""
-zone_id = "" # 部署时会自动填充
 compatibility_date = "2023-10-30"
-
-# Build output directory for Pages
-pages_build_output_dir = "dist"
-
-# [site] # 注释掉 Workers Sites 的配置
-# bucket = "./dist"
-# entry-point = "workers-site"
-
-[build]
-command = "npm run build"
-# output_dir = "dist" # 使用 pages_build_output_dir 代替
-
-[env.production]
-# workers_dev = true # 注释掉 
+pages_build_output_dir = "dist" 
