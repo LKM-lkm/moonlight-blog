@@ -2,7 +2,7 @@
 /**
  * 登出API
  */
-require_once __DIR__ . '/../../includes/init.php';
+require_once __DIR__ . '/../includes/init.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -28,11 +28,9 @@ try {
     // 执行登出
     $auth->logout();
 
-    // 返回成功响应
-    echo json_encode([
-        'success' => true,
-        'message' => '已成功退出登录'
-    ]);
+    // 重定向到登录页面
+    header('Location: ../views/login.html');
+    exit;
 
 } catch (Exception $e) {
     http_response_code(400);
