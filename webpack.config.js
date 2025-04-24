@@ -48,8 +48,8 @@ module.exports = {
           to: 'admin/login/index.html'
         },
         {
-          from: path.resolve(__dirname, 'assets/img'),
-          to: 'assets/img'
+          from: path.resolve(__dirname, 'assets/images'),
+          to: 'assets/images'
         },
         {
           from: 'admin/views',
