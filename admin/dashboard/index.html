@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>仪表盘 - Moonlight</title>
     <!-- 引用 Admin CSS -->
-    <link rel="stylesheet" href="../../css/admin.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- 可以在这里添加仪表盘特定的 CSS 或 JS -->
     <style>
         /* 临时添加一些简单样式 */
@@ -20,14 +21,195 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>仪表盘</h1>
-        <p>欢迎来到管理员仪表盘。</p>
-        
-        <!-- 退出登录链接 (注意：这个链接可能需要调整以适应纯静态部署的认证方式) -->
-        <p><a href="../api/auth/logout.php" class="logout-link">退出登录</a></p>
-
-        <!-- 仪表盘的其他内容 -->
+    <!-- 星空背景 -->
+    <div class="stars-container">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
     </div>
+
+    <!-- 云朵背景 -->
+    <div class="clouds">
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+    </div>
+
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-moon"></i>
+                    <span>Moonlight</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#"><i class="fas fa-home"></i><span>仪表盘</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-file-alt"></i><span>文章管理</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-comments"></i><span>评论管理</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-users"></i><span>用户管理</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-cog"></i><span>系统设置</span></a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部导航 -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="搜索...">
+                    </div>
+                </div>
+            </header>
+
+            <!-- 统计卡片 -->
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon visitors">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>1,234</h3>
+                        <p>今日访问</p>
+                        <div class="trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>12%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon articles">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>56</h3>
+                        <p>文章总数</p>
+                        <div class="trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>8%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon comments">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>89</h3>
+                        <p>新增评论</p>
+                        <div class="trend down">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>5%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon users">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>321</h3>
+                        <p>注册用户</p>
+                        <div class="trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>15%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图表区域 -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2>访问统计</h2>
+                        <div class="chart-actions">
+                            <button class="active">日</button>
+                            <button>周</button>
+                            <button>月</button>
+                        </div>
+                    </div>
+                    <div class="chart" id="visitors-chart"></div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2>用户增长</h2>
+                        <div class="chart-actions">
+                            <button class="active">日</button>
+                            <button>周</button>
+                            <button>月</button>
+                        </div>
+                    </div>
+                    <div class="chart" id="users-chart"></div>
+                </div>
+            </div>
+
+            <!-- 最近活动 -->
+            <div class="recent-activities">
+                <div class="section-header">
+                    <h2>最近活动</h2>
+                    <a href="#" class="view-all">查看全部</a>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon comment">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p><a href="#">张三</a> 评论了文章 <a href="#">《如何优雅地写代码》</a></p>
+                            <span class="time">5分钟前</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon article">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p><a href="#">李四</a> 发布了新文章 <a href="#">《JavaScript最佳实践》</a></p>
+                            <span class="time">2小时前</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon user">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p><a href="#">王五</a> 加入了我们的社区</p>
+                            <span class="time">1天前</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 移动端菜单切换
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('show');
+        });
+
+        // 这里可以添加图表初始化代码
+    </script>
 </body>
 </html> 
