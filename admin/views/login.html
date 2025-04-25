@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理员登录 - Moonlight</title>
-    <link rel="stylesheet" href="../../css/admin/login.css">
+    <link rel="stylesheet" href="/assets/css/admin/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -14,50 +14,47 @@
     <div class="clouds"></div>
 
     <div class="login-container">
-        <div class="login-box">
-            <div class="login-header">
-                <div class="logo">
-                    <i class="fas fa-moon"></i>
+        <div class="login-header">
+            <div class="logo">
+                <i class="fas fa-moon"></i>
+            </div>
+            <h2>管理员登录</h2>
+            <p>欢迎回来，请登录您的账号</p>
+        </div>
+        
+        <form id="loginForm" class="login-form">
+            <input type="hidden" name="csrf_token" id="csrf_token" value="">
+            
+            <div class="form-group">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" name="username" placeholder="用户名" required autocomplete="username">
                 </div>
-                <h2>管理员登录</h2>
-                <p>欢迎回来，请登录您的账号</p>
             </div>
             
-            <form id="loginForm" class="login-form">
-                <input type="hidden" name="csrf_token" id="csrf_token" value="">
-                
-                <div class="form-group">
-                    <div class="input-group">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="username" name="username" placeholder="用户名" required autocomplete="username">
-                    </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="密码" required autocomplete="current-password">
+                    <button type="button" class="toggle-password" aria-label="切换密码显示">
+                        <i class="fas fa-eye"></i>
+                    </button>
                 </div>
-                
-                <div class="form-group">
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="password" name="password" placeholder="密码" required autocomplete="current-password">
-                        <button type="button" class="toggle-password" aria-label="切换密码显示">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="remember" name="remember" autocomplete="off">
-                        <span class="checkmark"></span>
-                        记住我
-                    </label>
-                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="remember" name="remember">
+                    <span>记住我</span>
+                </label>
+            </div>
 
-                <div id="errorMessage" class="error-message"></div>
-                
-                <button type="submit" class="login-button">
-                    <span>登录</span>
-                </button>
-            </form>
-        </div>
+            <div id="errorMessage" class="error-message"></div>
+            
+            <button type="submit" class="login-button">
+                <span>登录</span>
+            </button>
+        </form>
     </div>
 
     <script>
@@ -69,7 +66,7 @@
             const submitButton = document.querySelector('.login-button');
 
             // 获取CSRF Token
-            fetch('../api/auth/csrf.php')
+            fetch('/admin/api/auth/csrf.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -96,9 +93,16 @@
                 
                 // 显示错误消息的函数
                 const showError = (message) => {
+                    errorMessage.textContent = message;
                     errorMessage.classList.remove('success');
                     errorMessage.classList.add('error', 'show');
+                };
+
+                // 显示成功消息的函数
+                const showSuccess = (message) => {
                     errorMessage.textContent = message;
+                    errorMessage.classList.remove('error');
+                    errorMessage.classList.add('success', 'show');
                 };
 
                 // 重置按钮状态的函数
@@ -107,9 +111,9 @@
                     submitButton.innerHTML = '<span>登录</span>';
                 };
                 
-                // 禁用提交按钮
+                // 禁用提交按钮并显示加载状态
                 submitButton.disabled = true;
-                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>登录中...</span>';
                 
                 try {
                     const formData = new FormData(this);
@@ -120,7 +124,7 @@
                         csrf_token: formData.get('csrf_token')
                     };
 
-                    const response = await fetch('../api/auth/login.php', {
+                    const response = await fetch('/admin/api/auth/login.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -133,14 +137,9 @@
                     const result = await response.json();
                     
                     if (result.success) {
-                        // 显示成功消息
-                        errorMessage.classList.remove('error');
-                        errorMessage.classList.add('success', 'show');
-                        errorMessage.textContent = '登录成功，正在跳转...';
-                        
-                        // 跳转到仪表板
+                        showSuccess('登录成功，正在跳转...');
                         setTimeout(() => {
-                            window.location.href = '../dashboard/';
+                            window.location.href = '/admin/dashboard/';
                         }, 1000);
                     } else {
                         showError(result.message || '登录失败，请检查用户名和密码');
