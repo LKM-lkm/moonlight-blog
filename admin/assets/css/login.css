@@ -1,5 +1,9 @@
 /* 管理员登录页面样式 */
 :root {
+    /* 继承base.css中的变量，添加登录页特有的变量 */
+    --login-card-width: 400px;
+    --login-logo-size: 64px;
+    --login-input-height: 42px;
     --primary-color: #6e8ebc;
     --secondary-color: #a4c1f4;
     --background-color: #e8f0ff;
@@ -20,8 +24,8 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: linear-gradient(135deg, #e8f0ff 0%, #d0e1ff 100%);
+    font-family: var(--font-family);
+    background: var(--bg-gradient);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -29,19 +33,46 @@ body {
     color: var(--text-color);
     line-height: 1.5;
     padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 背景动画 */
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: transparent;
+    z-index: 0;
+}
+
+.clouds {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: transparent;
+    z-index: 1;
 }
 
 /* 登录容器 */
 .login-container {
     width: 100%;
-    max-width: 400px;
+    max-width: var(--login-card-width);
     background: var(--card-bg);
-    border-radius: 16px;
-    box-shadow: 0 8px 30px var(--shadow-color);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow);
+    backdrop-filter: var(--backdrop-blur);
+    -webkit-backdrop-filter: var(--backdrop-blur);
     border: 1px solid var(--border-color);
     padding: 2rem;
+    position: relative;
+    z-index: 2;
 }
 
 /* 登录头部 */
@@ -51,30 +82,36 @@ body {
 }
 
 .login-header .logo {
-    width: 64px;
-    height: 64px;
+    width: var(--login-logo-size);
+    height: var(--login-logo-size);
     margin: 0 auto 1rem;
     background: var(--primary-color);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: var(--transition);
+}
+
+.login-header .logo:hover {
+    transform: scale(1.05);
+    box-shadow: var(--box-shadow-hover);
 }
 
 .login-header .logo i {
-    font-size: 32px;
-    color: white;
+    font-size: calc(var(--login-logo-size) / 2);
+    color: var(--white);
 }
 
 .login-header h2 {
-    color: var(--text-color);
-    font-size: 1.75rem;
+    color: var(--heading-color);
+    font-size: var(--font-size-xl);
     margin-bottom: 0.5rem;
 }
 
 .login-header p {
-    color: var(--text-light);
-    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
 }
 
 /* 表单样式 */
@@ -91,26 +128,27 @@ body {
 .input-group i {
     position: absolute;
     left: 1rem;
-    color: var(--text-light);
+    color: var(--text-muted);
     transition: var(--transition);
     z-index: 1;
 }
 
 .input-group input {
     width: 100%;
+    height: var(--login-input-height);
     padding: 0.875rem 1rem 0.875rem 2.5rem;
     background: var(--input-bg);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     color: var(--text-color);
-    font-size: 0.875rem;
+    font-size: var(--font-size-base);
     transition: var(--transition);
 }
 
 .input-group input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--shadow-color);
+    box-shadow: var(--input-focus-shadow);
 }
 
 .input-group input:focus + i {
@@ -123,7 +161,7 @@ body {
     right: 1rem;
     background: none;
     border: none;
-    color: var(--text-light);
+    color: var(--text-muted);
     cursor: pointer;
     transition: var(--transition);
     padding: 0.25rem;
@@ -138,8 +176,8 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--text-light);
-    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
     cursor: pointer;
 }
 
@@ -152,12 +190,12 @@ body {
 /* 登录按钮 */
 .login-button {
     width: 100%;
-    padding: 0.875rem;
-    background: var(--primary-color);
+    height: var(--login-input-height);
+    background: var(--primary-gradient);
     border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 0.875rem;
+    border-radius: var(--border-radius);
+    color: var(--white);
+    font-size: var(--font-size-base);
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
@@ -168,25 +206,25 @@ body {
 }
 
 .login-button:hover:not(:disabled) {
-    background: var(--secondary-color);
     transform: translateY(-1px);
+    box-shadow: var(--box-shadow-hover);
 }
 
 .login-button:disabled {
-    background: var(--text-light);
+    background: var(--text-muted);
     cursor: not-allowed;
 }
 
 .login-button i {
-    font-size: 1rem;
+    font-size: var(--font-size-base);
 }
 
 /* 错误消息 */
 .error-message {
     margin-bottom: 1rem;
     padding: 0.75rem;
-    border-radius: 8px;
-    font-size: 0.875rem;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
     text-align: center;
     opacity: 0;
     transition: var(--transition);
@@ -199,13 +237,13 @@ body {
 }
 
 .error-message.error {
-    background: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
+    background: var(--danger-light);
+    color: var(--danger);
 }
 
 .error-message.success {
-    background: rgba(40, 167, 69, 0.1);
-    color: #28a745;
+    background: var(--success-light);
+    color: var(--success);
 }
 
 /* 响应式设计 */
@@ -215,16 +253,16 @@ body {
     }
 
     .login-header .logo {
-        width: 56px;
-        height: 56px;
+        width: calc(var(--login-logo-size) * 0.875);
+        height: calc(var(--login-logo-size) * 0.875);
     }
 
     .login-header .logo i {
-        font-size: 28px;
+        font-size: calc(var(--login-logo-size) * 0.875 / 2);
     }
 
     .login-header h2 {
-        font-size: 1.5rem;
+        font-size: var(--font-size-lg);
     }
 }
 
@@ -249,26 +287,46 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    background: var(--overlay-bg);
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 9999;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+
+.loading-overlay.show {
+    opacity: 1;
+    visibility: visible;
 }
 
 .loading-spinner {
-    width: 2.5rem;
-    height: 2.5rem;
-    border: 0.25rem solid var(--text-light);
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-color);
     border-top-color: var(--primary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 主题适配 */
+html[data-theme="dark"] .login-container {
+    background: var(--card-bg-dark);
+}
+
+html[data-theme="dark"] .input-group input {
+    background: var(--input-bg-dark);
+    color: var(--text-color-dark);
 }
 
 /* 确保适配移动设备 */
