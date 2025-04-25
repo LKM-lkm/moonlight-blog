@@ -1,0 +1,95 @@
+# 安全设置
+Options -Indexes
+ServerSignature Off
+
+# 设置默认字符集
+AddDefaultCharset UTF-8
+
+# 开启重写引擎
+RewriteEngine On
+
+# 重定向 dashboard/admin/login.html 到正确的登录页面
+RewriteRule ^dashboard/admin/login\.html$ /admin/login/ [R=301,L]
+
+# 保护敏感文件
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "\.(ini|log|conf|env)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# 设置安全头
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# 缓存控制
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+</IfModule>
+
+# 压缩文件
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+# 错误页面
+ErrorDocument 404 /404.html
+ErrorDocument 403 /403.html
+ErrorDocument 500 /500.html
+
+# 允许跨域请求（如果需要的话）
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type, X-Requested-With"
+
+# 允许 API 目录下的所有 HTTP 方法
+<Directory "api">
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+    
+    # 允许所有 HTTP 方法
+    <LimitExcept GET POST OPTIONS>
+        Require all granted
+    </LimitExcept>
+</Directory>
+
+# 设置 PHP 文件的正确 MIME 类型
+AddType application/x-httpd-php .php
+
+# 确保 JSON 响应使用正确的 Content-Type
+<FilesMatch "\.(json|php)$">
+    Header set Content-Type "application/json" env=IS_JSON
+</FilesMatch>
+
+# 防止直接访问 includes 目录
+<Directory "includes">
+    Order deny,allow
+    Deny from all
+</Directory>
+
+# 错误处理
+php_flag display_errors off
+php_value error_reporting E_ALL 
