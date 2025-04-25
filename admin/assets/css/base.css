@@ -9,14 +9,14 @@
     --danger: #ff6b6b;
     
     /* 背景色 */
-    --bg-primary: #1a1c35;
+    --bg-primary: rgba(240, 248, 255, 0.7);
     --bg-secondary: #0f1729;
     --bg-dark: #0d1117;
     --bg-light: rgba(255, 255, 255, 0.05);
     
     /* 文本色 */
-    --text-primary: #ffffff;
-    --text-secondary: #a0b0d0;
+    --text-primary: #333;
+    --text-secondary: #666;
     --text-muted: #6c757d;
     
     /* 边框 */
@@ -41,6 +41,39 @@
     --transition: all 0.3s ease;
     --transition-slow: all 0.5s ease;
     --transition-fast: all 0.15s ease;
+
+    /* 浅色主题变量 */
+    --accent-color: #6e8ebc;
+    --glass-bg: rgba(255, 255, 255, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --shadow-color: rgba(31, 38, 135, 0.2);
+    --card-bg: rgba(255, 255, 255, 0.3);
+    --input-bg: rgba(255, 255, 255, 0.5);
+    --btn-bg: rgba(110, 142, 188, 0.6);
+    --btn-hover: rgba(110, 142, 188, 0.8);
+    --moon-color: #f5f5f5;
+    --cloud-color: rgba(255, 255, 255, 0.8);
+    --sky-gradient: linear-gradient(135deg, #bbe1fa 0%, #6e8ebc 100%);
+    --star-color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="dark"] {
+    /* 深色主题变量 */
+    --bg-primary: rgba(20, 25, 40, 0.7);
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --accent-color: #8ebbf5;
+    --glass-bg: rgba(30, 40, 60, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --card-bg: rgba(30, 40, 60, 0.3);
+    --input-bg: rgba(20, 25, 40, 0.5);
+    --btn-bg: rgba(110, 142, 188, 0.4);
+    --btn-hover: rgba(110, 142, 188, 0.6);
+    --moon-color: #f0f0f0;
+    --cloud-color: rgba(60, 70, 100, 0.8);
+    --sky-gradient: linear-gradient(135deg, #1e2130 0%, #2c3e50 100%);
+    --star-color: rgba(255, 255, 255, 0.9);
 }
 
 /* 重置样式 */
@@ -55,15 +88,18 @@
 html {
     font-size: 16px;
     height: 100%;
+    scroll-behavior: smooth;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    line-height: 1.5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
     color: var(--text-primary);
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    background: var(--sky-gradient);
     min-height: 100vh;
     position: relative;
+    overflow-x: hidden;
+    transition: background 0.5s ease;
 }
 
 /* 通用工具类 */
@@ -89,8 +125,8 @@ body {
 
 /* 动画 */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideUp {
@@ -125,4 +161,99 @@ body {
 
 @media (max-width: 576px) {
     html { font-size: 12px; }
-} 
+}
+
+/* 毛玻璃效果 */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 15px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 var(--shadow-color);
+    transition: all 0.3s ease;
+}
+
+.glass-panel:hover {
+    box-shadow: 0 12px 48px 0 var(--shadow-color);
+    transform: translateY(-5px);
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: var(--btn-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+}
+
+.btn:hover {
+    background: var(--btn-hover);
+    transform: translateY(-3px);
+}
+
+/* 输入框样式 */
+input, textarea, select {
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--shadow-color);
+}
+
+/* 链接样式 */
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--btn-hover);
+}
+
+/* 背景效果 */
+.stars-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.stars, .stars2, .stars3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+
+/* 动画效果 */
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+}
+
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; } 
