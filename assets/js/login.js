@@ -8,7 +8,9 @@ if (window.location.protocol !== 'https:' && window.location.hostname !== 'local
     window.location.href = window.location.href.replace('http:', 'https:');
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+import { getCSRFToken, login } from './api.js';
+
+document.addEventListener('DOMContentLoaded', async function() {
     // 获取DOM元素
     const loginForm = document.getElementById('login-form');
     const usernameInput = document.getElementById('username');
@@ -32,8 +34,17 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'index.html';
     }
     
+    let csrfToken = '';
+    try {
+        const data = await getCSRFToken();
+        csrfToken = data.token;
+    } catch (e) {
+        showError('获取CSRF Token失败，请刷新页面');
+        return;
+    }
+    
     // 登录表单提交处理
-    loginForm.addEventListener('submit', function(e) {
+    loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         // 清除之前的错误信息
@@ -55,38 +66,39 @@ document.addEventListener('DOMContentLoaded', function() {
         loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
         loginButton.disabled = true;
         
-        // 直接客户端验证，硬编码的用户名和密码
-        if (username === 'Likem' && password === 'Lkm76@#21') {
-            // 登录成功处理
-            if (rememberCheckbox.checked) {
-                localStorage.setItem('rememberedUser', username);
+        try {
+            const result = await login(username, password, csrfToken);
+            if (result.success) {
+                // 登录成功处理
+                if (rememberCheckbox.checked) {
+                    localStorage.setItem('rememberedUser', username);
+                } else {
+                    localStorage.removeItem('rememberedUser');
+                }
+                
+                // 设置登录状态
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('user', JSON.stringify({
+                    username: username,
+                    role: 'admin'
+                }));
+                
+                // 保存当前主题设置
+                const isDarkTheme = document.body.classList.contains('dark-theme') || 
+                                  (!document.body.classList.contains('light-theme') && 
+                                   window.matchMedia('(prefers-color-scheme: dark)').matches);
+                localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+                
+                // 重定向到管理页面
+                window.location.href = 'index.html';
             } else {
-                localStorage.removeItem('rememberedUser');
+                showError(result.message || '用户名或密码错误');
             }
-            
-            // 设置登录状态
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('user', JSON.stringify({
-                username: username,
-                role: 'admin'
-            }));
-            
-            // 保存当前主题设置
-            const isDarkTheme = document.body.classList.contains('dark-theme') || 
-                              (!document.body.classList.contains('light-theme') && 
-                               window.matchMedia('(prefers-color-scheme: dark)').matches);
-            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
-            
-            // 重定向到管理页面
-            window.location.href = 'index.html';
-        } else {
-            // 登录失败
-            setTimeout(() => {
-                showError('用户名或密码错误');
-                loginButton.innerHTML = originalButtonText;
-                loginButton.disabled = false;
-            }, 1000);
+        } catch (err) {
+            showError('登录失败: ' + err.message);
         }
+        loginButton.innerHTML = originalButtonText;
+        loginButton.disabled = false;
     });
     
     // 主题切换事件监听
