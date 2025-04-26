@@ -41,7 +41,6 @@ const botResponses = {
 
 // 欢迎消息
 const welcomeMessages = [
-  "你好！欢迎来到月光云海博客。",
   "我是Moonlight助手，可以帮您：",
   "1. 了解博客内容和功能",
   "2. 回答常见问题",
@@ -64,74 +63,63 @@ function initChatbot() {
   messageInput = document.getElementById("chatbot-input");
   messagesList = document.getElementById("chatbot-messages");
   
-  if (!chatbotToggle || !chatbotContainer) {
-    console.warn("聊天机器人元素不存在，跳过初始化");
+  // 确保所有元素存在
+  if (!chatbotToggle || !chatbotContainer || !messagesList) {
+    console.error("聊天机器人元素不存在，跳过初始化");
     return;
   }
   
   // 清空现有消息，避免重复
-  if (messagesList) {
-    messagesList.innerHTML = "";
-  }
+  messagesList.innerHTML = "";
   
   // 绑定事件
   bindChatbotEvents();
   
   // 添加欢迎消息
   setTimeout(() => {
-    welcomeMessages.forEach(message => {
-      addBotMessage(message);
-    });
-    // 显示预设问题按钮
-    showPresetQuestions();
+    // 先添加第一条消息
+    addBotMessage("这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版、人工智能、云计算和大数据领域。");
+    
+    // 延迟添加后续消息，营造打字效果
+    setTimeout(() => {
+      welcomeMessages.forEach((message, index) => {
+        setTimeout(() => {
+          addBotMessage(message);
+          // 在最后一条消息后显示预设问题
+          if (index === welcomeMessages.length - 1) {
+            showPresetQuestions();
+          }
+        }, index * 300);
+      });
+    }, 300);
   }, 500);
 }
 
 // 绑定聊天机器人事件
 function bindChatbotEvents() {
   // 切换聊天机器人显示/隐藏
-  if (chatbotToggle) {
-    chatbotToggle.addEventListener("click", toggleChatbot);
-  }
+  chatbotToggle.addEventListener("click", toggleChatbot);
   
   // 关闭聊天机器人
-  if (chatbotClose) {
-    chatbotClose.addEventListener("click", () => {
-      if (chatbotContainer) {
-        chatbotContainer.classList.remove("active");
-      }
-    });
-  }
+  chatbotClose.addEventListener("click", () => {
+    chatbotContainer.classList.remove("active");
+  });
   
   // 处理表单提交
-  if (chatbotForm) {
-    chatbotForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      sendMessage();
-    });
-  }
-  
-  // 输入框按回车发送
-  if (messageInput && !chatbotForm) {
-    messageInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        sendMessage();
-      }
-    });
-  }
+  chatbotForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    sendMessage();
+  });
 }
 
 // 切换聊天机器人显示/隐藏
 function toggleChatbot() {
-  if (chatbotContainer) {
-    chatbotContainer.classList.toggle("active");
-    
-    // 如果是打开状态，聚焦输入框
-    if (chatbotContainer.classList.contains("active")) {
-      if (messageInput) messageInput.focus();
-      scrollToBottom();
-    }
+  chatbotContainer.classList.toggle("active");
+  
+  // 如果是打开状态，聚焦输入框
+  if (chatbotContainer.classList.contains("active")) {
+    if (messageInput) messageInput.focus();
+    scrollToBottom();
   }
 }
 
@@ -211,6 +199,12 @@ function addBotMessage(message) {
 function showPresetQuestions() {
   if (!messagesList) return;
   
+  // 检查是否已经存在预设问题
+  const existingQuestions = messagesList.querySelector('.preset-questions');
+  if (existingQuestions) {
+    existingQuestions.remove();
+  }
+  
   const questionsElement = document.createElement("div");
   questionsElement.className = "preset-questions";
   
@@ -242,6 +236,9 @@ function showPresetQuestions() {
 function showTypingIndicator() {
   if (!messagesList) return;
   
+  // 移除已存在的输入指示器
+  removeTypingIndicator();
+  
   const typingDiv = document.createElement("div");
   typingDiv.className = "message bot-message typing-indicator";
   typingDiv.innerHTML = "<span></span><span></span><span></span>";
@@ -265,7 +262,7 @@ function scrollToBottom() {
   }
 }
 
-// 将功能暴露到window对象，以便全局访问
+// 导出API以便全局访问
 window.chatbotAPI = {
   init: initChatbot,
   toggle: toggleChatbot,

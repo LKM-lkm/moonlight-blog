@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moonlight博客 | 个人博客</title>
     <!-- CSS 文件 -->
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <link rel="stylesheet" href="/assets/css/chatbot.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/chatbot.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="theme-auto">
@@ -196,156 +196,8 @@
     </footer>
     
     <!-- JavaScript 文件 -->
-    <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/theme-switcher.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // 设置年份
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // 主题切换功能
-        const themeToggleBtn = document.getElementById('theme-toggle-btn');
-        const body = document.body;
-        const icon = themeToggleBtn.querySelector('i');
-        
-        // 检查本地存储中的主题设置
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            body.className = savedTheme;
-            icon.className = savedTheme === 'theme-dark' ? 'fas fa-sun' : 'fas fa-moon';
-        }
-        
-        themeToggleBtn.addEventListener('click', () => {
-            if (body.className === 'theme-dark') {
-                body.className = 'theme-light';
-                icon.className = 'fas fa-moon';
-                localStorage.setItem('theme', 'theme-light');
-            } else {
-                body.className = 'theme-dark';
-                icon.className = 'fas fa-sun';
-                localStorage.setItem('theme', 'theme-dark');
-            }
-        });
-
-        // 聊天机器人功能
-        const chatbotToggle = document.getElementById('chatbot-toggle');
-        const chatbotContainer = document.getElementById('chatbot-container');
-        const chatbotClose = document.getElementById('chatbot-close');
-        const chatbotForm = document.getElementById('chatbot-form');
-        const chatbotInput = document.getElementById('chatbot-input');
-        const chatbotMessages = document.getElementById('chatbot-messages');
-
-        // 初始化欢迎消息
-        const welcomeMessages = [
-            '欢迎来到Moonlight博客！我是Moonlight助手。',
-            '我可以帮您：',
-            '1. 了解博客内容和功能',
-            '2. 回答常见问题',
-            '3. 提供导航帮助'
-        ];
-
-        // 添加欢迎消息
-        welcomeMessages.forEach(message => {
-            addBotMessage(message);
-        });
-
-        // 切换聊天机器人显示状态
-        chatbotToggle.addEventListener('click', () => {
-            chatbotContainer.classList.toggle('active');
-            if (chatbotContainer.classList.contains('active')) {
-                chatbotInput.focus();
-            }
-        });
-
-        // 关闭聊天机器人
-        chatbotClose.addEventListener('click', () => {
-            chatbotContainer.classList.remove('active');
-        });
-
-        // 处理消息提交
-        chatbotForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const message = chatbotInput.value.trim();
-            
-            if (message) {
-                addUserMessage(message);
-                chatbotInput.value = '';
-                
-                // 显示输入中动画
-                showTypingIndicator();
-                
-                // 模拟回复延迟
-                setTimeout(() => {
-                    removeTypingIndicator();
-                    handleUserMessage(message);
-                }, 1000);
-            }
-        });
-
-        // 添加用户消息
-        function addUserMessage(text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message user-message';
-            messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
-            chatbotMessages.appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        // 添加机器人消息
-        function addBotMessage(text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message bot-message';
-            messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
-            chatbotMessages.appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        // 显示输入中动画
-        function showTypingIndicator() {
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message bot-message typing-indicator';
-            typingDiv.innerHTML = '<span></span><span></span><span></span>';
-            typingDiv.id = 'typing-indicator';
-            chatbotMessages.appendChild(typingDiv);
-            scrollToBottom();
-        }
-
-        // 移除输入中动画
-        function removeTypingIndicator() {
-            const typingIndicator = document.getElementById('typing-indicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-
-        // 滚动到底部
-        function scrollToBottom() {
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        }
-
-        // 处理用户消息
-        function handleUserMessage(message) {
-            const responses = {
-                '你好': '你好！很高兴见到你！请问有什么我可以帮你的吗？',
-                '关于': '这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版、人工智能、云计算和大数据领域。',
-                '文章': '您可以在首页查看最新文章，或者通过导航栏的"文章"页面浏览所有文章。',
-                '联系': '您可以通过页面底部的社交媒体链接或者邮箱联系博主。',
-                '帮助': '我可以帮您了解网站的功能、导航到特定页面，或者回答关于博客的问题。请告诉我您想了解什么？'
-            };
-
-            let response = '抱歉，我还在学习中。您可以试试问我：\n- 你好\n- 关于\n- 文章\n- 联系\n- 帮助';
-
-            // 简单的模糊匹配
-            for (let key in responses) {
-                if (message.toLowerCase().includes(key)) {
-                    response = responses[key];
-                    break;
-                }
-            }
-
-            addBotMessage(response);
-        }
-    });
-    </script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/theme-switcher.js"></script>
+    <script src="assets/js/chatbot.js"></script>
 </body>
 </html>

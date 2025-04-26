@@ -19,6 +19,16 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      },
+      {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
@@ -27,10 +37,17 @@ module.exports = {
         ]
       },
       {
-        test: /\.(png|jpe?g|gif|svg)$/i,
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
         generator: {
           filename: 'images/[name].[hash][ext]'
+        }
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name].[hash][ext]'
         }
       }
     ]
@@ -56,14 +73,8 @@ module.exports = {
     }),
     new CopyWebpackPlugin({
       patterns: [
-        {
-          from: 'assets/images',
-          to: 'images'
-        },
-        {
-          from: 'assets/fonts',
-          to: 'fonts'
-        },
+        { from: 'assets/images', to: 'images' },
+        { from: 'assets/fonts', to: 'fonts' },
         {
           from: 'admin/api',
           to: 'admin/api'
@@ -74,7 +85,13 @@ module.exports = {
   optimization: {
     splitChunks: {
       chunks: 'all',
-      name: 'vendors'
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        }
+      }
     }
   },
   devServer: {
