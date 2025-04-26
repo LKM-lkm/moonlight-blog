@@ -2,9 +2,6 @@
  * 管理后台主要JavaScript文件
  */
 
-// 导入样式
-import '../css/login.css';
-
 // 管理后台工具函数
 var adminUtils = {
   showMessage: function(message, type) {
@@ -318,12 +315,4 @@ function handleLogout() {
         console.error('退出登录失败:', error);
         adminUtils.showMessage('退出登录失败，请重试', 'error');
     });
-}
-
-// 导出函数供其他模块使用
-export {
-    checkAuthStatus,
-    handleLogout,
-    initSidebar,
-    initUserMenu
-}; 
+} 
