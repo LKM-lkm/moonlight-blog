@@ -1,16 +1,18 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
     main: './src/index.js',
     admin: './admin/assets/js/admin.js',
-    'admin/login': './assets/css/admin/login.css'
+    theme: './assets/js/theme.js',
+    chatbot: './assets/js/chatbot.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].bundle.js',
+    filename: 'js/[name].[contenthash].js',
     clean: true,
     publicPath: '/'
   },
@@ -18,49 +20,63 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader']
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader'
+        ]
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
         type: 'asset/resource',
         generator: {
-          filename: 'assets/images/[name][ext]'
+          filename: 'images/[name].[hash][ext]'
         }
       }
     ]
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'assets/css/[name].css'
+      filename: 'css/[name].[contenthash].css'
+    }),
+    new HtmlWebpackPlugin({
+      template: './index.html',
+      filename: 'index.html',
+      chunks: ['main', 'theme', 'chatbot']
+    }),
+    new HtmlWebpackPlugin({
+      template: './admin/views/login.html',
+      filename: 'admin/login/index.html',
+      chunks: ['admin', 'theme']
+    }),
+    new HtmlWebpackPlugin({
+      template: './admin/views/dashboard.html',
+      filename: 'admin/dashboard/index.html',
+      chunks: ['admin', 'theme']
     }),
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'index.html',
-          to: 'index.html'
+          from: 'assets/images',
+          to: 'images'
         },
         {
-          from: 'admin/dashboard/index.html',
-          to: 'admin/dashboard/index.html'
+          from: 'assets/fonts',
+          to: 'fonts'
         },
         {
-          from: 'admin/views/login.html',
-          to: 'admin/login/index.html'
-        },
-        {
-          from: path.resolve(__dirname, 'assets/images'),
-          to: 'assets/images'
-        },
-        {
-          from: 'admin/views',
-          to: 'admin/views',
-          globOptions: {
-            ignore: ['**/login.html']
-          }
+          from: 'admin/api',
+          to: 'admin/api'
         }
       ]
     })
   ],
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      name: 'vendors'
+    }
+  },
   devServer: {
     static: {
       directory: path.join(__dirname, 'dist')
@@ -68,17 +84,20 @@ module.exports = {
     compress: true,
     port: 9000,
     hot: true,
-    historyApiFallback: {
-      rewrites: [
-        { from: /^\/admin\/login/, to: '/admin/login/index.html' }
-      ]
+    historyApiFallback: true,
+    proxy: {
+      '/admin/api': {
+        target: 'http://localhost:80',
+        changeOrigin: true
+      }
     }
   },
   resolve: {
     extensions: ['.js', '.css'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      '@admin': path.resolve(__dirname, 'admin')
+      '@admin': path.resolve(__dirname, 'admin'),
+      '@assets': path.resolve(__dirname, 'assets')
     }
   }
 }; 

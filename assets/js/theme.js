@@ -1,61 +1,66 @@
-// 主题切换功能
+// 主题管理
+class ThemeManager {
+    constructor() {
+        this.themeKey = 'moonlight_theme';
+        this.defaultTheme = 'light';
+        this.themes = ['light', 'dark'];
+        this.init();
+    }
+
+    init() {
+        // 初始化主题
+        const savedTheme = localStorage.getItem(this.themeKey) || this.getSystemTheme();
+        this.applyTheme(savedTheme);
+
+        // 监听系统主题变化
+        this.watchSystemTheme();
+
+        // 绑定主题切换按钮
+        this.bindThemeToggle();
+    }
+
+    getSystemTheme() {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    watchSystemTheme() {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem(this.themeKey)) {
+                this.applyTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+    }
+
+    bindThemeToggle() {
+        const toggleButton = document.querySelector('.theme-toggle');
+        if (toggleButton) {
+            toggleButton.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                this.applyTheme(newTheme);
+                localStorage.setItem(this.themeKey, newTheme);
+            });
+        }
+    }
+
+    applyTheme(theme) {
+        // 应用主题到HTML元素
+        document.documentElement.setAttribute('data-theme', theme);
+        
+        // 更新主题图标
+        const toggleButton = document.querySelector('.theme-toggle');
+        if (toggleButton) {
+            const icon = toggleButton.querySelector('i') || toggleButton;
+            icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+            toggleButton.title = theme === 'dark' ? '切换到亮色模式' : '切换到暗色模式';
+        }
+
+        // 触发主题变化事件
+        window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
+    }
+}
+
+// 初始化主题管理器
 document.addEventListener('DOMContentLoaded', () => {
-    const themeToggle = document.querySelector('.theme-toggle');
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    // 初始化主题
-    function initTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeIcon(savedTheme);
-        } else {
-            const systemTheme = prefersDarkScheme.matches ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', systemTheme);
-            updateThemeIcon(systemTheme);
-        }
-    }
-    
-    // 更新主题图标
-    function updateThemeIcon(theme) {
-        if (!themeToggle) return;
-        
-        const moonIcon = '🌙';
-        const sunIcon = '☀️';
-        themeToggle.textContent = theme === 'dark' ? moonIcon : sunIcon;
-        themeToggle.setAttribute('title', theme === 'dark' ? '切换到亮色模式' : '切换到暗色模式');
-    }
-    
-    // 切换主题
-    function toggleTheme() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-        
-        // 添加切换动画
-        document.documentElement.style.transition = 'all 0.3s ease-in-out';
-        setTimeout(() => {
-            document.documentElement.style.transition = '';
-        }, 300);
-    }
-    
-    // 监听系统主题变化
-    prefersDarkScheme.addListener((e) => {
-        if (!localStorage.getItem('theme')) {
-            const systemTheme = e.matches ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', systemTheme);
-            updateThemeIcon(systemTheme);
-        }
-    });
-    
-    // 绑定点击事件
-    if (themeToggle) {
-        themeToggle.addEventListener('click', toggleTheme);
-    }
-    
-    // 初始化主题
-    initTheme();
+    window.themeManager = new ThemeManager();
 }); 
