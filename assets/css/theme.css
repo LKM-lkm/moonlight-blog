@@ -1,0 +1,113 @@
+/* 主题变量 */
+:root {
+    /* 主色调 */
+    --primary-color: #6B8CC7;
+    --primary-light: #8BA3D3;
+    --primary-dark: #4A6BA8;
+    
+    /* 背景色 */
+    --bg-primary: rgba(255, 255, 255, 0.1);
+    --bg-secondary: rgba(255, 255, 255, 0.15);
+    --bg-tertiary: rgba(255, 255, 255, 0.2);
+    
+    /* 毛玻璃效果 */
+    --glass-blur: 10px;
+    --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    /* 文字颜色 */
+    --text-primary: rgba(255, 255, 255, 0.9);
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-tertiary: rgba(255, 255, 255, 0.5);
+    
+    /* 阴影 */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+    
+    /* 动画时间 */
+    --transition-fast: 0.2s;
+    --transition-normal: 0.3s;
+    --transition-slow: 0.5s;
+}
+
+/* 深色主题 */
+[data-theme="dark"] {
+    --bg-primary: rgba(0, 0, 0, 0.3);
+    --bg-secondary: rgba(0, 0, 0, 0.4);
+    --bg-tertiary: rgba(0, 0, 0, 0.5);
+}
+
+/* 毛玻璃容器基础样式 */
+.glass-container {
+    background: var(--bg-primary);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+}
+
+.glass-container:hover {
+    background: var(--bg-secondary);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Moonlight助手样式 */
+.moonlight-assistant {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 320px;
+    max-height: 480px;
+    background: var(--bg-primary);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    color: var(--text-primary);
+    transition: all var(--transition-normal);
+    z-index: 1000;
+}
+
+.moonlight-assistant-header {
+    padding: 16px;
+    border-bottom: var(--glass-border);
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.moonlight-assistant-content {
+    padding: 16px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.moonlight-assistant-input {
+    padding: 16px;
+    border-top: var(--glass-border);
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes moonGlow {
+    0% { box-shadow: 0 0 10px rgba(107, 140, 199, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(107, 140, 199, 0.5); }
+    100% { box-shadow: 0 0 10px rgba(107, 140, 199, 0.3); }
+}
+
+/* 应用动画 */
+.fade-in {
+    animation: fadeIn var(--transition-normal) ease-out;
+}
+
+.moon-glow {
+    animation: moonGlow 3s infinite;
+} 
