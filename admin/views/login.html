@@ -75,13 +75,15 @@
             const errorMessage = document.getElementById('errorMessage');
             const submitButton = document.querySelector('.login-button');
 
-            // API基础URL
-            const API_BASE_URL = 'https://moonlight-blog-api.lkm836972.workers.dev';
+            // API基础URL - 使用相对路径
+            const API_BASE_URL = '';
 
             // 获取CSRF Token
-            fetch(`${API_BASE_URL}/admin/api/auth/csrf`, {
-                credentials: 'include',  // 包含跨域Cookie
-                mode: 'cors'  // 显式设置CORS模式
+            fetch('/admin/api/auth/csrf.json', {
+                credentials: 'same-origin',  // 同源请求
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             })
                 .then(response => response.json())
                 .then(data => {
@@ -141,15 +143,14 @@
                         csrf_token: formData.get('csrf_token')
                     };
 
-                    const response = await fetch(`${API_BASE_URL}/admin/api/auth/login`, {
+                    const response = await fetch('/admin/api/auth/login.json', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest'
                         },
                         body: JSON.stringify(data),
-                        credentials: 'include',  // 包含跨域Cookie
-                        mode: 'cors'  // 显式设置CORS模式
+                        credentials: 'same-origin'  // 同源请求
                     });
 
                     if (!response.ok) {
