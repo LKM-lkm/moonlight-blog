@@ -219,7 +219,7 @@ function setupScrollAnimations() {
 }
 
 // 文章详情页函数
-export async function loadArticleDetails(articleId) {
+async function loadArticleDetails(articleId) {
     try {
         const response = await fetch(`/data/articles/${articleId}.json`);
         if (!response.ok) {
@@ -234,7 +234,7 @@ export async function loadArticleDetails(articleId) {
 }
 
 // 下载文件函数
-export function downloadFile(url, filename) {
+function downloadFile(url, filename) {
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
