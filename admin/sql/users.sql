@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `last_attempt_time` datetime DEFAULT NULL,
   `reset_token` varchar(100) DEFAULT NULL,
   `reset_token_expires` datetime DEFAULT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
+  `token_expires` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
