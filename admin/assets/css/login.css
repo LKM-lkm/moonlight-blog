@@ -1,19 +1,39 @@
 /* 管理员登录页面样式 */
 :root {
-    /* 继承base.css中的变量，添加登录页特有的变量 */
+    /* 基本变量 */
     --login-card-width: 400px;
     --login-logo-size: 64px;
     --login-input-height: 42px;
-    --primary-color: #6e8ebc;
+    --primary-color: #4a6fa5;
     --secondary-color: #a4c1f4;
     --background-color: #e8f0ff;
     --text-color: #2c3e50;
     --text-light: #6c757d;
-    --border-color: rgba(110, 142, 188, 0.2);
-    --shadow-color: rgba(110, 142, 188, 0.1);
+    --border-color: rgba(74, 111, 165, 0.2);
+    --shadow-color: rgba(74, 111, 165, 0.1);
     --input-bg: rgba(255, 255, 255, 0.9);
     --card-bg: rgba(255, 255, 255, 0.95);
     --transition: all 0.3s ease;
+    --border-radius: 8px;
+    --border-radius-lg: 12px;
+    --backdrop-blur: blur(10px);
+    --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    --box-shadow-hover: 0 10px 40px rgba(0, 0, 0, 0.2);
+    --font-size-base: 14px;
+    --font-size-sm: 12px;
+    --font-size-lg: 16px;
+    --font-size-xl: 20px;
+    --white: #ffffff;
+    --font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --heading-color: #2c3e50;
+    --text-muted: #6c757d;
+    --danger: #dc3545;
+    --danger-light: rgba(220, 53, 69, 0.1);
+    --success: #28a745;
+    --success-light: rgba(40, 167, 69, 0.1);
+    --bg-gradient: linear-gradient(135deg, #e8f0ff 0%, #d0e0fc 100%);
+    --primary-gradient: linear-gradient(135deg, #4a6fa5 0%, #6e8ebc 100%);
+    --input-focus-shadow: 0 0 0 3px rgba(74, 111, 165, 0.25);
 }
 
 /* 重置样式 */
@@ -25,7 +45,8 @@
 
 body {
     font-family: var(--font-family);
-    background: var(--bg-gradient);
+    background-color: var(--background-color);
+    background-image: var(--bg-gradient);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -38,26 +59,42 @@ body {
 }
 
 /* 背景动画 */
-.stars {
+.stars, .twinkling, .clouds {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
-    background: transparent;
     z-index: 0;
 }
 
-.clouds {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    background: transparent;
+.stars {
+    background: url('../../../assets/images/stars.svg') repeat top center;
+    z-index: 0;
+}
+
+.twinkling {
+    background: url('../../../assets/images/twinkling.png') repeat top center;
     z-index: 1;
+    animation: move-twinkle 200s linear infinite;
+}
+
+.clouds {
+    background: url('../../../assets/images/clouds.png') repeat top center;
+    z-index: 2;
+    opacity: 0.4;
+    animation: move-clouds 150s linear infinite;
+}
+
+@keyframes move-twinkle {
+    from {background-position: 0 0;}
+    to {background-position: -10000px 0;}
+}
+
+@keyframes move-clouds {
+    from {background-position: 0 0;}
+    to {background-position: -10000px 0;}
 }
 
 /* 登录容器 */
@@ -72,7 +109,8 @@ body {
     border: 1px solid var(--border-color);
     padding: 2rem;
     position: relative;
-    z-index: 2;
+    z-index: 10;
+    animation: fadeIn 0.5s ease-out;
 }
 
 /* 登录头部 */
@@ -98,7 +136,7 @@ body {
     box-shadow: var(--box-shadow-hover);
 }
 
-.login-header .logo i {
+.login-header .logo i, .login-header .logo svg {
     font-size: calc(var(--login-logo-size) / 2);
     color: var(--white);
 }
@@ -125,12 +163,14 @@ body {
     align-items: center;
 }
 
-.input-group i {
+.input-group i, .input-group svg {
     position: absolute;
     left: 1rem;
     color: var(--text-muted);
     transition: var(--transition);
     z-index: 1;
+    width: 1rem;
+    height: 1rem;
 }
 
 .input-group input {
@@ -151,7 +191,7 @@ body {
     box-shadow: var(--input-focus-shadow);
 }
 
-.input-group input:focus + i {
+.input-group input:focus + i, .input-group input:focus + svg {
     color: var(--primary-color);
 }
 
@@ -165,10 +205,18 @@ body {
     cursor: pointer;
     transition: var(--transition);
     padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .toggle-password:hover {
     color: var(--primary-color);
+}
+
+.toggle-password i, .toggle-password svg {
+    width: 1rem;
+    height: 1rem;
 }
 
 /* 记住我选项 */
@@ -215,8 +263,10 @@ body {
     cursor: not-allowed;
 }
 
-.login-button i {
+.login-button i, .login-button svg {
     font-size: var(--font-size-base);
+    width: 1rem;
+    height: 1rem;
 }
 
 /* 错误消息 */
@@ -246,31 +296,11 @@ body {
     color: var(--success);
 }
 
-/* 响应式设计 */
-@media (max-width: 480px) {
-    .login-container {
-        padding: 1.5rem;
-    }
-
-    .login-header .logo {
-        width: calc(var(--login-logo-size) * 0.875);
-        height: calc(var(--login-logo-size) * 0.875);
-    }
-
-    .login-header .logo i {
-        font-size: calc(var(--login-logo-size) * 0.875 / 2);
-    }
-
-    .login-header h2 {
-        font-size: var(--font-size-lg);
-    }
-}
-
-/* 动画效果 */
+/* 动画 */
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(20px);
     }
     to {
         opacity: 1;
@@ -278,55 +308,90 @@ body {
     }
 }
 
-.login-container {
-    animation: fadeIn 0.5s ease-out;
-}
-
-/* 加载动画 */
+/* 加载指示器 */
 .loading-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--overlay-bg);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(5px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
     opacity: 0;
-    visibility: hidden;
+    pointer-events: none;
     transition: var(--transition);
 }
 
 .loading-overlay.show {
     opacity: 1;
-    visibility: visible;
+    pointer-events: all;
 }
 
 .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid var(--border-color);
-    border-top-color: var(--primary-color);
+    border: 4px solid rgba(74, 111, 165, 0.3);
     border-radius: 50%;
+    border-top-color: var(--primary-color);
     animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
     to {
         transform: rotate(360deg);
     }
 }
 
-/* 主题适配 */
-html[data-theme="dark"] .login-container {
-    background: var(--card-bg-dark);
+/* 响应式设计 */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 1.5rem;
+    }
+    
+    .login-header .logo {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .login-header .logo i, .login-header .logo svg {
+        font-size: 24px;
+    }
+    
+    .login-header h2 {
+        font-size: 18px;
+    }
 }
 
-html[data-theme="dark"] .input-group input {
-    background: var(--input-bg-dark);
-    color: var(--text-color-dark);
+/* 暗色主题支持 */
+[data-theme="dark"] {
+    --card-bg: rgba(30, 41, 59, 0.9);
+    --input-bg: rgba(30, 41, 59, 0.8);
+    --text-color: #e2e8f0;
+    --heading-color: #f1f5f9;
+    --text-muted: #94a3b8;
+    --border-color: rgba(148, 163, 184, 0.2);
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+[data-theme="dark"] .login-container {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .input-group input {
+    background: var(--input-bg);
+    color: var(--text-color);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .loading-overlay {
+    background: rgba(15, 23, 42, 0.7);
 }
 
 /* 确保适配移动设备 */
