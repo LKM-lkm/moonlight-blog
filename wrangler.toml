@@ -1,4 +1,24 @@
-# Cloudflare Pages Configuration
+# Cloudflare配置
 name = "moonlight-blog"
-compatibility_date = "2023-10-30"
-pages_build_output_dir = "dist" 
+main = "src/worker.js"
+compatibility_date = "2024-01-01"
+
+# Pages配置
+[pages]
+build_output_dir = "dist"
+
+# KV命名空间配置
+kv_namespaces = [
+  { binding = "SESSIONS", id = "4628d0d463464eb695a5d42c7801700f" }
+]
+
+[vars]
+ADMIN_USERNAME = "likem"
+ADMIN_PASSWORD_HASH = "$2y$10$YourGeneratedPasswordHash"  # 已生成的密码哈希
+JWT_SECRET = "0adaacd4bc7f5276cfd38650f2f49d8dd80ad75d2bcb8e4e4d0d39754d77e9d8"
+
+# 开发环境配置
+[env.dev]
+kv_namespaces = [
+  { binding = "SESSIONS", id = "4628d0d463464eb695a5d42c7801700f" }
+] 

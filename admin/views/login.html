@@ -75,8 +75,13 @@
             const errorMessage = document.getElementById('errorMessage');
             const submitButton = document.querySelector('.login-button');
 
+            // API基础URL
+            const API_BASE_URL = 'https://moonlight-blog.lkm836972.workers.dev';
+
             // 获取CSRF Token
-            fetch('/admin/api/auth/csrf.php')
+            fetch(`${API_BASE_URL}/admin/api/auth/csrf.php`, {
+                credentials: 'include'  // 包含跨域Cookie
+            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -85,7 +90,28 @@
                 })
                 .catch(error => {
                     console.error('获取CSRF Token失败:', error);
+                    showError('初始化失败，请刷新页面重试');
                 });
+
+            // 显示错误消息的函数
+            const showError = (message) => {
+                errorMessage.textContent = message;
+                errorMessage.classList.remove('success');
+                errorMessage.classList.add('error', 'show');
+            };
+
+            // 显示成功消息的函数
+            const showSuccess = (message) => {
+                errorMessage.textContent = message;
+                errorMessage.classList.remove('error');
+                errorMessage.classList.add('success', 'show');
+            };
+
+            // 重置按钮状态的函数
+            const resetButton = () => {
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<span>登录</span>';
+            };
 
             // 切换密码可见性
             togglePasswordButton.addEventListener('click', function(e) {
@@ -101,26 +127,6 @@
             loginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
-                // 显示错误消息的函数
-                const showError = (message) => {
-                    errorMessage.textContent = message;
-                    errorMessage.classList.remove('success');
-                    errorMessage.classList.add('error', 'show');
-                };
-
-                // 显示成功消息的函数
-                const showSuccess = (message) => {
-                    errorMessage.textContent = message;
-                    errorMessage.classList.remove('error');
-                    errorMessage.classList.add('success', 'show');
-                };
-
-                // 重置按钮状态的函数
-                const resetButton = () => {
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = '<span>登录</span>';
-                };
-                
                 // 禁用提交按钮并显示加载状态
                 submitButton.disabled = true;
                 submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>登录中...</span>';
@@ -134,15 +140,19 @@
                         csrf_token: formData.get('csrf_token')
                     };
 
-                    const response = await fetch('/admin/api/auth/login.php', {
+                    const response = await fetch(`${API_BASE_URL}/admin/api/auth/login.php`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest'
                         },
                         body: JSON.stringify(data),
-                        credentials: 'same-origin'
+                        credentials: 'include'  // 包含跨域Cookie
                     });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
 
                     const result = await response.json();
                     
@@ -156,9 +166,9 @@
                         resetButton();
                     }
                 } catch (error) {
+                    console.error('登录错误:', error);
                     showError('登录过程中发生错误，请稍后重试');
                     resetButton();
-                    console.error('登录错误:', error);
                 }
             });
         });
