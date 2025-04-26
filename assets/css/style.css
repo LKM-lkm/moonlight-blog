@@ -8,9 +8,13 @@
 :root {
     /* 浅色主题变量 */
     --bg-primary: rgba(240, 248, 255, 0.7);
+    --bg-secondary: rgba(255, 255, 255, 0.3);
     --text-primary: #333;
     --text-secondary: #666;
+    --text-on-accent: #fff;
     --accent-color: #6e8ebc;
+    --accent-hover: #8ebbf5;
+    --accent-color-transparent: rgba(110, 142, 188, 0.2);
     --glass-bg: rgba(255, 255, 255, 0.25);
     --glass-border: rgba(255, 255, 255, 0.18);
     --shadow-color: rgba(31, 38, 135, 0.2);
@@ -24,12 +28,16 @@
     --star-color: rgba(255, 255, 255, 0.8);
 }
 
-[data-theme="dark"] {
+.theme-dark {
     /* 深色主题变量 */
     --bg-primary: rgba(20, 25, 40, 0.7);
+    --bg-secondary: rgba(30, 40, 60, 0.3);
     --text-primary: #e0e0e0;
     --text-secondary: #b0b0b0;
+    --text-on-accent: #fff;
     --accent-color: #8ebbf5;
+    --accent-hover: #6e8ebc;
+    --accent-color-transparent: rgba(142, 187, 245, 0.2);
     --glass-bg: rgba(30, 40, 60, 0.25);
     --glass-border: rgba(255, 255, 255, 0.08);
     --shadow-color: rgba(0, 0, 0, 0.3);
