@@ -65,6 +65,10 @@
                 <span>登录</span>
             </button>
         </form>
+        
+        <div class="copyright">
+            <p>&copy; <span id="year"></span> Moonlight 博客 - 保留所有权利</p>
+        </div>
     </div>
 
     <script>
@@ -74,6 +78,9 @@
             const togglePasswordButton = document.querySelector('.toggle-password');
             const errorMessage = document.getElementById('errorMessage');
             const submitButton = document.querySelector('.login-button');
+            
+            // 设置当前年份
+            document.getElementById('year').textContent = new Date().getFullYear();
 
             // API基础URL - 使用相对路径
             const API_BASE_URL = '';
