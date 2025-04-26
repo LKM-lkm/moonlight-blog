@@ -4,7 +4,8 @@
   "description": "A beautiful blog system with moonlight theme",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "build": "echo 'No build step required'"
   },
   "keywords": [
     "blog",
