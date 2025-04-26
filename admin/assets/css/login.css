@@ -75,13 +75,13 @@ body {
 }
 
 .twinkling {
-    background: url('../../../assets/images/twinkling.png') repeat top center;
+    background: url('../../../assets/images/twinkling.svg') repeat top center;
     z-index: 1;
     animation: move-twinkle 200s linear infinite;
 }
 
 .clouds {
-    background: url('../../../assets/images/clouds.png') repeat top center;
+    background: url('../../../assets/images/clouds.svg') repeat top center;
     z-index: 2;
     opacity: 0.4;
     animation: move-clouds 150s linear infinite;

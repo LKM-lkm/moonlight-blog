@@ -31,47 +31,47 @@ const presetQA = [
 
 // 聊天机器人回复
 const botResponses = {
-  '你好': '你好！很高兴见到你！请问有什么我可以帮你的吗？',
-  '关于': '这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版、人工智能、云计算和大数据领域。',
-  '文章': '您可以在首页查看最新文章，或者通过导航栏的"文章"页面浏览所有文章。',
-  '联系': '您可以通过页面底部的社交媒体链接或者邮箱联系博主。',
-  '你是谁': '我是Moonlight助手，这个网站的问答机器人。',
-  '帮助': '我可以帮您了解网站的功能、导航到特定页面，或者回答关于博客的问题。请告诉我您想了解什么？'
+  "你好": "你好！很高兴见到你！请问有什么我可以帮你的吗？",
+  "关于": "这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版、人工智能、云计算和大数据领域。",
+  "文章": "您可以在首页查看最新文章，或者通过导航栏的"文章"页面浏览所有文章。",
+  "联系": "您可以通过页面底部的社交媒体链接或者邮箱联系博主。",
+  "你是谁": "我是Moonlight助手，这个网站的问答机器人。",
+  "帮助": "我可以帮您了解网站的功能、导航到特定页面，或者回答关于博客的问题。请告诉我您想了解什么？"
 };
 
 // 欢迎消息
 const welcomeMessages = [
-  '你好！欢迎来到月光云海博客。',
-  '我是Moonlight助手，可以帮您：',
-  '1. 了解博客内容和功能',
-  '2. 回答常见问题',
-  '3. 提供导航帮助'
+  "你好！欢迎来到月光云海博客。",
+  "我是Moonlight助手，可以帮您：",
+  "1. 了解博客内容和功能",
+  "2. 回答常见问题",
+  "3. 提供导航帮助"
 ];
 
 // DOM加载完成后初始化聊天机器人
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   initChatbot();
 });
 
 // 初始化聊天机器人
 function initChatbot() {
   // 查找DOM元素
-  chatbotWrapper = document.querySelector('.chatbot-wrapper');
-  chatbotContainer = document.getElementById('chatbot-container');
-  chatbotToggle = document.getElementById('chatbot-toggle');
-  chatbotClose = document.getElementById('chatbot-close');
-  chatbotForm = document.getElementById('chatbot-form');
-  messageInput = document.getElementById('chatbot-input');
-  messagesList = document.getElementById('chatbot-messages');
+  chatbotWrapper = document.querySelector(".chatbot-wrapper");
+  chatbotContainer = document.getElementById("chatbot-container");
+  chatbotToggle = document.getElementById("chatbot-toggle");
+  chatbotClose = document.getElementById("chatbot-close");
+  chatbotForm = document.getElementById("chatbot-form");
+  messageInput = document.getElementById("chatbot-input");
+  messagesList = document.getElementById("chatbot-messages");
   
   if (!chatbotToggle || !chatbotContainer) {
-    console.warn('聊天机器人元素不存在，跳过初始化');
+    console.warn("聊天机器人元素不存在，跳过初始化");
     return;
   }
   
   // 清空现有消息，避免重复
   if (messagesList) {
-    messagesList.innerHTML = '';
+    messagesList.innerHTML = "";
   }
   
   // 绑定事件
@@ -91,21 +91,21 @@ function initChatbot() {
 function bindChatbotEvents() {
   // 切换聊天机器人显示/隐藏
   if (chatbotToggle) {
-    chatbotToggle.addEventListener('click', toggleChatbot);
+    chatbotToggle.addEventListener("click", toggleChatbot);
   }
   
   // 关闭聊天机器人
   if (chatbotClose) {
-    chatbotClose.addEventListener('click', () => {
+    chatbotClose.addEventListener("click", () => {
       if (chatbotContainer) {
-        chatbotContainer.classList.remove('active');
+        chatbotContainer.classList.remove("active");
       }
     });
   }
   
   // 处理表单提交
   if (chatbotForm) {
-    chatbotForm.addEventListener('submit', (e) => {
+    chatbotForm.addEventListener("submit", (e) => {
       e.preventDefault();
       sendMessage();
     });
@@ -113,8 +113,8 @@ function bindChatbotEvents() {
   
   // 输入框按回车发送
   if (messageInput && !chatbotForm) {
-    messageInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
+    messageInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
         e.preventDefault();
         sendMessage();
       }
@@ -125,10 +125,10 @@ function bindChatbotEvents() {
 // 切换聊天机器人显示/隐藏
 function toggleChatbot() {
   if (chatbotContainer) {
-    chatbotContainer.classList.toggle('active');
+    chatbotContainer.classList.toggle("active");
     
     // 如果是打开状态，聚焦输入框
-    if (chatbotContainer.classList.contains('active')) {
+    if (chatbotContainer.classList.contains("active")) {
       if (messageInput) messageInput.focus();
       scrollToBottom();
     }
@@ -141,7 +141,7 @@ function sendMessage() {
   
   const message = messageInput.value.trim();
   addUserMessage(message);
-  messageInput.value = '';
+  messageInput.value = "";
   
   // 显示正在输入指示器
   showTypingIndicator();
@@ -187,8 +187,8 @@ function handleUserMessage(message) {
 function addUserMessage(message) {
   if (!messagesList) return;
   
-  const messageElement = document.createElement('div');
-  messageElement.className = 'message user-message';
+  const messageElement = document.createElement("div");
+  messageElement.className = "message user-message";
   messageElement.innerHTML = `<div class="message-content">${message}</div>`;
   messagesList.appendChild(messageElement);
   
@@ -199,8 +199,8 @@ function addUserMessage(message) {
 function addBotMessage(message) {
   if (!messagesList) return;
   
-  const messageElement = document.createElement('div');
-  messageElement.className = 'message bot-message';
+  const messageElement = document.createElement("div");
+  messageElement.className = "message bot-message";
   messageElement.innerHTML = `<div class="message-content">${message}</div>`;
   messagesList.appendChild(messageElement);
   
@@ -211,14 +211,14 @@ function addBotMessage(message) {
 function showPresetQuestions() {
   if (!messagesList) return;
   
-  const questionsElement = document.createElement('div');
-  questionsElement.className = 'preset-questions';
+  const questionsElement = document.createElement("div");
+  questionsElement.className = "preset-questions";
   
   presetQA.forEach(qa => {
-    const questionButton = document.createElement('button');
-    questionButton.className = 'preset-question';
+    const questionButton = document.createElement("button");
+    questionButton.className = "preset-question";
     questionButton.textContent = qa.question;
-    questionButton.addEventListener('click', () => {
+    questionButton.addEventListener("click", () => {
       addUserMessage(qa.question);
       
       // 显示正在输入指示器
@@ -242,17 +242,17 @@ function showPresetQuestions() {
 function showTypingIndicator() {
   if (!messagesList) return;
   
-  const typingDiv = document.createElement('div');
-  typingDiv.className = 'message bot-message typing-indicator';
-  typingDiv.innerHTML = '<span></span><span></span><span></span>';
-  typingDiv.id = 'typing-indicator';
+  const typingDiv = document.createElement("div");
+  typingDiv.className = "message bot-message typing-indicator";
+  typingDiv.innerHTML = "<span></span><span></span><span></span>";
+  typingDiv.id = "typing-indicator";
   messagesList.appendChild(typingDiv);
   scrollToBottom();
 }
 
 // 隐藏正在输入指示器
 function removeTypingIndicator() {
-  const typingIndicator = document.getElementById('typing-indicator');
+  const typingIndicator = document.getElementById("typing-indicator");
   if (typingIndicator) {
     typingIndicator.remove();
   }
