@@ -6,6 +6,25 @@ let currentPage = 1;
 let totalPages = 1;
 let allArticles = [];
 
+// 文章数据
+const articles = [
+    {
+        title: 'Moonlight助手',
+        excerpt: '基于人工智能的智能对话助手，为博客访客提供即时帮助和信息查询服务。',
+        image: '/assets/images/articles/chatbot.jpg',
+        url: '#'
+    },
+    {
+        title: 'Moonlight博客',
+        excerpt: '一个梦幻朦胧之美的个人博客空间，记录技术探索和创意思考的点点滴滴。',
+        image: '/assets/images/articles/blog.jpg',
+        url: '#'
+    }
+];
+
+// 每页显示的文章数量
+const ARTICLES_PER_PAGE = 6;
+
 // 初始化函数
 document.addEventListener('DOMContentLoaded', () => {
     // 初始化年份
@@ -222,4 +241,90 @@ export function downloadFile(url, filename) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+}
+
+// 初始化文章列表
+function initializeArticles() {
+    const container = document.getElementById('articles-container');
+    container.innerHTML = ''; // 清空骨架屏
+    
+    const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+    const endIndex = Math.min(startIndex + ARTICLES_PER_PAGE, articles.length);
+    
+    for (let i = startIndex; i < endIndex; i++) {
+        const article = articles[i];
+        const articleElement = createArticleElement(article);
+        container.appendChild(articleElement);
+    }
+}
+
+// 创建文章元素
+function createArticleElement(article) {
+    const div = document.createElement('div');
+    div.className = 'article-card glass-panel';
+    
+    div.innerHTML = `
+        <div class="article-image" style="background-image: url('${article.image}')"></div>
+        <div class="article-content">
+            <h3>${article.title}</h3>
+            <p>${article.excerpt}</p>
+            <a href="${article.url}" class="read-more">阅读更多 <i class="fas fa-arrow-right"></i></a>
+        </div>
+    `;
+    
+    return div;
+}
+
+// 初始化分页
+function initializePagination() {
+    const totalPages = Math.ceil(articles.length / ARTICLES_PER_PAGE);
+    const prevButton = document.getElementById('prev-page');
+    const nextButton = document.getElementById('next-page');
+    const pageIndicator = document.getElementById('page-indicator');
+    
+    // 更新页码显示
+    pageIndicator.textContent = `${currentPage} / ${totalPages}`;
+    
+    // 更新按钮状态
+    prevButton.disabled = currentPage === 1;
+    nextButton.disabled = currentPage === totalPages;
+    
+    // 添加事件监听器
+    prevButton.onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            initializeArticles();
+            initializePagination();
+        }
+    };
+    
+    nextButton.onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            initializeArticles();
+            initializePagination();
+        }
+    };
+}
+
+// 初始化滚动效果
+function initializeScrollEffects() {
+    // 监听滚动事件
+    window.addEventListener('scroll', () => {
+        const scrolled = window.scrollY;
+        
+        // 视差效果
+        document.querySelector('.parallax').style.transform = `translateY(${scrolled * 0.5}px)`;
+        
+        // 渐入效果
+        const fadeElements = document.querySelectorAll('.fade-in');
+        fadeElements.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            const elementBottom = element.getBoundingClientRect().bottom;
+            
+            if (elementTop < window.innerHeight && elementBottom > 0) {
+                element.classList.add('visible');
+            }
+        });
+    });
 }

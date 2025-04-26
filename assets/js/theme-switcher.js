@@ -1,55 +1,40 @@
 // 主题切换功能
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    const body = document.body;
     const icon = themeToggleBtn.querySelector('i');
     
     // 检查系统主题偏好
     const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
     
-    // 检查本地存储中是否有用户的主题偏好
+    // 检查本地存储中的主题设置
     const savedTheme = localStorage.getItem('theme');
-    
-    // 设置初始主题
     if (savedTheme) {
-        document.body.setAttribute('data-theme', savedTheme);
-        updateIcon(savedTheme === 'dark');
-    } else {
-        // 如果没有保存的偏好，使用系统主题
-        const isDarkMode = prefersDarkScheme.matches;
-        document.body.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-        updateIcon(isDarkMode);
+        body.className = savedTheme;
+        icon.className = savedTheme === 'theme-dark' ? 'fas fa-sun' : 'fas fa-moon';
+    } else if (prefersDarkScheme.matches) {
+        body.className = 'theme-dark';
+        icon.className = 'fas fa-sun';
     }
-    
-    // 监听主题切换按钮点击
-    themeToggleBtn.addEventListener('click', () => {
-        const currentTheme = document.body.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        document.body.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        
-        updateIcon(newTheme === 'dark');
-    });
     
     // 监听系统主题变化
-    prefersDarkScheme.addEventListener('change', (e) => {
-        // 只有在没有用户设置的情况下才跟随系统
+    prefersDarkScheme.addListener((e) => {
         if (!localStorage.getItem('theme')) {
-            const newTheme = e.matches ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', newTheme);
-            updateIcon(e.matches);
+            body.className = e.matches ? 'theme-dark' : 'theme-light';
+            icon.className = e.matches ? 'fas fa-sun' : 'fas fa-moon';
         }
     });
     
-    // 更新图标
-    function updateIcon(isDark) {
-        if (isDark) {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
+    // 切换主题
+    themeToggleBtn.addEventListener('click', () => {
+        if (body.className === 'theme-dark') {
+            body.className = 'theme-light';
+            icon.className = 'fas fa-moon';
+            localStorage.setItem('theme', 'theme-light');
         } else {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
+            body.className = 'theme-dark';
+            icon.className = 'fas fa-sun';
+            localStorage.setItem('theme', 'theme-dark');
         }
-    }
+    });
 });
