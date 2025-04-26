@@ -70,16 +70,10 @@
     background: rgba(74, 111, 165, 0.1);
 }
 
-.chatbot-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.chatbot-header h3 {
+    margin: 0;
+    font-size: 16px;
     color: #2c3e50;
-    font-weight: 500;
-}
-
-.chatbot-title i {
-    color: #4a6fa5;
 }
 
 .chatbot-close {
@@ -155,7 +149,8 @@
     background: rgba(74, 111, 165, 0.2);
 }
 
-.input-group {
+/* 修改为匹配HTML结构的类名 */
+.chatbot-form {
     position: relative;
     display: flex;
     gap: 8px;
@@ -165,7 +160,7 @@
     border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.chatbot-input {
+#chatbot-input {
     flex: 1;
     padding: 10px 12px;
     border: 1px solid rgba(74, 111, 165, 0.2);
@@ -177,28 +172,32 @@
     width: 100%;
 }
 
-.chatbot-input:focus {
+#chatbot-input:focus {
     outline: none;
     border-color: #4a6fa5;
     box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
 }
 
-.chatbot-send {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 20px;
+.chatbot-form button[type="submit"] {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     background: #4a6fa5;
     color: white;
+    border: none;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.chatbot-send:hover {
+.chatbot-form button[type="submit"]:hover {
     background: #5a80b6;
 }
 
-.chatbot-send:disabled {
+.chatbot-form button[type="submit"]:disabled {
     background: #e9ecef;
     cursor: not-allowed;
 }
@@ -296,7 +295,7 @@
     color: #e2e8f0;
 }
 
-[data-theme="dark"] .chatbot-input {
+[data-theme="dark"] #chatbot-input {
     background: rgba(30, 41, 59, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #e2e8f0;
