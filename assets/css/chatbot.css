@@ -154,20 +154,28 @@
 
 .preset-question {
     background: var(--glass-bg);
-    padding: 10px 15px;
-    border-radius: 20px;
-    margin: 5px 0;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 13px;
     color: var(--text-primary);
     border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: 0 2px 8px 0 var(--shadow-color);
+    padding: 10px 20px;
+    margin: 8px 8px 0 0;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
     display: inline-block;
-    max-width: 80%;
+    transition: all 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.3s;
+    outline: none;
+    text-align: center;
+    min-width: 120px;
 }
 
-.preset-question:hover {
+.preset-question:hover, .preset-question:focus {
     background: var(--accent-color-transparent);
+    color: var(--accent-color);
+    box-shadow: 0 6px 24px 0 var(--shadow-color);
+    transform: translateY(-2px) scale(1.04);
+    border-color: var(--accent-color);
 }
 
 .message-content p {
