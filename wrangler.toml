@@ -6,7 +6,7 @@ compatibility_date = "2024-01-01"
 # Worker和Pages配置
 [build]
 command = "npm run build"
-pages_build_output_dir = "dist"
+pages_build_output_dir = "."
 base_directory = "."
 
 # KV命名空间配置
@@ -15,7 +15,7 @@ kv_namespaces = [
 ]
 
 [site]
-bucket = "dist"
+bucket = "."
 
 # 开发环境配置
 [dev]
