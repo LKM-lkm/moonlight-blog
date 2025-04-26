@@ -2,7 +2,7 @@
  * 聊天机器人样式
  */
 
-/* 聊天机器人样式 */
+/* 聊天机器人样式 - 复用全站glass-panel风格 */
 .chatbot-wrapper {
     position: fixed;
     right: 20px;
@@ -38,11 +38,14 @@
     bottom: 80px;
     width: 350px;
     height: 500px;
-    background-color: var(--glass-bg);
-    backdrop-filter: blur(8px);
+    /* 完全复用glass-panel风格 */
+    background: var(--glass-bg);
     -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     border-radius: 15px;
-    box-shadow: 0 8px 32px var(--shadow-color);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 var(--shadow-color);
+    padding: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -50,7 +53,6 @@
     transform: translateY(20px);
     opacity: 0;
     pointer-events: none;
-    border: 1px solid var(--glass-border);
 }
 
 .chatbot-container.active {
@@ -61,11 +63,14 @@
 
 .chatbot-header {
     padding: 15px;
-    background-color: var(--accent-color);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-primary);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: white;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
 }
@@ -79,7 +84,7 @@
 .chatbot-close {
     background: none;
     border: none;
-    color: white;
+    color: var(--text-primary);
     cursor: pointer;
     font-size: 20px;
     padding: 5px;
@@ -87,7 +92,7 @@
 }
 
 .chatbot-close:hover {
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 .chatbot-messages {
@@ -97,7 +102,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background-color: rgba(255, 255, 255, 0.5);
+    background: transparent;
 }
 
 .message {
@@ -184,10 +189,12 @@
 
 .chatbot-form {
     padding: 15px;
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     border-top: 1px solid var(--glass-border);
     display: flex;
     gap: 10px;
-    background-color: var(--glass-bg);
 }
 
 .chatbot-form input {
