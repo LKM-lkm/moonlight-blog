@@ -1,11 +1,9 @@
 {
-  "name": "moonlight-blog-api",
+  "name": "moonlight-blog",
   "version": "1.0.0",
-  "description": "Moonlight Blog API",
-  "main": "src/worker.js",
+  "description": "A beautiful blog system with moonlight theme",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "build": "echo 'No build step required' && exit 0"
   },
   "keywords": [
     "blog",
@@ -15,12 +13,13 @@
   "author": "LKM",
   "license": "MIT",
   "dependencies": {
-    "@tsndr/cloudflare-worker-jwt": "^2.5.4",
+    "@cloudflare/workers-types": "^4.20240208.0",
     "bcryptjs": "^2.4.3",
-    "itty-router": "^4.2.2"
+    "itty-router": "^4.0.27",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "wrangler": "^3.22.1"
+    "wrangler": "^3.28.2"
   },
   "engines": {
     "node": ">=16.0.0"

@@ -3,6 +3,11 @@ name = "moonlight-blog-api"
 main = "src/worker.js"
 compatibility_date = "2024-01-01"
 
+# Pages配置
+[build]
+command = "npm run build"
+pages_build_output_dir = "."
+
 # KV命名空间配置
 kv_namespaces = [
   { binding = "SESSIONS", id = "4628d0d463464eb695a5d42c7801700f" }
