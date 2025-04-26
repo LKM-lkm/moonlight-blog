@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "A beautiful blog system with moonlight theme",
   "scripts": {
-    "build": "echo 'No build step required' && exit 0"
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
   },
   "keywords": [
     "blog",
