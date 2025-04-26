@@ -99,6 +99,21 @@ router.post('/admin/api/auth/login', async (request, env) => {
   }
 });
 
+// 获取文章列表
+router.get('/api/articles', async (request, env) => {
+  // 这里用 mock 数据，后续可接入 D1/KV
+  const articles = [
+    { id: 1, title: "Moonlight 博客上线啦", content: "欢迎访问！" },
+    { id: 2, title: "前后端分离实践", content: "本博客已全面前后端分离，欢迎体验！" }
+  ];
+  return new Response(JSON.stringify(articles), {
+    headers: {
+      ...getCorsHeaders(request),
+      'Content-Type': 'application/json'
+    }
+  });
+});
+
 // 404处理
 router.all('*', (request) => new Response('Not Found', { 
   status: 404,
