@@ -1,0 +1,7 @@
+/* /index.html 200
+/js/* /js/:splat 200
+/css/* /css/:splat 200
+/images/* /images/:splat 200
+/fonts/* /fonts/:splat 200
+/assets/* /assets/:splat 200
+/admin/* /admin/:splat 200 

@@ -5,29 +5,28 @@
 // 导入样式
 import '../css/login.css';
 
-// 导入工具函数
-// import { showMessage, showLoading, hideLoading } from './utils.js';
-
-// 工具函数
-const utils = {
-  showMessage(message, type = 'info') {
-    const messageElement = document.createElement('div');
-    messageElement.className = `message message-${type}`;
+// 管理后台工具函数
+var adminUtils = {
+  showMessage: function(message, type) {
+    var messageElement = document.createElement('div');
+    messageElement.className = 'message message-' + (type || 'info');
     messageElement.textContent = message;
     document.body.appendChild(messageElement);
-    setTimeout(() => messageElement.remove(), 3000);
+    setTimeout(function() { messageElement.remove(); }, 3000);
   },
 
-  formatDate(date) {
+  formatDate: function(date) {
     return new Date(date).toLocaleString();
   },
 
-  debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
+  debounce: function(func, wait) {
+    var timeout;
+    return function() {
+      var args = arguments;
+      var context = this;
+      var later = function() {
+        timeout = null;
+        func.apply(context, args);
       };
       clearTimeout(timeout);
       timeout = setTimeout(later, wait);
@@ -35,12 +34,7 @@ const utils = {
   }
 };
 
-// 导出工具函数
-export const { showMessage, formatDate, debounce } = utils;
-
 // 管理后台主脚本
-// 使用adminUtils全局对象
-
 document.addEventListener('DOMContentLoaded', function() {
     console.log('管理后台已加载');
     
@@ -243,7 +237,7 @@ function initDarkModeToggle() {
     }
 }
 
-// 导出一些常用功能
+// 全局管理应用对象
 var adminApp = {
     showMessage: function(message, type) {
         if (adminUtils && adminUtils.showMessage) {
@@ -267,33 +261,38 @@ var adminApp = {
 };
 
 // 检查用户登录状态
-async function checkAuthStatus() {
+function checkAuthStatus() {
     try {
-        const response = await fetch('/admin/api/auth/check.php');
-        const data = await response.json();
-        
-        if (!data.success) {
-            window.location.href = '/admin/login/';
-            return false;
-        }
-        return true;
+        fetch('/admin/api/auth/check.php')
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (!data.success) {
+                    window.location.href = '/admin/login/';
+                    return false;
+                }
+                return true;
+            })
+            .catch(function(error) {
+                console.error('检查登录状态失败:', error);
+                adminUtils.showMessage('检查登录状态失败，请刷新页面重试', 'error');
+                return false;
+            });
     } catch (error) {
         console.error('检查登录状态失败:', error);
-        showMessage('检查登录状态失败，请刷新页面重试', 'error');
         return false;
     }
 }
 
 // 初始化用户菜单
 function initUserMenu() {
-    const userMenu = document.querySelector('.user-menu');
+    var userMenu = document.querySelector('.user-menu');
     if (userMenu) {
-        userMenu.addEventListener('click', () => {
+        userMenu.addEventListener('click', function() {
             userMenu.classList.toggle('active');
         });
         
         // 点击其他地方关闭菜单
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', function(e) {
             if (!userMenu.contains(e.target)) {
                 userMenu.classList.remove('active');
             }
@@ -302,23 +301,23 @@ function initUserMenu() {
 }
 
 // 处理退出登录
-async function handleLogout() {
-    try {
-        const response = await fetch('/admin/api/auth/logout.php', {
-            method: 'POST',
-            credentials: 'same-origin'
-        });
-        
-        const data = await response.json();
+function handleLogout() {
+    fetch('/admin/api/auth/logout.php', {
+        method: 'POST',
+        credentials: 'same-origin'
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
         if (data.success) {
             window.location.href = '/admin/login/';
         } else {
-            showMessage(data.message || '退出失败，请重试', 'error');
+            adminUtils.showMessage(data.message || '退出失败，请重试', 'error');
         }
-    } catch (error) {
+    })
+    .catch(function(error) {
         console.error('退出登录失败:', error);
-        showMessage('退出登录失败，请重试', 'error');
-    }
+        adminUtils.showMessage('退出登录失败，请重试', 'error');
+    });
 }
 
 // 导出函数供其他模块使用

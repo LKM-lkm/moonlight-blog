@@ -75,10 +75,9 @@ module.exports = {
       patterns: [
         { from: 'assets/images', to: 'images' },
         { from: 'assets/fonts', to: 'fonts' },
-        {
-          from: 'admin/api',
-          to: 'admin/api'
-        }
+        { from: 'admin/api', to: 'admin/api' },
+        { from: '_headers', to: '_headers' },
+        { from: 'admin/assets/js/utils.js', to: 'admin/assets/js/utils.js' }
       ]
     })
   ],
