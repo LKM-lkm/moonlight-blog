@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await response.json();
 
             if (data.success) {
-                window.location.href = '/admin/dashboard.php';
+                window.location.href = '/admin/dashboard/';
             } else {
                 showError(data.message || '登录失败，请重试');
             }
