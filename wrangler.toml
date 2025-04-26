@@ -3,9 +3,10 @@ name = "moonlight-blog-api"
 main = "src/worker.js"
 compatibility_date = "2024-01-01"
 
-# Worker配置
+# Worker和Pages配置
 [build]
 command = "npm run build"
+build_output_directory = "dist"
 
 # KV命名空间配置
 kv_namespaces = [

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "build": "echo 'No build step required'"
+    "build": "mkdir -p dist && echo '{}' > dist/worker-version.json"
   },
   "keywords": [
     "blog",
