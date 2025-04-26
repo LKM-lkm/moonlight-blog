@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "build": "mkdir -p dist && echo '{}' > dist/worker-version.json"
+    "build": "mkdir -p dist && cp -r assets dist/ && cp -r public/* dist/ 2>/dev/null || true && echo '{}' > dist/worker-version.json"
   },
   "keywords": [
     "blog",
