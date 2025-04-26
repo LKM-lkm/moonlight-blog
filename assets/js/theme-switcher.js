@@ -1,8 +1,8 @@
 // 主题切换功能
 document.addEventListener('DOMContentLoaded', function() {
     console.log("初始化主题切换功能...");
-    const themeToggleBtn = document.getElementById('theme-toggle-btn');
-    const body = document.body;
+    var themeToggleBtn = document.getElementById('theme-toggle-btn');
+    var body = document.body;
     
     if (!themeToggleBtn) {
         console.error("找不到主题切换按钮元素");
@@ -12,13 +12,13 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("找到主题切换按钮:", themeToggleBtn);
     console.log("当前body类名:", body.className);
     
-    const icon = themeToggleBtn.querySelector('i');
+    var icon = themeToggleBtn.querySelector('i');
     
     // 检查系统主题偏好
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    var prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
     
     // 检查本地存储中的主题设置
-    const savedTheme = localStorage.getItem('theme');
+    var savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
         // 保留其他类名，只替换主题相关类名
         body.classList.remove('theme-light', 'theme-dark', 'theme-auto');
@@ -54,13 +54,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 切换主题
-    themeToggleBtn.addEventListener('click', function(e) {
+    // 切换主题 - 使用onclick而非addEventListener
+    themeToggleBtn.onclick = function(e) {
         console.log("点击主题切换按钮");
         e.preventDefault();
         
         // 检查是否包含暗色主题类
-        const isDarkTheme = body.classList.contains('theme-dark');
+        var isDarkTheme = body.classList.contains('theme-dark');
         console.log("是否为暗色主题:", isDarkTheme);
         
         if (isDarkTheme) {
@@ -78,7 +78,9 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('theme', 'theme-dark');
             console.log("切换为暗色主题");
         }
-    });
+        
+        return false;
+    };
     
     console.log("主题切换功能初始化完成");
 });

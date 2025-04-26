@@ -3,24 +3,21 @@
  * 提供聊天机器人界面和基本交互功能
  */
 
-// 确保全局可访问所有功能
-window.chatbotAPI = {};
-
 // 全局变量
-let chatbotWrapper;
-let chatbotContainer;
-let chatbotToggle;
-let chatbotClose;
-let messagesList;
-let messageInput;
-let chatbotForm;
-let typingIndicator;
+var chatbotWrapper;
+var chatbotContainer;
+var chatbotToggle;
+var chatbotClose;
+var messagesList;
+var messageInput;
+var chatbotForm;
+var typingIndicator;
 
 // 预设问题和回答
-const presetQA = [
+var presetQA = [
   {
     question: "这个博客是做什么的？",
-    answer: "这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版、人工智能、云计算和大数据领域。"
+    answer: "这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版，人工智能、云计算和大数据领域。"
   },
   {
     question: "如何联系站长？",
@@ -33,9 +30,9 @@ const presetQA = [
 ];
 
 // 聊天机器人回复
-const botResponses = {
+var botResponses = {
   "你好": "你好！很高兴见到你！请问有什么我可以帮你的吗？",
-  "关于": "这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版、人工智能、云计算和大数据领域。",
+  "关于": "这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版，人工智能、云计算和大数据领域。",
   "文章": "您可以在首页查看最新文章，或者通过导航栏的\"文章\"页面浏览所有文章。",
   "联系": "您可以通过页面底部的社交媒体链接或者邮箱联系博主。",
   "你是谁": "我是Moonlight助手，这个网站的问答机器人。",
@@ -43,7 +40,7 @@ const botResponses = {
 };
 
 // 欢迎消息
-const welcomeMessages = [
+var welcomeMessages = [
   "我是Moonlight助手，可以帮您：",
   "1. 了解博客内容和功能",
   "2. 回答常见问题",
@@ -69,12 +66,11 @@ function initChatbot() {
   messageInput = document.getElementById("chatbot-input");
   messagesList = document.getElementById("chatbot-messages");
   
-  console.log("聊天机器人元素:", {
-    wrapper: chatbotWrapper,
-    container: chatbotContainer,
-    toggle: chatbotToggle,
-    messages: messagesList
-  });
+  console.log("聊天机器人元素:", 
+    chatbotWrapper ? "包装器OK" : "包装器不存在", 
+    chatbotContainer ? "容器OK" : "容器不存在", 
+    chatbotToggle ? "切换按钮OK" : "切换按钮不存在"
+  );
   
   // 确保所有元素存在
   if (!chatbotToggle || !chatbotContainer || !messagesList) {
@@ -91,30 +87,23 @@ function initChatbot() {
   // 添加欢迎消息
   setTimeout(function() {
     // 先添加第一条消息
-    addBotMessage("这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版、人工智能、云计算和大数据领域。");
+    addBotMessage("这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版，人工智能、云计算和大数据领域。");
     
     // 延迟添加后续消息，营造打字效果
     setTimeout(function() {
-      welcomeMessages.forEach(function(message, index) {
-        setTimeout(function() {
-          addBotMessage(message);
-          // 在最后一条消息后显示预设问题
-          if (index === welcomeMessages.length - 1) {
-            showPresetQuestions();
-          }
-        }, index * 300);
-      });
+      for (var i = 0; i < welcomeMessages.length; i++) {
+        (function(index) {
+          setTimeout(function() {
+            addBotMessage(welcomeMessages[index]);
+            // 在最后一条消息后显示预设问题
+            if (index === welcomeMessages.length - 1) {
+              showPresetQuestions();
+            }
+          }, index * 300);
+        })(i);
+      }
     }, 300);
   }, 500);
-  
-  // 导出API供全局访问
-  window.chatbotAPI = {
-    init: initChatbot,
-    toggle: toggleChatbot,
-    addUserMessage: addUserMessage,
-    addBotMessage: addBotMessage,
-    handleUserMessage: handleUserMessage
-  };
 }
 
 // 绑定聊天机器人事件
@@ -122,24 +111,27 @@ function bindChatbotEvents() {
   console.log("绑定聊天机器人事件...");
   
   // 切换聊天机器人显示/隐藏
-  chatbotToggle.addEventListener("click", function(e) {
-    console.log("点击切换按钮");
+  chatbotToggle.onclick = function(e) {
+    console.log("点击聊天机器人切换按钮");
     e.preventDefault();
     toggleChatbot();
-  });
+    return false;
+  };
   
   // 关闭聊天机器人
-  chatbotClose.addEventListener("click", function(e) {
+  chatbotClose.onclick = function(e) {
     console.log("点击关闭按钮");
     e.preventDefault();
     chatbotContainer.classList.remove("active");
-  });
+    return false;
+  };
   
   // 处理表单提交
-  chatbotForm.addEventListener("submit", function(e) {
+  chatbotForm.onsubmit = function(e) {
     e.preventDefault();
     sendMessage();
-  });
+    return false;
+  };
   
   console.log("事件绑定完成");
 }
@@ -162,7 +154,7 @@ function toggleChatbot() {
 function sendMessage() {
   if (!messageInput || !messageInput.value.trim()) return;
   
-  const message = messageInput.value.trim();
+  var message = messageInput.value.trim();
   addUserMessage(message);
   messageInput.value = "";
   
@@ -179,19 +171,24 @@ function sendMessage() {
 // 处理用户消息
 function handleUserMessage(message) {
   // 检查是否匹配预设问题
-  const preset = presetQA.find(function(qa) {
-    return qa.question.toLowerCase().includes(message.toLowerCase()) || 
-           message.toLowerCase().includes(qa.question.toLowerCase());
-  });
+  var matchedPreset = null;
+  for (var i = 0; i < presetQA.length; i++) {
+    var qa = presetQA[i];
+    if (qa.question.toLowerCase().includes(message.toLowerCase()) || 
+        message.toLowerCase().includes(qa.question.toLowerCase())) {
+      matchedPreset = qa;
+      break;
+    }
+  }
   
-  if (preset) {
-    addBotMessage(preset.answer);
+  if (matchedPreset) {
+    addBotMessage(matchedPreset.answer);
     return;
   }
   
   // 检查是否匹配响应列表
-  let responseFound = false;
-  for (let key in botResponses) {
+  var responseFound = false;
+  for (var key in botResponses) {
     if (message.toLowerCase().includes(key.toLowerCase())) {
       addBotMessage(botResponses[key]);
       responseFound = true;
@@ -210,9 +207,9 @@ function handleUserMessage(message) {
 function addUserMessage(message) {
   if (!messagesList) return;
   
-  const messageElement = document.createElement("div");
+  var messageElement = document.createElement("div");
   messageElement.className = "message user-message";
-  messageElement.innerHTML = `<div class="message-content">${message}</div>`;
+  messageElement.innerHTML = '<div class="message-content">' + message + '</div>';
   messagesList.appendChild(messageElement);
   
   scrollToBottom();
@@ -222,9 +219,9 @@ function addUserMessage(message) {
 function addBotMessage(message) {
   if (!messagesList) return;
   
-  const messageElement = document.createElement("div");
+  var messageElement = document.createElement("div");
   messageElement.className = "message bot-message";
-  messageElement.innerHTML = `<div class="message-content">${message}</div>`;
+  messageElement.innerHTML = '<div class="message-content">' + message + '</div>';
   messagesList.appendChild(messageElement);
   
   scrollToBottom();
@@ -235,33 +232,35 @@ function showPresetQuestions() {
   if (!messagesList) return;
   
   // 检查是否已经存在预设问题
-  const existingQuestions = messagesList.querySelector('.preset-questions');
+  var existingQuestions = messagesList.querySelector('.preset-questions');
   if (existingQuestions) {
     existingQuestions.remove();
   }
   
-  const questionsElement = document.createElement("div");
+  var questionsElement = document.createElement("div");
   questionsElement.className = "preset-questions";
   
-  presetQA.forEach(function(qa) {
-    const questionButton = document.createElement("button");
-    questionButton.className = "preset-question";
-    questionButton.textContent = qa.question;
-    questionButton.addEventListener("click", function() {
-      addUserMessage(qa.question);
+  for (var i = 0; i < presetQA.length; i++) {
+    (function(qa) {
+      var questionButton = document.createElement("button");
+      questionButton.className = "preset-question";
+      questionButton.textContent = qa.question;
+      questionButton.onclick = function() {
+        addUserMessage(qa.question);
+        
+        // 显示正在输入指示器
+        showTypingIndicator();
+        
+        // 模拟延迟后回复
+        setTimeout(function() {
+          removeTypingIndicator();
+          addBotMessage(qa.answer);
+        }, 800);
+      };
       
-      // 显示正在输入指示器
-      showTypingIndicator();
-      
-      // 模拟延迟后回复
-      setTimeout(function() {
-        removeTypingIndicator();
-        addBotMessage(qa.answer);
-      }, 800);
-    });
-    
-    questionsElement.appendChild(questionButton);
-  });
+      questionsElement.appendChild(questionButton);
+    })(presetQA[i]);
+  }
   
   messagesList.appendChild(questionsElement);
   scrollToBottom();
@@ -274,7 +273,7 @@ function showTypingIndicator() {
   // 移除已存在的输入指示器
   removeTypingIndicator();
   
-  const typingDiv = document.createElement("div");
+  var typingDiv = document.createElement("div");
   typingDiv.className = "message bot-message typing-indicator";
   typingDiv.innerHTML = "<span></span><span></span><span></span>";
   typingDiv.id = "typing-indicator";
@@ -284,7 +283,7 @@ function showTypingIndicator() {
 
 // 隐藏正在输入指示器
 function removeTypingIndicator() {
-  const typingIndicator = document.getElementById("typing-indicator");
+  var typingIndicator = document.getElementById("typing-indicator");
   if (typingIndicator) {
     typingIndicator.remove();
   }
