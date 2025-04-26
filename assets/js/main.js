@@ -260,25 +260,36 @@ function setupScrollAnimations() {
 }
 
 // 文章详情页函数
-async function loadArticleDetails(articleId) {
-    try {
-        const response = await fetch(`/data/articles/${articleId}.json`);
-        if (!response.ok) {
-            throw new Error('无法加载文章详情');
-        }
-        
-        return await response.json();
-    } catch (error) {
-        console.error('加载文章详情时出错:', error);
-        return null;
-    }
+function loadArticleDetails(articleId) {
+    return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/data/articles/' + articleId + '.json', true);
+        xhr.onload = function() {
+            if (this.status >= 200 && this.status < 300) {
+                try {
+                    var data = JSON.parse(xhr.responseText);
+                    resolve(data);
+                } catch (e) {
+                    console.error('解析文章数据出错:', e);
+                    reject(new Error('无法解析文章数据'));
+                }
+            } else {
+                reject(new Error('无法加载文章详情'));
+            }
+        };
+        xhr.onerror = function() {
+            console.error('加载文章详情时出错');
+            reject(new Error('网络请求失败'));
+        };
+        xhr.send();
+    });
 }
 
 // 下载文件函数
 function downloadFile(url, filename) {
-    const a = document.createElement('a');
+    var a = document.createElement('a');
     a.href = url;
-    a.download = filename;
+    a.download = filename || '';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -286,66 +297,73 @@ function downloadFile(url, filename) {
 
 // 初始化文章列表
 function initializeArticles() {
-    const container = document.getElementById('articles-container');
+    var container = document.getElementById('articles-container');
+    if (!container) return;
+    
     container.innerHTML = ''; // 清空骨架屏
     
-    const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
-    const endIndex = Math.min(startIndex + ARTICLES_PER_PAGE, articles.length);
+    var startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+    var endIndex = Math.min(startIndex + ARTICLES_PER_PAGE, articles.length);
     
-    for (let i = startIndex; i < endIndex; i++) {
-        const article = articles[i];
-        const articleElement = createArticleElement(article);
+    for (var i = startIndex; i < endIndex; i++) {
+        var article = articles[i];
+        var articleElement = createArticleElement(article);
         container.appendChild(articleElement);
     }
 }
 
 // 创建文章元素
 function createArticleElement(article) {
-    const div = document.createElement('div');
+    var div = document.createElement('div');
     div.className = 'article-card glass-panel';
     
-    div.innerHTML = `
-        <div class="article-image" style="background-image: url('${article.image}')"></div>
-        <div class="article-content">
-            <h3>${article.title}</h3>
-            <p>${article.excerpt}</p>
-            <a href="${article.url}" class="read-more">阅读更多 <i class="fas fa-arrow-right"></i></a>
-        </div>
-    `;
+    div.innerHTML = 
+        '<div class="article-image" style="background-image: url(\'' + (article.image || '') + '\')"></div>' +
+        '<div class="article-content">' +
+            '<h3>' + article.title + '</h3>' +
+            '<p>' + (article.excerpt || '') + '</p>' +
+            '<a href="' + (article.url || '#') + '" class="read-more">阅读更多 <i class="fas fa-arrow-right"></i></a>' +
+        '</div>';
     
     return div;
 }
 
 // 初始化分页
 function initializePagination() {
-    const totalPages = Math.ceil(articles.length / ARTICLES_PER_PAGE);
-    const prevButton = document.getElementById('prev-page');
-    const nextButton = document.getElementById('next-page');
-    const pageIndicator = document.getElementById('page-indicator');
+    var totalPages = Math.ceil(articles.length / ARTICLES_PER_PAGE);
+    var prevButton = document.getElementById('prev-page');
+    var nextButton = document.getElementById('next-page');
+    var pageIndicator = document.getElementById('page-indicator');
     
     // 更新页码显示
-    pageIndicator.textContent = `${currentPage} / ${totalPages}`;
+    if (pageIndicator) {
+        pageIndicator.textContent = currentPage + ' / ' + totalPages;
+    }
     
     // 更新按钮状态
-    prevButton.disabled = currentPage === 1;
-    nextButton.disabled = currentPage === totalPages;
+    if (prevButton) prevButton.disabled = currentPage === 1;
+    if (nextButton) nextButton.disabled = currentPage === totalPages;
     
     // 添加事件监听器
-    prevButton.onclick = () => {
-        if (currentPage > 1) {
-            currentPage--;
-            initializeArticles();
-            initializePagination();
-        }
-    };
+    if (prevButton) {
+        prevButton.onclick = function() {
+            if (currentPage > 1) {
+                currentPage--;
+                initializeArticles();
+                initializePagination();
+            }
+        };
+    }
     
-    nextButton.onclick = () => {
-        if (currentPage < totalPages) {
-            currentPage++;
-            initializeArticles();
-            initializePagination();
-        }
-    };
+    if (nextButton) {
+        nextButton.onclick = function() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                initializeArticles();
+                initializePagination();
+            }
+        };
+    }
 }
 
 // 初始化滚动效果
