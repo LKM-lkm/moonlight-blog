@@ -79,7 +79,7 @@
             const API_BASE_URL = 'https://moonlight-blog.lkm836972.workers.dev';
 
             // 获取CSRF Token
-            fetch(`${API_BASE_URL}/admin/api/auth/csrf.php`, {
+            fetch(`${API_BASE_URL}/admin/api/auth/csrf`, {
                 credentials: 'include'  // 包含跨域Cookie
             })
                 .then(response => response.json())
@@ -140,7 +140,7 @@
                         csrf_token: formData.get('csrf_token')
                     };
 
-                    const response = await fetch(`${API_BASE_URL}/admin/api/auth/login.php`, {
+                    const response = await fetch(`${API_BASE_URL}/admin/api/auth/login`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

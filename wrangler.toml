@@ -14,8 +14,8 @@ kv_namespaces = [
 
 [vars]
 ADMIN_USERNAME = "likem"
-ADMIN_PASSWORD_HASH = "$2y$10$YourGeneratedPasswordHash"  # 已生成的密码哈希
-JWT_SECRET = "0adaacd4bc7f5276cfd38650f2f49d8dd80ad75d2bcb8e4e4d0d39754d77e9d8"
+ADMIN_PASSWORD_HASH = "$2a$10$k0PWLodgQoyMuFL8NJLsfO0b7Wc4J.4/RFLTQG4v2pNGJUwdkbKTy"
+JWT_SECRET = "63b65efd69399246549267e0959dffc9c5276cf1a5da2d28b4eba4dc54a56242"
 
 # 开发环境配置
 [env.dev]
