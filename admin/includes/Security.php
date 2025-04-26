@@ -1,23 +1,26 @@
 <?php
 /**
- * 安全类
- * 
- * 处理安全相关的功能，包括CSRF保护、XSS过滤等
+ * 安全类 - 处理密码验证、登录尝试记录等安全相关功能
  */
 class Security {
     private static $instance = null;
-    private $config;
     private $db;
     private $logger;
-    private $user = null;
+    private $config;
     
+    /**
+     * 私有构造函数，确保单例模式
+     */
     private function __construct() {
-        $this->config = require_once ROOT_PATH . '/config/config.php';
+        global $config;
+        $this->config = $config;
         $this->db = Database::getInstance();
         $this->logger = Logger::getInstance();
-        $this->initSession();
     }
-
+    
+    /**
+     * 获取单例实例
+     */
     public static function getInstance() {
         if (self::$instance === null) {
             self::$instance = new self();
@@ -26,20 +29,130 @@ class Security {
     }
     
     /**
-     * 构造函数
-     * 
-     * @param Database $db 数据库实例
-     * @param Logger $logger 日志实例
+     * 生成密码哈希
      */
-    public function __construct($db, $logger) {
-        $this->db = $db;
-        $this->logger = $logger;
+    public function hashPassword($password) {
+        return password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+    }
+    
+    /**
+     * 验证密码
+     */
+    public function verifyPassword($password, $hash) {
+        return password_verify($password, $hash);
+    }
+    
+    /**
+     * 记录登录失败
+     */
+    public function recordLoginFailure($username, $ip) {
+        try {
+            $stmt = $this->db->prepare("INSERT INTO user_login_logs (username, ip_address, status, created_at) VALUES (?, ?, 'failed', NOW())");
+            $stmt->execute([$username, $ip]);
+            
+            // 检查失败次数
+            $stmt = $this->db->prepare("SELECT COUNT(*) as count FROM user_login_logs WHERE username = ? AND ip_address = ? AND status = 'failed' AND created_at > DATE_SUB(NOW(), INTERVAL 30 MINUTE)");
+            $stmt->execute([$username, $ip]);
+            $result = $stmt->fetch();
+            
+            if ($result['count'] >= 5) {
+                // 记录IP封禁
+                $stmt = $this->db->prepare("INSERT INTO ip_bans (ip_address, reason, expires_at) VALUES (?, '多次登录失败', DATE_ADD(NOW(), INTERVAL 30 MINUTE))");
+                $stmt->execute([$ip]);
+                
+                $this->logger->warning("IP {$ip} 已被封禁 30 分钟，原因：多次登录失败");
+                return true; // 表示已被封禁
+            }
+            
+            return false; // 表示未被封禁
+        } catch (PDOException $e) {
+            $this->logger->error("记录登录失败时发生错误: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * 检查IP是否被封禁
+     */
+    public function isIpBanned($ip) {
+        try {
+            $stmt = $this->db->prepare("SELECT COUNT(*) as count FROM ip_bans WHERE ip_address = ? AND expires_at > NOW()");
+            $stmt->execute([$ip]);
+            $result = $stmt->fetch();
+            return $result['count'] > 0;
+        } catch (PDOException $e) {
+            $this->logger->error("检查IP封禁状态时发生错误: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * 记录登录成功
+     */
+    public function recordLoginSuccess($username, $ip) {
+        try {
+            $stmt = $this->db->prepare("INSERT INTO user_login_logs (username, ip_address, status, created_at) VALUES (?, ?, 'success', NOW())");
+            $stmt->execute([$username, $ip]);
+            
+            // 清除该IP的失败记录
+            $stmt = $this->db->prepare("DELETE FROM ip_bans WHERE ip_address = ?");
+            $stmt->execute([$ip]);
+        } catch (PDOException $e) {
+            $this->logger->error("记录登录成功时发生错误: " . $e->getMessage());
+        }
+    }
+    
+    /**
+     * 检查密码强度
+     */
+    public function checkPasswordStrength($password) {
+        $score = 0;
+        $feedback = [];
+
+        // 检查长度
+        if (strlen($password) < 8) {
+            $feedback[] = '密码长度至少需要8个字符';
+        } else {
+            $score += 2;
+        }
+
+        // 检查是否包含数字
+        if (preg_match('/\d/', $password)) {
+            $score += 2;
+        } else {
+            $feedback[] = '密码需要包含数字';
+        }
+
+        // 检查是否包含小写字母
+        if (preg_match('/[a-z]/', $password)) {
+            $score += 2;
+        } else {
+            $feedback[] = '密码需要包含小写字母';
+        }
+
+        // 检查是否包含大写字母
+        if (preg_match('/[A-Z]/', $password)) {
+            $score += 2;
+        } else {
+            $feedback[] = '密码需要包含大写字母';
+        }
+
+        // 检查是否包含特殊字符
+        if (preg_match('/[^A-Za-z0-9]/', $password)) {
+            $score += 2;
+        } else {
+            $feedback[] = '密码需要包含特殊字符';
+        }
+
+        return [
+            'score' => $score,
+            'strength' => $score < 4 ? '弱' : ($score < 8 ? '中' : '强'),
+            'feedback' => $feedback
+        ];
     }
     
     /**
      * 生成CSRF令牌
-     * 
-     * @return string
      */
     public function generateCsrfToken() {
         if (!isset($_SESSION['csrf_token'])) {
@@ -50,24 +163,21 @@ class Security {
     
     /**
      * 验证CSRF令牌
-     * 
-     * @param string $token 待验证的令牌
-     * @return bool
      */
     public function validateCsrfToken($token) {
-        return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+        if (empty($_SESSION['csrf_token']) || empty($token)) {
+            return false;
+        }
+        return hash_equals($_SESSION['csrf_token'], $token);
     }
     
     /**
      * XSS过滤
-     * 
-     * @param mixed $data 待过滤的数据
-     * @return mixed
      */
-    public function xssClean($data) {
+    public function xssFilter($data) {
         if (is_array($data)) {
             foreach ($data as $key => $value) {
-                $data[$key] = $this->xssClean($value);
+                $data[$key] = $this->xssFilter($value);
             }
         } else {
             $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
@@ -77,414 +187,76 @@ class Security {
     
     /**
      * SQL注入过滤
-     * 
-     * @param mixed $data 待过滤的数据
-     * @return mixed
      */
-    public function sqlClean($data) {
-        if (is_array($data)) {
-            foreach ($data as $key => $value) {
-                $data[$key] = $this->sqlClean($value);
-            }
-        } else {
-            $data = addslashes($data);
-        }
-        return $data;
+    public function sqlFilter($string) {
+        return addslashes($string);
     }
-    
+
     /**
      * 生成随机字符串
-     * 
      * @param int $length 字符串长度
      * @return string
      */
-    public function generateRandomString($length = 32) {
-        return bin2hex(random_bytes($length / 2));
-    }
-    
-    /**
-     * 检查密码强度
-     * 
-     * @param string $password 密码
-     * @return bool
-     */
-    public function validatePassword($password) {
-        // 密码至少包含8个字符，至少一个大写字母，一个小写字母，一个数字和一个特殊字符
-        return preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password);
-    }
-    
-    /**
-     * 检查IP是否被封禁
-     * 
-     * @param string $ip IP地址
-     * @return bool
-     */
-    public function isIpBanned($ip) {
-        $sql = "SELECT COUNT(*) FROM banned_ips WHERE ip = ? AND expire_time > NOW()";
-        return (bool)$this->db->fetchColumn($sql, [$ip]);
-    }
-    
-    /**
-     * 记录失败的登录尝试
-     * 
-     * @param string $username 用户名
-     * @param string $ip IP地址
-     */
-    public function recordFailedLogin($username, $ip) {
-        $this->db->insert('login_attempts', [
-            'username' => $username,
-            'ip' => $ip,
-            'attempt_time' => date('Y-m-d H:i:s')
-        ]);
-        
-        // 检查是否需要封禁IP
-        $sql = "SELECT COUNT(*) FROM login_attempts 
-                WHERE ip = ? AND attempt_time > DATE_SUB(NOW(), INTERVAL 1 HOUR)";
-        $attempts = $this->db->fetchColumn($sql, [$ip]);
-        
-        if ($attempts >= 5) {
-            $this->db->insert('banned_ips', [
-                'ip' => $ip,
-                'ban_time' => date('Y-m-d H:i:s'),
-                'expire_time' => date('Y-m-d H:i:s', strtotime('+1 hour')),
-                'reason' => '多次登录失败'
-            ]);
-            
-            $this->logger->warning('IP已被封禁', [
-                'ip' => $ip,
-                'username' => $username,
-                'attempts' => $attempts
-            ]);
+    public function generateRandomString($length = 16) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[random_int(0, strlen($characters) - 1)];
         }
+        return $randomString;
     }
 
-    public function hashPassword($password) {
-        return password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
-    }
-
-    public function verifyPassword($password, $hash) {
-        return password_verify($password, $hash);
-    }
-
-    public function generateToken() {
-        return bin2hex(random_bytes(32));
-    }
-
-    public function encryptData($data, $key = null) {
-        $key = $key ?? $this->config['security']['encryption_key'];
-        $ivLength = openssl_cipher_iv_length('AES-256-CBC');
-        $iv = openssl_random_pseudo_bytes($ivLength);
-        $encrypted = openssl_encrypt($data, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
-        return base64_encode($iv . $encrypted);
-    }
-
-    public function decryptData($data, $key = null) {
-        $key = $key ?? $this->config['security']['encryption_key'];
-        $data = base64_decode($data);
-        $ivLength = openssl_cipher_iv_length('AES-256-CBC');
-        $iv = substr($data, 0, $ivLength);
-        $encrypted = substr($data, $ivLength);
-        return openssl_decrypt($encrypted, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
-    }
-
-    public function validateEmail($email) {
-        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-    }
-
-    public function validateUsername($username) {
-        return preg_match('/^[a-zA-Z0-9_]{3,20}$/', $username);
-    }
-
-    public function validateIP($ip) {
-        return filter_var($ip, FILTER_VALIDATE_IP) !== false;
-    }
-
-    public function isValidJSON($string) {
-        json_decode($string);
-        return json_last_error() === JSON_ERROR_NONE;
-    }
-
-    public function generateUUID() {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000,
-            mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-        );
-    }
-
-    // IP地址检查
-    public function checkIp($ip) {
-        return filter_var($ip, FILTER_VALIDATE_IP);
-    }
-    
-    // 请求频率限制
-    public function rateLimit($key, $limit = 60, $period = 60) {
-        $current = time();
-        $keyName = "rate_limit:{$key}";
-        
-        if (isset($_SESSION[$keyName])) {
-            $data = $_SESSION[$keyName];
-            if ($current - $data['start'] >= $period) {
-                $_SESSION[$keyName] = [
-                    'count' => 1,
-                    'start' => $current
-                ];
-                return true;
+    /**
+     * 验证输入数据
+     * @param array $data 待验证的数据
+     * @param array $rules 验证规则
+     * @return array
+     */
+    public function validateInput($data, $rules) {
+        $errors = [];
+        foreach ($rules as $field => $rule) {
+            if (!isset($data[$field])) {
+                if (!empty($rule['required'])) {
+                    $errors[$field] = $rule['message'] ?? "{$field}不能为空";
+                }
+                continue;
             }
-            
-            if ($data['count'] >= $limit) {
-                return false;
+
+            $value = $data[$field];
+
+            // 验证长度
+            if (isset($rule['min']) && strlen($value) < $rule['min']) {
+                $errors[$field] = $rule['message'] ?? "{$field}长度不能小于{$rule['min']}";
             }
-            
-            $_SESSION[$keyName]['count']++;
-            return true;
+            if (isset($rule['max']) && strlen($value) > $rule['max']) {
+                $errors[$field] = $rule['message'] ?? "{$field}长度不能大于{$rule['max']}";
+            }
+
+            // 验证格式
+            if (isset($rule['pattern']) && !preg_match($rule['pattern'], $value)) {
+                $errors[$field] = $rule['message'] ?? "{$field}格式不正确";
+            }
+
+            // 验证邮箱
+            if (isset($rule['email']) && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                $errors[$field] = $rule['message'] ?? "邮箱格式不正确";
+            }
         }
-        
-        $_SESSION[$keyName] = [
-            'count' => 1,
-            'start' => $current
+
+        return [
+            'success' => empty($errors),
+            'errors' => $errors
         ];
-        return true;
-    }
-    
-    // 文件上传安全检查
-    public function validateUpload($file, $allowedTypes = [], $maxSize = 5242880) {
-        if (!isset($file['error']) || is_array($file['error'])) {
-            return false;
-        }
-        
-        if ($file['size'] > $maxSize) {
-            return false;
-        }
-        
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $file['tmp_name']);
-        finfo_close($finfo);
-        
-        if (!empty($allowedTypes) && !in_array($mimeType, $allowedTypes)) {
-            return false;
-        }
-        
-        return true;
-    }
-    
-    // 生成安全的文件名
-    public function sanitizeFilename($filename) {
-        $info = pathinfo($filename);
-        $ext = isset($info['extension']) ? '.' . $info['extension'] : '';
-        $name = isset($info['filename']) ? $info['filename'] : '';
-        
-        $name = preg_replace("/[^a-zA-Z0-9]/", "_", $name);
-        return $name . '_' . time() . $ext;
-    }
-    
-    // 会话安全设置
-    public function secureSession() {
-        ini_set('session.use_only_cookies', 1);
-        ini_set('session.use_strict_mode', 1);
-        
-        session_set_cookie_params([
-            'lifetime' => $this->config['session']['lifetime'],
-            'path' => '/',
-            'domain' => '',
-            'secure' => true,
-            'httponly' => true,
-            'samesite' => 'Lax'
-        ]);
-    }
-    
-    // 防止会话固定攻击
-    public function regenerateSession() {
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_regenerate_id(true);
-        }
     }
 
-    private function initSession() {
-        if (session_status() === PHP_SESSION_NONE) {
-            $sessionConfig = $this->config['session'];
-            session_name($sessionConfig['name']);
-            
-            session_set_cookie_params(
-                $sessionConfig['lifetime'],
-                $sessionConfig['path'],
-                $sessionConfig['domain'],
-                $sessionConfig['secure'],
-                $sessionConfig['httponly']
-            );
-            
-            session_start();
-        }
-
-        if (!isset($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        }
+    /**
+     * 记录安全事件
+     * @param string $event 事件类型
+     * @param array $context 事件上下文
+     */
+    public function logSecurityEvent($event, $context = []) {
+        $context['ip'] = $_SERVER['REMOTE_ADDR'];
+        $context['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+        $this->logger->warning("安全事件: {$event}", $context);
     }
-
-    public function login($username, $password) {
-        try {
-            $sql = "SELECT u.*, GROUP_CONCAT(p.permission_name) as permissions 
-                    FROM users u 
-                    LEFT JOIN user_permissions up ON u.id = up.user_id 
-                    LEFT JOIN permissions p ON up.permission_id = p.id 
-                    WHERE u.username = ? OR u.email = ?
-                    GROUP BY u.id";
-            
-            $user = $this->db->fetch($sql, [$username, $username]);
-            
-            if (!$user) {
-                $this->logger->warning('Login attempt failed: User not found', ['username' => $username]);
-                throw new Exception('用户名或密码错误');
-            }
-
-            if (!password_verify($password, $user['password'])) {
-                $this->logger->warning('Login attempt failed: Invalid password', ['username' => $username]);
-                throw new Exception('用户名或密码错误');
-            }
-
-            if (!$user['is_active']) {
-                $this->logger->warning('Login attempt failed: Account inactive', ['username' => $username]);
-                throw new Exception('账号已被禁用');
-            }
-
-            // 记录登录日志
-            $this->db->insert('user_login_logs', [
-                'user_id' => $user['id'],
-                'login_ip' => $_SERVER['REMOTE_ADDR'],
-                'login_time' => date('Y-m-d H:i:s'),
-                'user_agent' => $_SERVER['HTTP_USER_AGENT']
-            ]);
-
-            // 更新最后登录时间
-            $this->db->update('users', 
-                ['last_login' => date('Y-m-d H:i:s')],
-                'id = ?',
-                [$user['id']]
-            );
-
-            // 设置session
-            $_SESSION['user'] = [
-                'id' => $user['id'],
-                'username' => $user['username'],
-                'email' => $user['email'],
-                'role' => $user['role'],
-                'permissions' => explode(',', $user['permissions']),
-                'last_activity' => time()
-            ];
-
-            $this->user = $_SESSION['user'];
-            $this->logger->info('User logged in successfully', ['username' => $username]);
-            
-            return true;
-        } catch (Exception $e) {
-            throw $e;
-        }
-    }
-
-    public function logout() {
-        if (isset($_SESSION['user'])) {
-            $this->logger->info('User logged out', ['username' => $_SESSION['user']['username']]);
-            session_destroy();
-            $this->user = null;
-            return true;
-        }
-        return false;
-    }
-
-    public function isLoggedIn() {
-        if (!isset($_SESSION['user'])) {
-            return false;
-        }
-
-        // 检查会话是否过期
-        $timeout = $this->config['session']['lifetime'];
-        if (time() - $_SESSION['user']['last_activity'] > $timeout) {
-            $this->logout();
-            return false;
-        }
-
-        $_SESSION['user']['last_activity'] = time();
-        return true;
-    }
-
-    public function getCurrentUser() {
-        return $this->isLoggedIn() ? $_SESSION['user'] : null;
-    }
-
-    public function hasPermission($permission) {
-        if (!$this->isLoggedIn()) {
-            return false;
-        }
-
-        if ($_SESSION['user']['role'] === 'admin') {
-            return true;
-        }
-
-        return in_array($permission, $_SESSION['user']['permissions']);
-    }
-
-    public function validateCSRF() {
-        if (!isset($_SESSION['csrf_token'])) {
-            return false;
-        }
-
-        $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
-        if (!$token || !hash_equals($_SESSION['csrf_token'], $token)) {
-            $this->logger->warning('CSRF validation failed');
-            return false;
-        }
-
-        return true;
-    }
-
-    public function getCSRFToken() {
-        return $_SESSION['csrf_token'];
-    }
-
-    public function sanitizeInput($data) {
-        if (is_array($data)) {
-            return array_map([$this, 'sanitizeInput'], $data);
-        }
-        
-        if (is_string($data)) {
-            $data = trim($data);
-            $data = stripslashes($data);
-            $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
-        }
-        
-        return $data;
-    }
-
-    public function generateRandomToken($length = 32) {
-        return bin2hex(random_bytes($length));
-    }
-
-    public function rateLimit($key, $limit = 60, $period = 3600) {
-        $redis = new Redis();
-        try {
-            $redis->connect(
-                $this->config['redis']['host'],
-                $this->config['redis']['port']
-            );
-
-            $current = $redis->incr($key);
-            if ($current === 1) {
-                $redis->expire($key, $period);
-            }
-
-            if ($current > $limit) {
-                $this->logger->warning('Rate limit exceeded', ['key' => $key]);
-                return false;
-            }
-
-            return true;
-        } catch (Exception $e) {
-            $this->logger->error('Rate limiting failed: ' . $e->getMessage());
-            return true; // 如果Redis不可用，默认允许请求
-        } finally {
-            $redis->close();
-        }
-    }
-} 
+}

@@ -1,6 +1,6 @@
 <?php
 /**
- * 全局配置文件
+ * 全局配置
  */
 return [
     // 调试模式
@@ -9,7 +9,8 @@ return [
     // 站点配置
     'site' => [
         'name' => 'Moonlight Blog',
-        'url' => 'http://localhost:8080',
+        'url' => 'http://localhost',
+        'admin_email' => 'admin@example.com',
         'charset' => 'UTF-8',
         'timezone' => 'Asia/Shanghai',
         'language' => 'zh-CN'
@@ -35,6 +36,12 @@ return [
 
     // 安全配置
     'security' => [
+        'password_algo' => PASSWORD_BCRYPT,
+        'password_options' => [
+            'cost' => 12
+        ],
+        'session_lifetime' => 7200,
+        'csrf_lifetime' => 3600,
         'password_min_length' => 8,
         'password_require_special' => true,
         'password_require_number' => true,
@@ -61,16 +68,11 @@ return [
 
     // 上传配置
     'upload' => [
-        'max_size' => 5242880, // 5MB
-        'allowed_types' => [
-            'image/jpeg',
-            'image/png',
-            'image/gif',
-            'image/webp'
-        ],
+        'max_size' => 5 * 1024 * 1024,
+        'allowed_types' => ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx'],
         'max_width' => 2048,
         'max_height' => 2048,
-        'path' => UPLOAD_PATH,
+        'path' => dirname(__DIR__) . '/uploads',
         'url' => '/uploads'
     ],
 
@@ -94,23 +96,16 @@ return [
 
     // 缓存配置
     'cache' => [
-        'driver' => 'redis',
-        'prefix' => 'moonlight:',
-        'redis' => [
-            'host' => 'localhost',
-            'port' => 6379,
-            'password' => null,
-            'database' => 0,
-            'timeout' => 0.0
-        ]
+        'enabled' => true,
+        'driver' => 'file',
+        'path' => dirname(__DIR__) . '/cache',
+        'lifetime' => 3600,
     ],
 
     // 日志配置
-    'log' => [
+    'logging' => [
         'enabled' => true,
-        'path' => LOG_PATH,
-        'level' => 'debug', // emergency, alert, critical, error, warning, notice, info, debug
-        'max_files' => 30,
-        'format' => '[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n'
+        'level' => 'debug',
+        'file' => dirname(__DIR__) . '/logs/app.log',
     ]
 ]; 
