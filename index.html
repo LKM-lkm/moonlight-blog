@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/chatbot.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 安全策略：防止加载外部脚本 -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com;">
 </head>
-<body class="theme-auto">
+<body>
     <div class="stars-container">
         <div class="stars"></div>
         <div class="stars2"></div>
@@ -196,6 +198,10 @@
     </footer>
     
     <!-- JavaScript 文件 -->
+    <script>
+    // 设置页脚年份
+    document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/theme-switcher.js"></script>
     <script src="assets/js/chatbot.js"></script>

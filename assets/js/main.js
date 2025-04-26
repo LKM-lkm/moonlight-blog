@@ -1,13 +1,13 @@
 // 主要功能处理脚本
 
 // 博客文章页面大小和当前页码
-let pageSize = 6;
-let currentPage = 1;
-let totalPages = 1;
-let allArticles = [];
+var pageSize = 6;
+var currentPage = 1;
+var totalPages = 1;
+var allArticles = [];
 
 // 文章数据
-const articles = [
+var articles = [
     {
         title: 'Moonlight助手',
         excerpt: '基于人工智能的智能对话助手，为博客访客提供即时帮助和信息查询服务。',
@@ -23,12 +23,14 @@ const articles = [
 ];
 
 // 每页显示的文章数量
-const ARTICLES_PER_PAGE = 6;
+var ARTICLES_PER_PAGE = 6;
 
 // 初始化函数
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     // 初始化年份
-    document.getElementById('year').textContent = new Date().getFullYear();
+    if (document.getElementById('year')) {
+        document.getElementById('year').textContent = new Date().getFullYear();
+    }
     
     // 加载个人信息
     loadProfileInfo();
@@ -44,17 +46,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 加载个人信息
-async function loadProfileInfo() {
+function loadProfileInfo() {
     try {
-        const response = await fetch('/data/profile.json');
-        if (!response.ok) {
-            throw new Error('无法加载个人信息');
+        // 检查是否存在profile-info元素
+        var profileInfoElement = document.getElementById('profile-info');
+        if (!profileInfoElement) {
+            console.log('未找到profile-info元素，跳过加载个人信息');
+            return;
         }
         
-        const profileData = await response.json();
-        const profileInfo = document.getElementById('profile-info');
+        // 在现有元素基础上使用静态数据
+        var profileData = {
+            name: "博主名字",
+            bio: "热爱技术和创新，专注于绘画、文字排版，人工智能、云计算和大数据领域的研究与应用。",
+            focus: "AI, 云计算, 大数据",
+            email: "example@moonlight-blog.com"
+        };
         
-        let profileHTML = `
+        var profileHTML = `
             <h3>${profileData.name}</h3>
             <p>${profileData.bio}</p>
             <div class="profile-details">
@@ -63,49 +72,54 @@ async function loadProfileInfo() {
             </div>
         `;
         
-        profileInfo.innerHTML = profileHTML;
+        profileInfoElement.innerHTML = profileHTML;
     } catch (error) {
         console.error('加载个人信息时出错:', error);
-        document.getElementById('profile-info').innerHTML = `
-            <p>加载个人信息时出错。请稍后再试。</p>
-        `;
+        if (document.getElementById('profile-info')) {
+            document.getElementById('profile-info').innerHTML = `
+                <p>加载个人信息时出错。请稍后再试。</p>
+            `;
+        }
     }
 }
 
 // 加载文章
-async function loadArticles() {
+function loadArticles() {
     try {
-        const response = await fetch('/data/articles/index.json');
-        if (!response.ok) {
-            throw new Error('无法加载文章索引');
-        }
-        
-        const articlesIndex = await response.json();
-        allArticles = articlesIndex.articles;
+        // 直接使用静态数据渲染文章
+        allArticles = articles;
         totalPages = Math.ceil(allArticles.length / pageSize);
         
-        updatePageIndicator();
+        if (typeof updatePageIndicator === 'function') updatePageIndicator();
         renderArticles();
-        updatePaginationButtons();
+        if (typeof updatePaginationButtons === 'function') updatePaginationButtons();
     } catch (error) {
         console.error('加载文章时出错:', error);
-        document.getElementById('articles-container').innerHTML = `
-            <div class="error-message">
-                <p>加载文章时出错。请稍后再试。</p>
-            </div>
-        `;
+        var articlesContainer = document.getElementById('articles-container');
+        if (articlesContainer) {
+            articlesContainer.innerHTML = `
+                <div class="error-message">
+                    <p>加载文章时出错。请稍后再试。</p>
+                </div>
+            `;
+        }
     }
 }
 
 // 渲染文章卡片
 function renderArticles() {
-    const container = document.getElementById('articles-container');
+    var container = document.getElementById('articles-container');
+    if (!container) {
+        console.error('未找到articles-container元素');
+        return;
+    }
+    
     container.innerHTML = '';
     
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = Math.min(startIndex + pageSize, allArticles.length);
+    var startIndex = (currentPage - 1) * pageSize;
+    var endIndex = Math.min(startIndex + pageSize, allArticles.length);
     
-    const articlesToShow = allArticles.slice(startIndex, endIndex);
+    var articlesToShow = allArticles.slice(startIndex, endIndex);
     
     if (articlesToShow.length === 0) {
         container.innerHTML = `
@@ -116,14 +130,15 @@ function renderArticles() {
         return;
     }
     
-    for (const article of articlesToShow) {
-        const articleCard = document.createElement('div');
+    for (var i = 0; i < articlesToShow.length; i++) {
+        var article = articlesToShow[i];
+        var articleCard = document.createElement('div');
         articleCard.className = 'article-card glass-panel';
-        articleCard.dataset.id = article.id;
+        if (article.id) articleCard.dataset.id = article.id;
         
         // 创建发布日期对象
-        const publishDate = new Date(article.publishDate);
-        const formattedDate = publishDate.toLocaleDateString('zh-CN', {
+        var publishDate = article.publishDate ? new Date(article.publishDate) : new Date();
+        var formattedDate = publishDate.toLocaleDateString('zh-CN', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
@@ -131,22 +146,24 @@ function renderArticles() {
         
         articleCard.innerHTML = `
             <div class="article-image">
-                <img src="${article.coverImage || '/assets/images/default-cover.jpg'}" alt="${article.title}">
+                <img src="${article.image || '/assets/images/default-cover.jpg'}" alt="${article.title}">
             </div>
             <div class="article-content">
                 <h3>${article.title}</h3>
-                <p>${article.summary}</p>
+                <p>${article.excerpt || article.summary || ""}</p>
                 <div class="article-meta">
                     <span>${formattedDate}</span>
-                    <span>${article.readTime} 分钟阅读</span>
+                    <span>${article.readTime || "5"} 分钟阅读</span>
                 </div>
             </div>
         `;
         
         // 添加点击事件
-        articleCard.addEventListener('click', () => {
-            window.location.href = `/article.html?id=${article.id}`;
-        });
+        (function(url) {
+            articleCard.addEventListener('click', function() {
+                window.location.href = url || '#';
+            });
+        })(article.url);
         
         container.appendChild(articleCard);
     }
@@ -154,57 +171,81 @@ function renderArticles() {
 
 // 设置分页处理
 function setupPagination() {
-    const prevButton = document.getElementById('prev-page');
-    const nextButton = document.getElementById('next-page');
+    var prevButton = document.getElementById('prev-page');
+    var nextButton = document.getElementById('next-page');
     
-    prevButton.addEventListener('click', () => {
+    if (!prevButton || !nextButton) {
+        console.error('分页按钮未找到');
+        return;
+    }
+    
+    prevButton.onclick = function() {
         if (currentPage > 1) {
             currentPage--;
             renderArticles();
             updatePageIndicator();
             updatePaginationButtons();
-            window.scrollTo({
-                top: document.getElementById('articles').offsetTop - 100,
-                behavior: 'smooth'
-            });
+            var articlesSection = document.getElementById('articles');
+            if (articlesSection) {
+                window.scrollTo({
+                    top: articlesSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
         }
-    });
+    };
     
-    nextButton.addEventListener('click', () => {
+    nextButton.onclick = function() {
         if (currentPage < totalPages) {
             currentPage++;
             renderArticles();
             updatePageIndicator();
             updatePaginationButtons();
-            window.scrollTo({
-                top: document.getElementById('articles').offsetTop - 100,
-                behavior: 'smooth'
-            });
+            var articlesSection = document.getElementById('articles');
+            if (articlesSection) {
+                window.scrollTo({
+                    top: articlesSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
         }
-    });
+    };
 }
 
 // 更新分页指示器
 function updatePageIndicator() {
-    document.getElementById('page-indicator').textContent = `${currentPage} / ${totalPages}`;
+    var indicator = document.getElementById('page-indicator');
+    if (indicator) {
+        indicator.textContent = currentPage + ' / ' + totalPages;
+    }
 }
 
 // 更新分页按钮状态
 function updatePaginationButtons() {
-    document.getElementById('prev-page').disabled = currentPage <= 1;
-    document.getElementById('next-page').disabled = currentPage >= totalPages;
+    var prevButton = document.getElementById('prev-page');
+    var nextButton = document.getElementById('next-page');
+    
+    if (prevButton) prevButton.disabled = currentPage <= 1;
+    if (nextButton) nextButton.disabled = currentPage >= totalPages;
 }
 
 // 设置滚动动画
 function setupScrollAnimations() {
-    const observerOptions = {
+    // 检查IntersectionObserver是否被支持
+    if (!('IntersectionObserver' in window)) {
+        console.log('IntersectionObserver不被支持，跳过滚动动画');
+        return;
+    }
+    
+    var observerOptions = {
         root: null,
         rootMargin: '0px',
         threshold: 0.1
     };
     
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+    var fadeInElements = document.querySelectorAll('.fade-in');
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
                 observer.unobserve(entry.target);
@@ -213,7 +254,7 @@ function setupScrollAnimations() {
     }, observerOptions);
     
     // 选择所有需要观察的元素
-    document.querySelectorAll('.fade-in, .glass-panel').forEach(element => {
+    fadeInElements.forEach(function(element) {
         observer.observe(element);
     });
 }
@@ -310,21 +351,25 @@ function initializePagination() {
 // 初始化滚动效果
 function initializeScrollEffects() {
     // 监听滚动事件
-    window.addEventListener('scroll', () => {
-        const scrolled = window.scrollY;
+    window.addEventListener('scroll', function() {
+        var scrolled = window.scrollY;
         
         // 视差效果
-        document.querySelector('.parallax').style.transform = `translateY(${scrolled * 0.5}px)`;
+        var parallaxElement = document.querySelector('.parallax');
+        if (parallaxElement) {
+            parallaxElement.style.transform = 'translateY(' + (scrolled * 0.5) + 'px)';
+        }
         
         // 渐入效果
-        const fadeElements = document.querySelectorAll('.fade-in');
-        fadeElements.forEach(element => {
-            const elementTop = element.getBoundingClientRect().top;
-            const elementBottom = element.getBoundingClientRect().bottom;
+        var fadeElements = document.querySelectorAll('.fade-in');
+        for (var i = 0; i < fadeElements.length; i++) {
+            var element = fadeElements[i];
+            var elementTop = element.getBoundingClientRect().top;
+            var elementBottom = element.getBoundingClientRect().bottom;
             
             if (elementTop < window.innerHeight && elementBottom > 0) {
                 element.classList.add('visible');
             }
-        });
+        }
     });
 }
