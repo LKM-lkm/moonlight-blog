@@ -6,7 +6,37 @@
 import '../css/login.css';
 
 // 导入工具函数
-import { showMessage, showLoading, hideLoading } from './utils.js';
+// import { showMessage, showLoading, hideLoading } from './utils.js';
+
+// 工具函数
+const utils = {
+  showMessage(message, type = 'info') {
+    const messageElement = document.createElement('div');
+    messageElement.className = `message message-${type}`;
+    messageElement.textContent = message;
+    document.body.appendChild(messageElement);
+    setTimeout(() => messageElement.remove(), 3000);
+  },
+
+  formatDate(date) {
+    return new Date(date).toLocaleString();
+  },
+
+  debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+};
+
+// 导出工具函数
+export const { showMessage, formatDate, debounce } = utils;
 
 // 初始化管理后台
 document.addEventListener('DOMContentLoaded', async () => {
@@ -41,26 +71,6 @@ async function checkAuthStatus() {
         showMessage('检查登录状态失败，请刷新页面重试', 'error');
         return false;
     }
-}
-
-// 显示消息提示
-function showMessage(message, type = 'info') {
-    const messageElement = document.createElement('div');
-    messageElement.className = `message message-${type}`;
-    messageElement.textContent = message;
-    
-    document.body.appendChild(messageElement);
-    
-    setTimeout(() => {
-        messageElement.classList.add('show');
-    }, 100);
-    
-    setTimeout(() => {
-        messageElement.classList.remove('show');
-        setTimeout(() => {
-            messageElement.remove();
-        }, 300);
-    }, 3000);
 }
 
 // 初始化侧边栏
