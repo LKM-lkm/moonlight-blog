@@ -113,6 +113,10 @@
     animation: messageSlide 0.3s ease-out;
 }
 
+.message .message-content {
+    word-break: break-word;
+}
+
 .bot-message {
     align-self: flex-start;
     background: rgba(244, 247, 252, 0.9);
@@ -229,29 +233,35 @@
 
 /* 打字动画 */
 .typing-indicator {
-    display: flex;
-    gap: 4px;
-    padding: 8px 12px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px !important;
     background: rgba(244, 247, 252, 0.9);
     border-radius: 12px;
+    border-bottom-left-radius: 4px;
     align-self: flex-start;
     border: 1px solid rgba(74, 111, 165, 0.2);
     margin-bottom: 8px;
+    min-height: 32px;
+    min-width: 60px;
 }
 
-.typing-dot {
+.typing-indicator span {
     width: 6px;
     height: 6px;
     background: #6c757d;
     border-radius: 50%;
+    display: inline-block;
+    margin: 0 2px;
     animation: typingBounce 1s infinite;
 }
 
-.typing-dot:nth-child(2) {
+.typing-indicator span:nth-child(2) {
     animation-delay: 0.2s;
 }
 
-.typing-dot:nth-child(3) {
+.typing-indicator span:nth-child(3) {
     animation-delay: 0.4s;
 }
 
@@ -297,6 +307,6 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-[data-theme="dark"] .typing-dot {
+[data-theme="dark"] .typing-indicator span {
     background: #a0aec0;
 } 
