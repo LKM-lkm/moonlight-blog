@@ -6,6 +6,8 @@
     <title>Moonlight博客 | 个人博客</title>
     <!-- 安全策略：防止加载外部脚本和资源 -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Cache-Control" content="max-age=31536000, immutable">
     
     <!-- CSS 文件 -->
     <link rel="stylesheet" href="assets/css/style.css">
@@ -40,7 +42,7 @@
                 </ul>
             </nav>
             <div class="theme-toggle">
-                <button id="theme-toggle-btn">
+                <button id="theme-toggle-btn" title="切换主题模式">
                     <i class="fas fa-moon"></i>
                 </button>
             </div>
@@ -67,7 +69,7 @@
                 
                 <div class="profile-container glass-panel">
                     <div class="profile-avatar">
-                        <img src="/assets/images/avatar.jpg" alt="博主头像">
+                        <img src="assets/images/avatar.jpg" alt="博主头像">
                     </div>
                     <div class="profile-info">
                         <h3>名</h3>
@@ -128,11 +130,11 @@
                     </div>
                 </div>
                 <div class="articles-pagination glass-panel">
-                    <button class="pagination-btn" id="prev-page" disabled>
+                    <button class="pagination-btn" id="prev-page" disabled title="前往上一页">
                         <i class="fas fa-chevron-left"></i> 上一页
                     </button>
                     <span id="page-indicator">1 / 1</span>
-                    <button class="pagination-btn" id="next-page" disabled>
+                    <button class="pagination-btn" id="next-page" disabled title="前往下一页">
                         下一页 <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
@@ -142,14 +144,14 @@
     
     <!-- 聊天机器人组件 -->
     <div class="chatbot-wrapper">
-        <button class="chatbot-toggle" id="chatbot-toggle">
+        <button class="chatbot-toggle" id="chatbot-toggle" title="打开聊天助手">
             <i class="fas fa-comments"></i>
         </button>
         
         <div class="chatbot-container" id="chatbot-container">
             <div class="chatbot-header">
                 <h3>Moonlight助手</h3>
-                <button class="chatbot-close" id="chatbot-close">
+                <button class="chatbot-close" id="chatbot-close" title="关闭聊天助手">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -160,7 +162,7 @@
             
             <form class="chatbot-form" id="chatbot-form">
                 <input type="text" id="chatbot-input" placeholder="请输入您的问题..." autocomplete="off">
-                <button type="submit">
+                <button type="submit" title="发送消息">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </form>
@@ -202,6 +204,20 @@
     <script>
     // 设置页脚年份
     document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // 全局绑定事件函数
+    function bindEvents() {
+        console.log("绑定全局事件");
+        // 这里可以添加全局事件绑定逻辑
+    }
+    
+    // 在DOMContentLoaded时调用
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log("文档加载完成，初始化功能");
+        if(typeof bindEvents === 'function') {
+            bindEvents();
+        }
+    });
     </script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/theme-switcher.js"></script>

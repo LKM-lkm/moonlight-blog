@@ -47,10 +47,30 @@ var welcomeMessages = [
   "3. 提供导航帮助"
 ];
 
+// 初始化函数 - 导出为全局绑定事件
+if (typeof window.bindEvents !== 'function') {
+  window.bindEvents = function() {
+    console.log("绑定全局事件中...");
+    initChatbot();
+  };
+} else {
+  var originalBindEvents = window.bindEvents;
+  window.bindEvents = function() {
+    console.log("扩展现有全局事件绑定");
+    originalBindEvents();
+    initChatbot();
+  };
+}
+
 // DOM加载完成后初始化聊天机器人
 document.addEventListener("DOMContentLoaded", function() {
   console.log("DOM加载完成，初始化聊天机器人...");
-  initChatbot();
+  if (typeof window.bindEvents === 'function') {
+    window.bindEvents();
+  } else {
+    console.warn("全局bindEvents未定义，直接初始化聊天机器人");
+    initChatbot();
+  }
 });
 
 // 初始化聊天机器人
