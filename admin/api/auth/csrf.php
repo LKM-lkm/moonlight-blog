@@ -2,36 +2,28 @@
 /**
  * CSRF Token生成API
  */
-require_once __DIR__ . '/../../includes/init.php';
 
-// 设置响应头
-header('Content-Type: application/json; charset=utf-8');
-header('X-Content-Type-Options: nosniff');
+// 禁用错误显示
+ini_set('display_errors', 0);
+error_reporting(0);
+
+require_once '../../includes/init.php';
+
+header('Content-Type: application/json');
 
 try {
-    // 生成新的CSRF Token
-    $token = $security->generateCsrfToken();
+    // 生成CSRF Token
+    $token = bin2hex(random_bytes(32));
+    $_SESSION['csrf_token'] = $token;
     
-    // 返回成功响应
     echo json_encode([
         'success' => true,
         'token' => $token
     ]);
-
 } catch (Exception $e) {
-    // 设置HTTP状态码
     http_response_code(500);
-    
-    // 返回错误响应
     echo json_encode([
         'success' => false,
-        'message' => '生成CSRF Token失败'
-    ]);
-    
-    // 记录错误日志
-    $logger->error('生成CSRF Token失败', [
-        'error' => $e->getMessage(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine()
+        'message' => 'Failed to generate CSRF token'
     ]);
 } 

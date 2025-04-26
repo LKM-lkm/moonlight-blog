@@ -10,14 +10,14 @@
  * - 安全设置
  */
 
-// 错误报告设置
+// 加载常量定义
+require_once __DIR__ . '/constants.php';
+
+// 设置错误处理
 error_reporting(E_ALL);
 ini_set('display_errors', DEBUG_MODE ? 1 : 0);
 ini_set('log_errors', 1);
 ini_set('error_log', LOG_FILE);
-
-// 加载常量定义
-require_once __DIR__ . '/constants.php';
 
 // 设置时区
 date_default_timezone_set('Asia/Shanghai');
@@ -32,7 +32,7 @@ define('UPLOADS_PATH', ROOT_PATH . '/uploads');
 define('CACHE_PATH', ROOT_PATH . '/cache');
 
 // 加载配置文件
-require_once CONFIG_PATH . '/config.php';
+$config = require CONFIG_PATH . '/config.php';
 require_once CONFIG_PATH . '/database.php';
 
 // 自动加载类
@@ -71,32 +71,38 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 
 }
 $_SESSION['last_activity'] = time();
 
-// 初始化数据库连接
+// 初始化组件
 try {
+    // 初始化数据库连接
     $db = Database::getInstance();
+    
+    // 初始化日志实例
+    $logger = Logger::getInstance();
+    
+    // 初始化错误处理
+    $errorHandler = new ErrorHandler($logger);
+    set_exception_handler([$errorHandler, 'handleException']);
+    
+    // 初始化安全实例
+    $security = Security::getInstance();
+    
+    // 初始化认证实例
+    $auth = Auth::getInstance();
+    
 } catch (Exception $e) {
-    error_log('数据库连接失败: ' . $e->getMessage());
-    die('系统维护中，请稍后再试');
+    // 如果在初始化过程中发生错误，使用基本错误处理
+    error_log($e->getMessage());
+    die('系统初始化失败，请稍后再试');
 }
-
-// 初始化安全实例
-$security = Security::getInstance();
-
-// 初始化日志实例
-$logger = Logger::getInstance($db->getConnection());
-
-// 初始化认证实例
-$auth = Auth::getInstance();
 
 // 过滤输入数据
 $_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING) ?? [];
 $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING) ?? [];
 
 // CSRF保护
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$security->isApiRequest()) {
     if (!isset($_POST[CSRF_TOKEN_NAME]) || !$security->validateCsrfToken($_POST[CSRF_TOKEN_NAME])) {
-        http_response_code(403);
-        die('无效的请求');
+        throw new Exception('无效的请求', 403);
     }
 }
 
@@ -107,6 +113,31 @@ $logger->info('收到请求', [
     'ip' => $security->getClientIp(),
     'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
 ]);
+
+// 设置响应头
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('X-XSS-Protection: 1; mode=block');
+
+// 允许来自Pages域名的请求
+$allowedOrigins = [
+    'https://likems-blog.pages.dev',
+    'http://localhost:9000'
+];
+
+$origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+
+if (in_array($origin, $allowedOrigins)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, X-Requested-With');
+}
+
+// 如果是预检请求，直接返回
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
 
 // 返回配置
 return [
