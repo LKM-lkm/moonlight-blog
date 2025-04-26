@@ -25,11 +25,18 @@ document.addEventListener('DOMContentLoaded', function() {
         body.classList.add(savedTheme);
         icon.className = savedTheme === 'theme-dark' ? 'fas fa-sun' : 'fas fa-moon';
         console.log("应用已保存的主题:", savedTheme);
-    } else if (prefersDarkScheme.matches) {
-        body.classList.remove('theme-light', 'theme-dark');
-        body.classList.add('theme-dark');
-        icon.className = 'fas fa-sun';
-        console.log("应用系统偏好的暗色主题");
+    } else {
+        // 默认应用亮色主题，除非系统偏好是暗色
+        body.classList.remove('theme-light', 'theme-dark', 'theme-auto');
+        if (prefersDarkScheme.matches) {
+            body.classList.add('theme-dark');
+            icon.className = 'fas fa-sun';
+            console.log("应用系统偏好的暗色主题");
+        } else {
+            body.classList.add('theme-light');
+            icon.className = 'fas fa-moon';
+            console.log("应用默认的亮色主题");
+        }
     }
     
     // 监听系统主题变化
