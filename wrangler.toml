@@ -1,11 +1,7 @@
 # Cloudflare配置
-name = "moonlight-blog"
+name = "moonlight-blog-api"
 main = "src/worker.js"
 compatibility_date = "2024-01-01"
-
-# Pages配置
-[pages]
-build_output_dir = "dist"
 
 # KV命名空间配置
 kv_namespaces = [
