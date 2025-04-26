@@ -4,17 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理员登录 - Moonlight</title>
-    <link rel="stylesheet" href="/admin/assets/css/login.css">
+    <link rel="stylesheet" href="../../assets/css/admin/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <base href="/admin/">
 </head>
-<body>
-    <!-- 背景动画 -->
-    <div class="stars"></div>
-    <div class="twinkling"></div>
-    <div class="clouds"></div>
+<body class="theme-auto">
+    <!-- 背景效果 -->
+    <div class="stars-container">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+    </div>
+    
+    <div class="clouds">
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+    </div>
+    
+    <div class="moonlight"></div>
 
-    <div class="login-container">
+    <div class="login-container glass-panel">
         <div class="login-header">
             <div class="logo">
                 <i class="fas fa-moon"></i>
@@ -52,7 +61,7 @@
 
             <div id="errorMessage" class="error-message"></div>
             
-            <button type="submit" class="login-button">
+            <button type="submit" class="login-button btn">
                 <span>登录</span>
             </button>
         </form>
