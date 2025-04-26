@@ -265,10 +265,10 @@ function scrollToBottom() {
   }
 }
 
-// 导出API以供其他模块使用
-export {
-  initChatbot,
-  toggleChatbot,
+// 将功能暴露到window对象，以便全局访问
+window.chatbotAPI = {
+  init: initChatbot,
+  toggle: toggleChatbot,
   addUserMessage,
   addBotMessage,
   handleUserMessage
