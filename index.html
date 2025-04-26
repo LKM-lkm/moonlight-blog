@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moonlight博客 | 个人博客</title>
-    <!-- 安全策略：防止加载外部脚本和资源 -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self';">
+    <!-- 安全策略：允许从部署域名加载资源 -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://likems-blog.pages.dev; script-src 'self' 'unsafe-inline' https://likems-blog.pages.dev; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://likems-blog.pages.dev; font-src 'self' https://cdnjs.cloudflare.com https://likems-blog.pages.dev; img-src 'self' data: https://likems-blog.pages.dev; connect-src 'self' https://likems-blog.pages.dev;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Cache-Control" content="max-age=31536000, immutable">
     
