@@ -38,7 +38,7 @@
                 <ul>
                     <li><a href="#" class="active">首页</a></li>
                     <li><a href="#articles">文章</a></li>
-                    <li><a href="#about">关于</a></li>
+                    <li><a href="#profile">关于</a></li>
                 </ul>
             </nav>
             <div class="theme-toggle">
@@ -189,7 +189,7 @@
                     <ul>
                         <li><a href="#">首页</a></li>
                         <li><a href="#articles">文章</a></li>
-                        <li><a href="#about">关于</a></li>
+                        <li><a href="#profile">关于</a></li>
                         <li><a href="admin/login.html">管理入口</a></li>
                     </ul>
                 </div>
@@ -208,7 +208,27 @@
     // 全局绑定事件函数
     function bindEvents() {
         console.log("绑定全局事件");
-        // 这里可以添加全局事件绑定逻辑
+        
+        // 绑定平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                var target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 更新活动状态
+                    document.querySelectorAll('nav a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
     }
     
     // 在DOMContentLoaded时调用
