@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "build": "mkdir -p dist && cp -r public/* dist/"
+    "build": "echo 'No build step required'"
   },
   "keywords": [
     "blog",
