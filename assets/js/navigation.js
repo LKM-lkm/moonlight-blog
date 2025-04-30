@@ -28,4 +28,12 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
+
+  // 选中所有 href="#" 的 a 标签
+  document.querySelectorAll('a[href="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
 }); 

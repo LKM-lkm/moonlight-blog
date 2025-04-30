@@ -47,15 +47,6 @@ const welcomeMessages = [
 
 // DOM加载完成后初始化聊天机器人
 document.addEventListener("DOMContentLoaded", function() {
-  console.log("DOM加载完成，初始化聊天机器人...");
-  initChatbot();
-});
-
-// 初始化聊天机器人
-function initChatbot() {
-  console.log("初始化聊天机器人...");
-  
-  // 查找DOM元素
   chatbotWrapper = document.querySelector(".chatbot-wrapper");
   chatbotContainer = document.querySelector(".chatbot-container");
   chatbotToggle = document.querySelector(".chatbot-toggle");
@@ -63,42 +54,36 @@ function initChatbot() {
   chatbotForm = document.querySelector(".chatbot-form");
   messageInput = document.querySelector("#chatbot-input");
   messagesList = document.querySelector(".chatbot-messages");
-  
-  console.log("聊天机器人元素:", 
-    chatbotWrapper ? "包装器OK" : "包装器不存在", 
-    chatbotContainer ? "容器OK" : "容器不存在", 
-    chatbotToggle ? "切换按钮OK" : "切换按钮不存在"
-  );
-  
-  // 确保所有元素存在
-  if (!chatbotToggle || !chatbotContainer || !messagesList) {
-    console.error("聊天机器人元素不存在，跳过初始化");
-    return;
+
+  // 聊天机器人按钮事件
+  if (chatbotToggle && chatbotContainer) {
+    chatbotToggle.addEventListener('click', function() {
+      chatbotContainer.classList.toggle('active');
+    });
   }
-  
-  // 清空现有消息，避免重复
-  messagesList.innerHTML = "";
-  
-  // 绑定事件
-  bindChatbotEvents();
-  
-  // 添加欢迎消息
-  setTimeout(function() {
-    // 先添加第一条消息
-    addBotMessage(welcomeMessages[0]);
-    
-    // 延迟添加后续消息，营造打字效果
-    for (let i = 1; i < welcomeMessages.length; i++) {
-      setTimeout(() => {
-        addBotMessage(welcomeMessages[i]);
-        // 在最后一条消息后显示预设问题
-        if (i === welcomeMessages.length - 1) {
-          showPresetQuestions();
-        }
-      }, i * 300);
-    }
-  }, 500);
-}
+  if (chatbotClose && chatbotContainer) {
+    chatbotClose.addEventListener('click', function() {
+      chatbotContainer.classList.remove('active');
+    });
+  }
+
+  // 继续原有初始化逻辑
+  if (chatbotToggle && chatbotContainer && messagesList) {
+    messagesList.innerHTML = "";
+    bindChatbotEvents();
+    setTimeout(function() {
+      addBotMessage(welcomeMessages[0]);
+      for (let i = 1; i < welcomeMessages.length; i++) {
+        setTimeout(() => {
+          addBotMessage(welcomeMessages[i]);
+          if (i === welcomeMessages.length - 1) {
+            showPresetQuestions();
+          }
+        }, i * 300);
+      }
+    }, 500);
+  }
+});
 
 // 绑定聊天机器人事件
 function bindChatbotEvents() {
