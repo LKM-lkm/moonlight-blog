@@ -68,8 +68,9 @@
 
 .message-content {
     padding: 10px 15px;
-    border-radius: 12px;
+    border-radius: 16px !important;
     word-wrap: break-word;
+    background-clip: padding-box;
 }
 
 .bot-message {
@@ -247,4 +248,22 @@
 
 .theme-dark .typing-indicator span {
     background: var(--text-secondary, #a0aec0);
+}
+
+/* 聊天机器人按钮图标颜色（亮色模式） */
+.theme-light .chatbot-toggle i {
+    color: #fff !important;
+}
+
+/* 聊天机器人按钮图标颜色（暗色模式，保持白色或根据主题调整） */
+.theme-dark .chatbot-toggle i {
+    color: #fff !important;
+}
+
+/* 保证按钮本身背景色也适配主题 */
+.theme-light .chatbot-toggle {
+    background: var(--primary, #6e8ebc) !important;
+}
+.theme-dark .chatbot-toggle {
+    background: var(--primary, #6e8ebc) !important;
 } 
