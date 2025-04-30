@@ -2,7 +2,6 @@
  * 管理后台主要JavaScript文件
  */
 
-import '../../assets/css/style.css';
 import '../../assets/css/theme.css';
 import '../../assets/css/login.css';
 
