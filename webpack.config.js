@@ -70,6 +70,7 @@ module.exports = {
     }),
     new CopyWebpackPlugin({
       patterns: [
+        { from: 'assets/css', to: 'assets/css' },
         { from: 'assets/images', to: 'images' },
         { from: 'assets/fonts', to: 'fonts' },
         { from: 'admin/api', to: 'admin/api' },
