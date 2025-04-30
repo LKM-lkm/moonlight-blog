@@ -4,17 +4,17 @@
  */
 
 // 全局变量
-var chatbotWrapper;
-var chatbotContainer;
-var chatbotToggle;
-var chatbotClose;
-var messagesList;
-var messageInput;
-var chatbotForm;
-var typingIndicator;
+let chatbotWrapper;
+let chatbotContainer;
+let chatbotToggle;
+let chatbotClose;
+let messagesList;
+let messageInput;
+let chatbotForm;
+let typingIndicator;
 
 // 预设问题和回答
-var presetQA = [
+const presetQA = [
   {
     question: "这个博客是做什么的？",
     answer: "这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版，人工智能、云计算和大数据领域。"
@@ -38,7 +38,7 @@ const presetAnswers = {
 };
 
 // 欢迎消息
-var welcomeMessages = [
+const welcomeMessages = [
   "我是Moonlight助手，可以帮您：",
   "1. 了解博客内容和功能",
   "2. 回答常见问题",
@@ -189,9 +189,9 @@ function sendMessage() {
 // 处理用户消息
 function handleUserMessage(message) {
   // 检查是否匹配预设问题
-  var matchedPreset = null;
-  for (var i = 0; i < presetQA.length; i++) {
-    var qa = presetQA[i];
+  let matchedPreset = null;
+  for (let i = 0; i < presetQA.length; i++) {
+    const qa = presetQA[i];
     if (qa.question.toLowerCase().includes(message.toLowerCase()) || 
         message.toLowerCase().includes(qa.question.toLowerCase())) {
       matchedPreset = qa;
@@ -205,8 +205,8 @@ function handleUserMessage(message) {
   }
   
   // 检查是否匹配响应列表
-  var responseFound = false;
-  for (var key in presetAnswers) {
+  let responseFound = false;
+  for (const key in presetAnswers) {
     if (message.toLowerCase().includes(key.toLowerCase())) {
       addBotMessage(presetAnswers[key]);
       responseFound = true;
@@ -225,7 +225,7 @@ function handleUserMessage(message) {
 function addUserMessage(message) {
   if (!messagesList) return;
   
-  var messageElement = document.createElement("div");
+  const messageElement = document.createElement("div");
   messageElement.className = "message user-message";
   messageElement.innerHTML = '<div class="message-content">' + message + '</div>';
   messagesList.appendChild(messageElement);
@@ -237,7 +237,7 @@ function addUserMessage(message) {
 function addBotMessage(message) {
   if (!messagesList) return;
   
-  var messageElement = document.createElement("div");
+  const messageElement = document.createElement("div");
   messageElement.className = "message bot-message";
   messageElement.innerHTML = '<div class="message-content">' + message + '</div>';
   messagesList.appendChild(messageElement);
@@ -250,17 +250,17 @@ function showPresetQuestions() {
   if (!messagesList) return;
   
   // 检查是否已经存在预设问题
-  var existingQuestions = messagesList.querySelector('.preset-questions');
+  const existingQuestions = messagesList.querySelector('.preset-questions');
   if (existingQuestions) {
     existingQuestions.remove();
   }
   
-  var questionsElement = document.createElement("div");
+  const questionsElement = document.createElement("div");
   questionsElement.className = "preset-questions";
   
-  for (var i = 0; i < presetQA.length; i++) {
+  for (let i = 0; i < presetQA.length; i++) {
     (function(qa) {
-      var questionButton = document.createElement("button");
+      const questionButton = document.createElement("button");
       questionButton.className = "preset-question";
       questionButton.textContent = qa.question;
       questionButton.onclick = function() {
@@ -291,7 +291,7 @@ function showTypingIndicator() {
   // 移除已存在的输入指示器
   removeTypingIndicator();
   
-  var typingDiv = document.createElement("div");
+  const typingDiv = document.createElement("div");
   typingDiv.className = "message bot-message typing-indicator";
   typingDiv.innerHTML = "<span></span><span></span><span></span>";
   typingDiv.id = "typing-indicator";
