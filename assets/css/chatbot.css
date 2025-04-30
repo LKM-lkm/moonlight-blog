@@ -66,29 +66,24 @@
     display: flex;
 }
 
-.message-content {
+.chatbot-container .message-content {
     padding: 10px 15px;
-    border-radius: 16px !important;
+    border-radius: 16px;
     word-wrap: break-word;
     background-clip: padding-box;
+    background: var(--surface-container-high, #fff);
+    color: var(--on-surface, #222);
+    transition: background 0.3s, color 0.3s;
 }
 
-.bot-message {
-    margin-right: auto;
+.chatbot-container .user-message .message-content {
+    background: var(--primary, #6e8ebc);
+    color: var(--on-primary, #fff);
 }
 
-.bot-message .message-content {
-    background: var(--surface-container-high);
-    color: var(--on-surface);
-}
-
-.user-message {
-    margin-left: auto;
-}
-
-.user-message .message-content {
-    background: var(--primary);
-    color: var(--on-primary);
+.chatbot-container .bot-message .message-content {
+    background: var(--surface-container-high, #fff);
+    color: var(--on-surface, #222);
 }
 
 /* 输入框区域 */
@@ -161,8 +156,9 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--outline);
+    background: var(--outline, #bbb);
     animation: typing 1s infinite ease-in-out;
+    display: inline-block;
 }
 
 .typing-indicator span:nth-child(2) {
@@ -266,4 +262,18 @@
 }
 .theme-dark .chatbot-toggle {
     background: var(--primary, #6e8ebc) !important;
+}
+
+/* 暗色模式 */
+.theme-dark .chatbot-container .message-content {
+    background: var(--surface-container-high, #232a34);
+    color: var(--on-surface, #f1f1f1);
+}
+.theme-dark .chatbot-container .user-message .message-content {
+    background: var(--primary, #6e8ebc);
+    color: var(--on-primary, #fff);
+}
+.theme-dark .chatbot-container .bot-message .message-content {
+    background: var(--surface-container-high, #232a34);
+    color: var(--on-surface, #f1f1f1);
 } 
