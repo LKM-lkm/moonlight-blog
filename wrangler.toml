@@ -1,12 +1,12 @@
 # Cloudflare配置
 name = "moonlight-blog"
 main = "src/worker.js"
-compatibility_date = "2024-01-01"
+compatibility_date = "2024-04-12"
 
 # Worker和Pages配置
 [build]
 command = "npm run build"
-pages_build_output_dir = "dist"
+output_dir = "dist"
 base_directory = "."
 
 # KV命名空间配置
@@ -25,6 +25,8 @@ local_protocol = "http"
 # 环境变量
 [vars]
 NODE_ENV = "production"
+NODE_VERSION = "16"
+NPM_VERSION = "8"
 ADMIN_USERNAME = "likem"
 ADMIN_PASSWORD_HASH = "$2a$10$k0PWLodgQoyMuFL8NJLsfO0b7Wc4J.4/RFLTQG4v2pNGJUwdkbKTy"
 JWT_SECRET = "63b65efd69399246549267e0959dffc9c5276cf1a5da2d28b4eba4dc54a56242"
