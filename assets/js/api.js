@@ -1,19 +1,38 @@
-// 统一API请求模块
-const API_BASE = 'https://moonlight-blog-api.<你的 workers 子域>.workers.dev'; // TODO: 替换为你的真实Workers子域
+// API基础URL
+const API_BASE = '/api';
 
+// 获取CSRF Token
 export async function getCSRFToken() {
-  const res = await fetch(`${API_BASE}/admin/api/auth/csrf`, {
+  const res = await fetch(`${API_BASE}/auth/csrf`, {
     credentials: 'include'
   });
   return res.json();
 }
 
+// 用户登录
 export async function login(username, password, csrf_token) {
-  const res = await fetch(`${API_BASE}/admin/api/auth/login`, {
+  const res = await fetch(`${API_BASE}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
     body: JSON.stringify({ username, password, csrf_token })
+  });
+  return res.json();
+}
+
+// 用户登出
+export async function logout() {
+  const res = await fetch(`${API_BASE}/auth/logout`, {
+    method: 'POST',
+    credentials: 'include'
+  });
+  return res.json();
+}
+
+// 获取当前用户信息
+export async function getCurrentUser() {
+  const res = await fetch(`${API_BASE}/auth/me`, {
+    credentials: 'include'
   });
   return res.json();
 }

@@ -118,50 +118,23 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // 初始化主题
     function initTheme() {
-        // 检查本地存储的主题设置
         const savedTheme = localStorage.getItem('theme');
-        
-        // 检查系统主题
-        const prefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        // 根据存储的主题或系统主题设置当前主题
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-theme');
-            document.body.classList.remove('dark-theme');
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
-        } else if (savedTheme === 'dark' || prefersDarkTheme) {
+        if (savedTheme) {
+            document.body.classList.add(`${savedTheme}-theme`);
+            themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.body.classList.add('dark-theme');
-            document.body.classList.remove('light-theme');
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        } else {
-            document.body.classList.remove('light-theme');
-            document.body.classList.remove('dark-theme');
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
+            themeIcon.className = 'fas fa-sun';
         }
     }
     
     // 切换主题
     function toggleTheme() {
-        if (document.body.classList.contains('dark-theme') || 
-            (!document.body.classList.contains('light-theme') && 
-             window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            // 当前是暗色主题，切换到亮色
-            document.body.classList.remove('dark-theme');
-            document.body.classList.add('light-theme');
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
-            localStorage.setItem('theme', 'light');
-        } else {
-            // 当前是亮色主题，切换到暗色
-            document.body.classList.remove('light-theme');
-            document.body.classList.add('dark-theme');
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-            localStorage.setItem('theme', 'dark');
-        }
+        const isDark = document.body.classList.contains('dark-theme');
+        document.body.classList.toggle('dark-theme');
+        document.body.classList.toggle('light-theme');
+        themeIcon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
     }
     
     // 添加shake动画样式

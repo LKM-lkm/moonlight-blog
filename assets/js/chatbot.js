@@ -304,14 +304,14 @@ function showTypingIndicator() {
 // 隐藏正在输入指示器
 function removeTypingIndicator() {
   var typingIndicator = document.getElementById("typing-indicator");
-  if (typingIndicator) {
-    typingIndicator.remove();
-  }
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
 }
 
 // 滚动到底部
 function scrollToBottom() {
   if (messagesList) {
     messagesList.scrollTop = messagesList.scrollHeight;
-  }
-} 
+    }
+}
