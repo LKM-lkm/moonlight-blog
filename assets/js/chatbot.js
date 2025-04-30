@@ -30,13 +30,10 @@ var presetQA = [
 ];
 
 // 聊天机器人回复
-var botResponses = {
-  "你好": "你好！很高兴见到你！请问有什么我可以帮你的吗？",
-  "关于": "这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版，人工智能、云计算和大数据领域。",
-  "文章": "您可以在首页查看最新文章，或者通过导航栏的\"文章\"页面浏览所有文章。",
-  "联系": "您可以通过页面底部的社交媒体链接或者邮箱联系博主。",
+const presetAnswers = {
+  "你好": "你好！我是Moonlight助手，有什么可以帮您的吗？",
   "你是谁": "我是Moonlight助手，这个网站的问答机器人。",
-  "更多": "您好！Moonlight博客目前正在建设中，功能尚不完善，敬请期待！"
+  "更多": "您好！Moonlight博客目前正在建设中，功能尚不完善，敬请期待！",
   "帮助": "我可以帮您了解网站的功能、导航到特定页面，或者回答关于博客的问题。请告诉我您想了解什么？"
 };
 
@@ -209,9 +206,9 @@ function handleUserMessage(message) {
   
   // 检查是否匹配响应列表
   var responseFound = false;
-  for (var key in botResponses) {
+  for (var key in presetAnswers) {
     if (message.toLowerCase().includes(key.toLowerCase())) {
-      addBotMessage(botResponses[key]);
+      addBotMessage(presetAnswers[key]);
       responseFound = true;
       break;
     }
