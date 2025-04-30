@@ -63,12 +63,7 @@ if (typeof window.bindEvents !== 'function') {
 // DOM加载完成后初始化聊天机器人
 document.addEventListener("DOMContentLoaded", function() {
   console.log("DOM加载完成，初始化聊天机器人...");
-  if (typeof window.bindEvents === 'function') {
-    window.bindEvents();
-  } else {
-    console.warn("全局bindEvents未定义，直接初始化聊天机器人");
-    initChatbot();
-  }
+  initChatbot();
 });
 
 // 初始化聊天机器人
@@ -77,12 +72,12 @@ function initChatbot() {
   
   // 查找DOM元素
   chatbotWrapper = document.querySelector(".chatbot-wrapper");
-  chatbotContainer = document.getElementById("chatbot-container");
-  chatbotToggle = document.getElementById("chatbot-toggle");
-  chatbotClose = document.getElementById("chatbot-close");
-  chatbotForm = document.getElementById("chatbot-form");
-  messageInput = document.getElementById("chatbot-input");
-  messagesList = document.getElementById("chatbot-messages");
+  chatbotContainer = document.querySelector(".chatbot-container");
+  chatbotToggle = document.querySelector(".chatbot-toggle");
+  chatbotClose = document.querySelector(".chatbot-close");
+  chatbotForm = document.querySelector(".chatbot-form");
+  messageInput = document.querySelector(".chatbot-input");
+  messagesList = document.querySelector(".chatbot-messages");
   
   console.log("聊天机器人元素:", 
     chatbotWrapper ? "包装器OK" : "包装器不存在", 
@@ -105,22 +100,18 @@ function initChatbot() {
   // 添加欢迎消息
   setTimeout(function() {
     // 先添加第一条消息
-    addBotMessage("这是一个个人博客网站，博主是一名学生，热爱技术和创新。主要关注绘画、文字排版，人工智能、云计算和大数据领域。");
+    addBotMessage(welcomeMessages[0]);
     
     // 延迟添加后续消息，营造打字效果
-    setTimeout(function() {
-      for (var i = 0; i < welcomeMessages.length; i++) {
-        (function(index) {
-          setTimeout(function() {
-            addBotMessage(welcomeMessages[index]);
-            // 在最后一条消息后显示预设问题
-            if (index === welcomeMessages.length - 1) {
-              showPresetQuestions();
-            }
-          }, index * 300);
-        })(i);
-      }
-    }, 300);
+    for (let i = 1; i < welcomeMessages.length; i++) {
+      setTimeout(() => {
+        addBotMessage(welcomeMessages[i]);
+        // 在最后一条消息后显示预设问题
+        if (i === welcomeMessages.length - 1) {
+          showPresetQuestions();
+        }
+      }, i * 300);
+    }
   }, 500);
 }
 
@@ -128,28 +119,28 @@ function initChatbot() {
 function bindChatbotEvents() {
   console.log("绑定聊天机器人事件...");
   
-  // 切换聊天机器人显示/隐藏
-  chatbotToggle.onclick = function(e) {
-    console.log("点击聊天机器人切换按钮");
-    e.preventDefault();
-    toggleChatbot();
-    return false;
-  };
+  if (chatbotToggle) {
+    chatbotToggle.addEventListener('click', function(e) {
+      console.log("点击聊天机器人切换按钮");
+      e.preventDefault();
+      toggleChatbot();
+    });
+  }
   
-  // 关闭聊天机器人
-  chatbotClose.onclick = function(e) {
-    console.log("点击关闭按钮");
-    e.preventDefault();
-    chatbotContainer.classList.remove("active");
-    return false;
-  };
+  if (chatbotClose) {
+    chatbotClose.addEventListener('click', function(e) {
+      console.log("点击关闭按钮");
+      e.preventDefault();
+      chatbotContainer.classList.remove("active");
+    });
+  }
   
-  // 处理表单提交
-  chatbotForm.onsubmit = function(e) {
-    e.preventDefault();
-    sendMessage();
-    return false;
-  };
+  if (chatbotForm) {
+    chatbotForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      sendMessage();
+    });
+  }
   
   console.log("事件绑定完成");
 }
@@ -158,12 +149,13 @@ function bindChatbotEvents() {
 function toggleChatbot() {
   console.log("切换聊天机器人状态");
   
+  chatbotContainer.classList.toggle("active");
+  
+  // 如果是打开状态，聚焦输入框并滚动到底部
   if (chatbotContainer.classList.contains("active")) {
-    chatbotContainer.classList.remove("active");
-  } else {
-    chatbotContainer.classList.add("active");
-    // 如果是打开状态，聚焦输入框
-    if (messageInput) messageInput.focus();
+    if (messageInput) {
+      messageInput.focus();
+    }
     scrollToBottom();
   }
 }
@@ -188,14 +180,13 @@ function sendMessage() {
 
 // 处理用户消息
 function handleUserMessage(message) {
-  const lowerMessage = message.toLowerCase();
+  const lowerMessage = message.toLowerCase().trim();
   
   // 检查是否匹配预设问题
   let matchedPreset = null;
-  for (let i = 0; i < presetQA.length; i++) {
-    const qa = presetQA[i];
-    if (qa.question.toLowerCase().includes(lowerMessage) || 
-        lowerMessage.includes(qa.question.toLowerCase())) {
+  for (const qa of presetQA) {
+    const questionLower = qa.question.toLowerCase();
+    if (questionLower.includes(lowerMessage) || lowerMessage.includes(questionLower)) {
       matchedPreset = qa;
       break;
     }
@@ -209,8 +200,8 @@ function handleUserMessage(message) {
   // 检查是否匹配响应列表
   let responseFound = false;
   for (const key in presetAnswers) {
-    const lowerKey = key.toLowerCase();
-    if (lowerMessage === lowerKey || lowerMessage.includes(lowerKey)) {
+    if (lowerMessage === key.toLowerCase() || lowerMessage.includes(key.toLowerCase())) {
+      console.log("匹配到关键词:", key);
       addBotMessage(presetAnswers[key]);
       responseFound = true;
       break;
@@ -219,6 +210,7 @@ function handleUserMessage(message) {
   
   // 如果没有匹配，显示默认回复
   if (!responseFound) {
+    console.log("未匹配到回答，显示默认回复");
     addBotMessage("抱歉，我还在学习中。您可以试试以下问题：");
     showPresetQuestions();
   }
