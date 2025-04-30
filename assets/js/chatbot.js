@@ -188,12 +188,14 @@ function sendMessage() {
 
 // 处理用户消息
 function handleUserMessage(message) {
+  const lowerMessage = message.toLowerCase();
+  
   // 检查是否匹配预设问题
   let matchedPreset = null;
   for (let i = 0; i < presetQA.length; i++) {
     const qa = presetQA[i];
-    if (qa.question.toLowerCase().includes(message.toLowerCase()) || 
-        message.toLowerCase().includes(qa.question.toLowerCase())) {
+    if (qa.question.toLowerCase().includes(lowerMessage) || 
+        lowerMessage.includes(qa.question.toLowerCase())) {
       matchedPreset = qa;
       break;
     }
@@ -207,7 +209,8 @@ function handleUserMessage(message) {
   // 检查是否匹配响应列表
   let responseFound = false;
   for (const key in presetAnswers) {
-    if (message.toLowerCase().includes(key.toLowerCase())) {
+    const lowerKey = key.toLowerCase();
+    if (lowerMessage === lowerKey || lowerMessage.includes(lowerKey)) {
       addBotMessage(presetAnswers[key]);
       responseFound = true;
       break;
