@@ -1,14 +1,14 @@
 // 月光云海博客 - 主入口文件
 console.log('月光云海博客已加载');
 
-// 不使用ES6模块导入，页面会直接加载所需的脚本和样式
+// 导入样式和脚本
+import '../assets/css/style.css';
+import '../assets/css/chatbot.css';
+import '../assets/js/chatbot.js';
+import '../assets/js/theme.js';
+import '../assets/js/navigation.js';
 
 // 初始化应用
 document.addEventListener('DOMContentLoaded', function() {
-    // 如果全局有bindEvents函数则调用它
-    if (typeof bindEvents === 'function') {
-        bindEvents();
-    } else {
-        console.warn("全局bindEvents函数未找到");
-    }
+    console.log('DOM加载完成，初始化应用...');
 }); 

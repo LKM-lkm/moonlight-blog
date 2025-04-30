@@ -5,10 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    main: './src/index.js',
-    admin: './admin/assets/js/admin.js',
-    theme: './assets/js/theme.js',
-    chatbot: './assets/js/chatbot.js'
+    main: './src/index.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -59,25 +56,24 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './index.html',
       filename: 'index.html',
-      chunks: ['main', 'theme', 'chatbot']
+      chunks: ['main']
     }),
     new HtmlWebpackPlugin({
       template: './admin/views/login.html',
       filename: 'admin/login/index.html',
-      chunks: ['admin', 'theme']
+      chunks: ['main']
     }),
     new HtmlWebpackPlugin({
       template: './admin/views/dashboard.html',
       filename: 'admin/dashboard/index.html',
-      chunks: ['admin', 'theme']
+      chunks: ['main']
     }),
     new CopyWebpackPlugin({
       patterns: [
         { from: 'assets/images', to: 'images' },
         { from: 'assets/fonts', to: 'fonts' },
         { from: 'admin/api', to: 'admin/api' },
-        { from: '_headers', to: '_headers' },
-        { from: 'admin/assets/js/utils.js', to: 'admin/assets/js/utils.js' }
+        { from: '_headers', to: '_headers' }
       ]
     })
   ],
@@ -100,13 +96,7 @@ module.exports = {
     compress: true,
     port: 9000,
     hot: true,
-    historyApiFallback: true,
-    proxy: {
-      '/admin/api': {
-        target: 'http://localhost:80',
-        changeOrigin: true
-      }
-    }
+    historyApiFallback: true
   },
   resolve: {
     extensions: ['.js', '.css'],
