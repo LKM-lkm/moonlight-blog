@@ -6,6 +6,7 @@ import '../assets/css/style.css';
 import '../assets/css/chatbot.css';
 import '../assets/js/theme-switcher.js';
 import '../assets/js/chatbot.js';
+import '../assets/js/navigation.js';
 // 如有全局main.js也可导入
 // import '../assets/js/main.js';
 
