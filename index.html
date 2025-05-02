@@ -21,6 +21,7 @@
         --primary-color-rgb: 110, 142, 188;
     }
     </style>
+    <!-- 不再手动引入assets/js/*.js，全部交给webpack打包注入 -->
 </head>
 <body class="theme-light">
     <div class="stars-container">
@@ -207,48 +208,5 @@
             </div>
         </div>
     </footer>
-    
-    <!-- JavaScript 文件 -->
-    <script>
-    // 设置页脚年份
-    document.getElementById('year').textContent = new Date().getFullYear();
-    
-    // 全局绑定事件函数
-    function bindEvents() {
-        console.log("绑定全局事件");
-        
-        // 绑定平滑滚动
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                
-                var target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    window.scrollTo({
-                        top: target.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                    
-                    // 更新活动状态
-                    document.querySelectorAll('nav a').forEach(link => {
-                        link.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                }
-            });
-        });
-    }
-    
-    // 在DOMContentLoaded时调用
-    document.addEventListener("DOMContentLoaded", function() {
-        console.log("文档加载完成，初始化功能");
-        if(typeof bindEvents === 'function') {
-            bindEvents();
-        }
-    });
-    </script>
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/theme-switcher.js"></script>
-    <script src="assets/js/chatbot.js"></script>
 </body>
 </html>
