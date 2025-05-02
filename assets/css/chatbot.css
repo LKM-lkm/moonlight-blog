@@ -32,9 +32,9 @@
 
 /* 聊天机器人切换按钮 */
 .chatbot-toggle {
-    width: 50px;
-    height: 50px;
-    border-radius: 25px;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
     background: var(--primary);
     color: var(--on-primary);
     border: none;
@@ -49,6 +49,10 @@
 .chatbot-toggle:hover {
     transform: scale(1.05);
     background: var(--primary-hover);
+}
+
+.chatbot-toggle i {
+    font-size: 28px;
 }
 
 /* 消息列表 */

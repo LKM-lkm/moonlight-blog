@@ -71,8 +71,8 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: 'assets/css', to: 'assets/css' },
-        { from: 'assets/images', to: 'images' },
-        { from: 'assets/fonts', to: 'fonts' },
+        { from: 'assets/images', to: 'assets/images' },
+        { from: 'assets/fonts', to: 'assets/fonts' },
         { from: 'admin/api', to: 'admin/api' },
         { from: '_headers', to: '_headers' }
       ]
