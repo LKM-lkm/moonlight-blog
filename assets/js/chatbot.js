@@ -56,21 +56,23 @@ document.addEventListener("DOMContentLoaded", function() {
   messagesList = document.querySelector(".chatbot-messages");
 
   // 聊天机器人按钮事件
+  console.log('chatbotToggle:', chatbotToggle, 'chatbotContainer:', chatbotContainer);
   if (chatbotToggle && chatbotContainer) {
     chatbotToggle.addEventListener('click', function() {
       chatbotContainer.classList.toggle('active');
+      console.log('点击聊天机器人按钮，切换active');
     });
   }
   if (chatbotClose && chatbotContainer) {
     chatbotClose.addEventListener('click', function() {
       chatbotContainer.classList.remove('active');
+      console.log('点击关闭按钮，移除active');
     });
   }
 
   // 继续原有初始化逻辑
   if (chatbotToggle && chatbotContainer && messagesList) {
     messagesList.innerHTML = "";
-    bindChatbotEvents();
     setTimeout(function() {
       addBotMessage(welcomeMessages[0]);
       for (let i = 1; i < welcomeMessages.length; i++) {
@@ -84,51 +86,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }, 500);
   }
 });
-
-// 绑定聊天机器人事件
-function bindChatbotEvents() {
-  console.log("绑定聊天机器人事件...");
-  
-  if (chatbotToggle) {
-    chatbotToggle.addEventListener('click', function(e) {
-      console.log("点击聊天机器人切换按钮");
-      e.preventDefault();
-      toggleChatbot();
-    });
-  }
-  
-  if (chatbotClose) {
-    chatbotClose.addEventListener('click', function(e) {
-      console.log("点击关闭按钮");
-      e.preventDefault();
-      chatbotContainer.classList.remove("active");
-    });
-  }
-  
-  if (chatbotForm) {
-    chatbotForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      sendMessage();
-    });
-  }
-  
-  console.log("事件绑定完成");
-}
-
-// 切换聊天机器人显示/隐藏
-function toggleChatbot() {
-  console.log("切换聊天机器人状态");
-  
-  chatbotContainer.classList.toggle("active");
-  
-  // 如果是打开状态，聚焦输入框并滚动到底部
-  if (chatbotContainer.classList.contains("active")) {
-    if (messageInput) {
-      messageInput.focus();
-    }
-    scrollToBottom();
-  }
-}
 
 // 发送消息
 function sendMessage() {
