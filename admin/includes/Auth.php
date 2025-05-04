@@ -3,89 +3,87 @@
  * 认证类
  */
 class Auth {
-    private static $instance = null;
     private $db;
-    private $security;
-    private $logger;
-    private $config;
+    private $session;
+    private $maxLoginAttempts = 5;
+    private $lockoutTime = 900; // 15分钟
 
-    private function __construct() {
-        global $config;
-        $this->config = $config;
-        $this->db = Database::getInstance();
-        $this->security = Security::getInstance();
-        $this->logger = Logger::getInstance();
-    }
-
-    public static function getInstance() {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
+    public function __construct($db) {
+        $this->db = $db;
+        $this->session = new Session();
     }
 
     /**
      * 用户登录
      * @param string $username 用户名
      * @param string $password 密码
+     * @param bool $remember 是否记住登录
      * @return array 登录结果
      */
-    public function login($username, $password) {
-        try {
-            // 验证输入
-            if (empty($username) || empty($password)) {
-                return ['success' => false, 'message' => '用户名和密码不能为空'];
-            }
+    public function login($username, $password, $remember = false) {
+        // 检查登录尝试次数
+        if ($this->isLoginLocked()) {
+            return ['success' => false, 'message' => '登录尝试次数过多，请稍后再试'];
+        }
 
-            // 查询用户信息
-            $user = $this->db->fetch(
-                "SELECT * FROM users WHERE username = ?",
-                [$username]
-            );
+        // 获取用户信息
+        $user = $this->db->getUserByUsername($username);
+        if (!$user || !password_verify($password, $user['password'])) {
+            $this->incrementLoginAttempts();
+            return ['success' => false, 'message' => '用户名或密码错误'];
+        }
 
-            if (!$user) {
-                $this->logger->warning('登录失败：用户不存在', ['username' => $username]);
-                return ['success' => false, 'message' => '用户名或密码错误'];
-            }
+        // 检查用户状态
+        if ($user['status'] !== 'active') {
+            return ['success' => false, 'message' => '账户已被禁用'];
+        }
 
-            // 验证密码
-            if (!password_verify($password, $user['password'])) {
-                $this->logger->warning('登录失败：密码错误', ['username' => $username]);
-                return ['success' => false, 'message' => '用户名或密码错误'];
-            }
+        // 登录成功
+        $this->resetLoginAttempts();
+        $this->startSession($user, $remember);
+        
+        return ['success' => true, 'message' => '登录成功'];
+    }
 
-            // 更新最后登录时间
-            $this->db->update('users', 
-                ['last_login' => date('Y-m-d H:i:s')],
-                ['id' => $user['id']]
-            );
+    /**
+     * 用户登出
+     */
+    public function logout() {
+        $this->session->destroy();
+    }
 
-            // 记录登录日志
-            $this->db->insert('user_login_logs', [
-                'user_id' => $user['id'],
-                'login_ip' => $_SERVER['REMOTE_ADDR'],
-                'login_time' => date('Y-m-d H:i:s'),
-                'user_agent' => $_SERVER['HTTP_USER_AGENT']
-            ]);
+    private function isLoginLocked() {
+        $attempts = $this->session->get('login_attempts', 0);
+        $lastAttempt = $this->session->get('last_attempt_time', 0);
+        
+        if ($attempts >= $this->maxLoginAttempts && 
+            (time() - $lastAttempt) < $this->lockoutTime) {
+            return true;
+        }
+        return false;
+    }
 
-            // 设置会话
-            $_SESSION['user'] = [
-                'id' => $user['id'],
-                'username' => $user['username'],
-                'email' => $user['email'],
-                'role' => $user['role'],
-                'last_active' => time()
-            ];
+    private function incrementLoginAttempts() {
+        $attempts = $this->session->get('login_attempts', 0);
+        $this->session->set('login_attempts', $attempts + 1);
+        $this->session->set('last_attempt_time', time());
+    }
 
-            $this->logger->info('用户登录成功', ['username' => $username]);
-            return ['success' => true, 'message' => '登录成功'];
+    private function resetLoginAttempts() {
+        $this->session->delete('login_attempts');
+        $this->session->delete('last_attempt_time');
+    }
 
-        } catch (Exception $e) {
-            $this->logger->error('登录过程发生错误', [
-                'username' => $username,
-                'error' => $e->getMessage()
-            ]);
-            return ['success' => false, 'message' => '登录过程中发生错误，请稍后重试'];
+    private function startSession($user, $remember) {
+        $this->session->regenerate();
+        $this->session->set('user_id', $user['id']);
+        $this->session->set('username', $user['username']);
+        $this->session->set('role', $user['role']);
+
+        if ($remember) {
+            $token = bin2hex(random_bytes(32));
+            $this->db->updateRememberToken($user['id'], $token);
+            setcookie('remember_token', $token, time() + 86400 * 30, '/', '', true, true);
         }
     }
 
@@ -94,30 +92,7 @@ class Auth {
      * @return bool
      */
     public function isLoggedIn() {
-        if (!isset($_SESSION['user'])) {
-            return false;
-        }
-
-        // 检查会话是否过期
-        $timeout = $this->config['session']['timeout'] ?? 1800; // 默认30分钟
-        if (time() - $_SESSION['user']['last_active'] > $timeout) {
-            $this->logout();
-            return false;
-        }
-
-        $_SESSION['user']['last_active'] = time();
-        return true;
-    }
-
-    /**
-     * 用户登出
-     */
-    public function logout() {
-        if (isset($_SESSION['user'])) {
-            $this->logger->info('用户登出', ['username' => $_SESSION['user']['username']]);
-            unset($_SESSION['user']);
-        }
-        session_destroy();
+        return $this->session->has('user_id');
     }
 
     /**
@@ -125,7 +100,14 @@ class Auth {
      * @return array|null
      */
     public function getCurrentUser() {
-        return $_SESSION['user'] ?? null;
+        if (!$this->isLoggedIn()) {
+            return null;
+        }
+        return [
+            'id' => $this->session->get('user_id'),
+            'username' => $this->session->get('username'),
+            'role' => $this->session->get('role')
+        ];
     }
 
     /**

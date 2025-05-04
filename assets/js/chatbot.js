@@ -47,44 +47,59 @@ const welcomeMessages = [
 
 // DOM加载完成后初始化聊天机器人
 document.addEventListener("DOMContentLoaded", function() {
-  chatbotWrapper = document.querySelector(".chatbot-wrapper");
-  chatbotContainer = document.querySelector(".chatbot-container");
-  chatbotToggle = document.querySelector(".chatbot-toggle");
-  chatbotClose = document.querySelector(".chatbot-close");
-  chatbotForm = document.querySelector(".chatbot-form");
-  messageInput = document.querySelector("#chatbot-input");
-  messagesList = document.querySelector(".chatbot-messages");
-
-  // 聊天机器人按钮事件
-  console.log('chatbotToggle:', chatbotToggle, 'chatbotContainer:', chatbotContainer);
-  if (chatbotToggle && chatbotContainer) {
-    chatbotToggle.addEventListener('click', function() {
-      chatbotContainer.classList.toggle('active');
-      console.log('点击聊天机器人按钮，切换active');
-    });
-  }
-  if (chatbotClose && chatbotContainer) {
-    chatbotClose.addEventListener('click', function() {
-      chatbotContainer.classList.remove('active');
-      console.log('点击关闭按钮，移除active');
-    });
-  }
-
-  // 继续原有初始化逻辑
-  if (chatbotToggle && chatbotContainer && messagesList) {
-    messagesList.innerHTML = "";
-    setTimeout(function() {
-      addBotMessage(welcomeMessages[0]);
-      for (let i = 1; i < welcomeMessages.length; i++) {
-        setTimeout(() => {
-          addBotMessage(welcomeMessages[i]);
-          if (i === welcomeMessages.length - 1) {
-            showPresetQuestions();
-          }
-        }, i * 300);
-      }
-    }, 500);
-  }
+  const chatbot = {
+    toggle: document.querySelector(".chatbot-toggle"),
+    container: document.querySelector(".chatbot-container"),
+    messages: document.querySelector(".chatbot-messages"),
+    input: document.querySelector(".chatbot-input input"),
+    sendBtn: document.querySelector(".chatbot-send"),
+    
+    init() {
+      this.toggle.addEventListener('click', () => this.toggleChatbot());
+      this.sendBtn.addEventListener('click', () => this.sendMessage());
+      this.input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') this.sendMessage();
+      });
+    },
+    
+    toggleChatbot() {
+      this.container.classList.toggle('active');
+    },
+    
+    sendMessage() {
+      const message = this.input.value.trim();
+      if (!message) return;
+      
+      this.addMessage(message, 'user');
+      this.input.value = '';
+      
+      // 模拟机器人响应
+      setTimeout(() => {
+        const response = this.getResponse(message);
+        this.addMessage(response, 'bot');
+      }, 500);
+    },
+    
+    addMessage(text, type) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `chatbot-message ${type}`;
+      messageDiv.textContent = text;
+      this.messages.appendChild(messageDiv);
+      this.messages.scrollTop = this.messages.scrollHeight;
+    },
+    
+    getResponse(message) {
+      const responses = {
+        '你好': '你好！我是月光博客的AI助手，有什么可以帮你的吗？',
+        '再见': '再见！祝你有个愉快的一天！',
+        '默认': '抱歉，我还在学习中，暂时无法回答这个问题。'
+      };
+      
+      return responses[message] || responses['默认'];
+    }
+  };
+  
+  chatbot.init();
 });
 
 // 发送消息
