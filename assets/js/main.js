@@ -391,3 +391,63 @@ function initializeScrollEffects() {
         }
     });
 }
+
+// 新增：自动读取 articles 目录下所有 Markdown 文件并渲染
+async function fetchArticlesList() {
+    // 这里假设有一个 articles/index.json 或者用 Workers/构建时生成
+    // 目前手动维护列表，后续可自动生成
+    const files = ['hello-moonlight.md'];
+    const articles = [];
+    for (const file of files) {
+        try {
+            const res = await fetch(`/articles/${file}`);
+            if (!res.ok) continue;
+            const md = await res.text();
+            const match = md.match(/^---([\s\S]*?)---/);
+            let meta = { file };
+            if (match) {
+                const fm = match[1].trim();
+                fm.split('\n').forEach(line => {
+                    const [k, ...v] = line.split(':');
+                    meta[k.trim()] = v.join(':').trim().replace(/^"|"$/g, '');
+                });
+            }
+            articles.push(meta);
+        } catch (e) { continue; }
+    }
+    return articles;
+}
+
+async function renderArticlesList() {
+    const container = document.getElementById('articles-container');
+    if (!container) return;
+    container.innerHTML = '<div>加载中...</div>';
+    const articles = await fetchArticlesList();
+    if (!articles.length) {
+        container.innerHTML = '<div>暂无文章。</div>';
+        return;
+    }
+    container.innerHTML = '';
+    for (const article of articles) {
+        const card = document.createElement('div');
+        card.className = 'article-card glass-panel';
+        card.innerHTML = `
+            <div class="article-image">
+                <img src="${article.cover || '/assets/images/default-cover.jpg'}" alt="${article.title || ''}">
+            </div>
+            <div class="article-content">
+                <h3>${article.title || '未命名文章'}</h3>
+                <p>${article.excerpt || ''}</p>
+                <div class="article-meta">
+                    <span>${article.date || ''}</span>
+                </div>
+            </div>
+        `;
+        card.addEventListener('click', () => {
+            window.location.href = `article.html?file=${encodeURIComponent(article.file)}`;
+        });
+        container.appendChild(card);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', renderArticlesList);
