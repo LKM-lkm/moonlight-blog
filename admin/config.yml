@@ -1,0 +1,20 @@
+backend:
+  name: github
+  repo: LKM-lkm/moonlight-blog  # 替换为你的GitHub仓库
+  branch: main
+
+media_folder: "assets/images/articles" # 上传图片存放路径
+public_folder: "/assets/images/articles"
+
+collections:
+  - name: "articles"
+    label: "文章"
+    folder: "articles"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "发布日期", name: "date", widget: "datetime" }
+      - { label: "封面", name: "cover", widget: "image", required: false }
+      - { label: "摘要", name: "excerpt", widget: "string", required: false }
+      - { label: "正文", name: "body", widget: "markdown" } 
