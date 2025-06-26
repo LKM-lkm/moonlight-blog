@@ -56,9 +56,18 @@ document.addEventListener("DOMContentLoaded", function() {
     
     init() {
       this.toggle.addEventListener('click', () => this.toggleChatbot());
-      this.sendBtn.addEventListener('click', () => this.sendMessage());
+      const form = document.querySelector('.chatbot-form');
+      if(form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.sendMessage();
+        });
+      }
       this.input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') this.sendMessage();
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.sendMessage();
+        }
       });
     },
     

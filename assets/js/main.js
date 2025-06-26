@@ -421,13 +421,13 @@ async function fetchArticlesList() {
 async function renderArticlesList() {
     const container = document.getElementById('articles-container');
     if (!container) return;
-    container.innerHTML = '<div>加载中...</div>';
+    // 清空骨架屏
+    container.innerHTML = '';
     const articles = await fetchArticlesList();
     if (!articles.length) {
         container.innerHTML = '<div>暂无文章。</div>';
         return;
     }
-    container.innerHTML = '';
     for (const article of articles) {
         const card = document.createElement('div');
         card.className = 'article-card glass-panel';
