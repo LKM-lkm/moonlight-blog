@@ -19,4 +19,18 @@ console.log('Hello, Moonlight!');
 - 支持自定义封面
 - 支持摘要
 
-快来写下你的第一篇博客吧！ 
+快来写下你的第一篇博客吧！
+
+## 图片示例
+
+![示例图片](/assets/images/articles/hello.jpg)
+
+## 文件下载示例
+
+[![文件图标](https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons/images/svg/file.svg) 下载示例文件](/assets/files/sample.pdf)
+
+## LaTeX公式示例
+
+$$
+E = mc^2
+$$ 
