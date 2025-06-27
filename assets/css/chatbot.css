@@ -351,4 +351,14 @@
 .chatbot-close:hover {
     background: #f0f4fa;
     color: #d32f2f;
+}
+
+.chatbot-header h3 {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #4a6fa5;
+    margin: 0 auto;
+    padding: 10px 0 6px 0;
+    letter-spacing: 1px;
 } 
