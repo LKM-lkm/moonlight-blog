@@ -69,6 +69,13 @@ document.addEventListener("DOMContentLoaded", function() {
           this.sendMessage();
         }
       });
+      // 关闭按钮事件
+      const closeBtn = document.querySelector('.chatbot-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          this.container.classList.remove('active');
+        });
+      }
       // 自动显示欢迎消息
       this.showWelcome();
     },
