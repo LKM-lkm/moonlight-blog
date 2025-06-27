@@ -114,14 +114,14 @@
         const hash = await sha256(pwd);
         if (hash === PASSWORD_HASH) {
             sessionStorage.setItem(SESSION_KEY, '1');
-            window.location.href = '/admin/views/articles.html';
+            window.location.href = '/admin/views/articles';
         } else {
             errorMsg.textContent = '密码错误，请重试';
         }
     });
     // 已登录自动跳转
     if (sessionStorage.getItem(SESSION_KEY) === '1') {
-        window.location.href = '/admin/views/articles.html';
+        window.location.href = '/admin/views/articles';
     }
     </script>
 </body>
