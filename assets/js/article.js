@@ -4,6 +4,54 @@
 let currentArticleIndex = -1;
 let articlesList = [];
 
+// 阅读量统计
+function updateReadCount(file) {
+    const readCountKey = 'article_read_count';
+    const readRecordsKey = 'article_read_records';
+    
+    // 获取阅读记录
+    let readRecords = JSON.parse(localStorage.getItem(readRecordsKey) || '{}');
+    let readCounts = JSON.parse(localStorage.getItem(readCountKey) || '{}');
+    
+    const now = Date.now();
+    const lastRead = readRecords[file] || 0;
+    
+    // 如果距离上次阅读超过30分钟，则增加阅读量
+    if (now - lastRead > 30 * 60 * 1000) {
+        readCounts[file] = (readCounts[file] || 0) + 1;
+        localStorage.setItem(readCountKey, JSON.stringify(readCounts));
+    }
+    
+    // 更新阅读时间
+    readRecords[file] = now;
+    localStorage.setItem(readRecordsKey, JSON.stringify(readRecords));
+    
+    return readCounts[file] || 0;
+}
+
+// 获取阅读量
+function getReadCount(file) {
+    const readCountKey = 'article_read_count';
+    const readCounts = JSON.parse(localStorage.getItem(readCountKey) || '{}');
+    return readCounts[file] || 0;
+}
+
+// 格式化阅读量显示
+function formatReadCount(count) {
+    if (count < 1000) return count.toString();
+    if (count < 10000) return (count / 1000).toFixed(1) + 'k';
+    return (count / 10000).toFixed(1) + 'w';
+}
+
+// 渲染阅读量
+function renderReadCount(file) {
+    const readCount = getReadCount(file);
+    const readCountElement = document.getElementById('article-read-count');
+    if (readCountElement) {
+        readCountElement.innerHTML = `<i class="fas fa-eye"></i> ${formatReadCount(readCount)} 次阅读`;
+    }
+}
+
 // 获取URL参数
 function getQueryParam(name) {
     const url = new URL(window.location.href);
@@ -125,6 +173,8 @@ async function renderArticle() {
         
         // 渲染导航
         renderNavigation();
+        // 渲染阅读量
+        renderReadCount(file);
     } catch (e) {
         document.getElementById('article-container').innerHTML = `<p>加载失败：${e.message}</p>`;
     }

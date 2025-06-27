@@ -1197,3 +1197,15 @@ mark {
   border-radius: 3px;
   font-weight: bold;
 }
+
+/* 文章阅读量样式 */
+.article-read-count {
+  text-align: center;
+  margin: 10px 0 20px 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.article-read-count i {
+  margin-right: 5px;
+  color: var(--accent-color);
+}

@@ -40,4 +40,7 @@ coverage/
 
 # Build output
 .wrangler/
-.cloudflare/ 
+.cloudflare/
+
+# Decap CMS OAuth Provider (避免子模块问题)
+decap-cms-github-oauth-provider-cloudflare/ 
