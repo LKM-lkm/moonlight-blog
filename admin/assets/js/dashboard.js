@@ -202,6 +202,5 @@ document.addEventListener('DOMContentLoaded', () => {
         // 这里添加退出登录逻辑
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        window.location.href = 'login.html';
     });
 }); 

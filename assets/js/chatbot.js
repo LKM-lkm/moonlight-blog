@@ -13,52 +13,30 @@ let messageInput;
 let chatbotForm;
 let typingIndicator;
 
-// 预设问题和回答
-const presetQA = [
-  { question: "博主是谁？", answer: "博主是一名热爱技术和创新的学生，专注于AI、云计算和大数据。" },
-  { question: "如何联系站长？", answer: "您可以通过页面底部的社交媒体链接或邮箱联系博主。" },
-  { question: "网站有哪些功能？", answer: "本站支持文章浏览、评论、主题切换、聊天机器人等功能。" },
-  { question: "如何切换主题？", answer: "点击右上角的月亮/太阳图标即可切换明暗主题。" },
-  { question: "如何注册？", answer: "目前本站暂未开放注册功能，敬请期待后续更新。" },
-  { question: "有推荐的文章吗？", answer: "您可以在首页查看最新文章，或通过导航栏的'文章'页面浏览所有文章。" },
-  { question: "Moonlight博客的主要内容是什么？", answer: "Moonlight博客主要分享AI、前端开发、云计算、生活随笔等内容。" },
-  { question: "博主的技术栈有哪些？", answer: "前端：HTML5、CSS3、JavaScript、Vue、React；后端：PHP、Node.js、MySQL、Redis；云服务：Cloudflare、Vercel等。" },
-  { question: "如何投稿或参与博客内容建设？", answer: "目前暂不开放投稿，后续会考虑开放社区投稿功能，敬请期待。" },
-  { question: "博主推荐哪些AI工具？", answer: "推荐ChatGPT、Notion AI、Midjourney、Stable Diffusion等。" },
-  { question: "博客支持哪些数学公式和代码高亮？", answer: "支持LaTeX数学公式和多种编程语言的代码高亮。" },
-  { question: "如何切换深色/浅色主题？", answer: "点击右上角的月亮/太阳图标即可一键切换。" },
-  { question: "博主的联系方式有哪些？", answer: "可通过GitHub、B站、邮箱等方式联系，详见首页社交链接。" },
-  { question: "博主的学习/成长经历？", answer: "博主自学编程多年，热爱技术创新，喜欢分享和交流。" },
-  { question: "博主最喜欢的编程语言？", answer: "最喜欢JavaScript和Python，简单高效，生态丰富。" },
-  { question: "博主推荐的书籍/资源？", answer: "推荐《JavaScript高级程序设计》《深入浅出Node.js》《人工智能简史》等。" },
-  { question: "博客是否支持移动端访问？", answer: "支持，博客采用响应式设计，手机、平板均可流畅访问。" },
-  { question: "如何收藏/分享文章？", answer: "可通过浏览器自带的收藏功能或复制链接分享。" },
-  { question: "博主的未来计划是什么？", answer: "持续优化博客功能，分享更多AI与前端开发内容，欢迎关注！" }
+// 统一问答结构，支持精确与模糊匹配
+const presetQAList = [
+  { question: ["你好"], answer: "你好！我是Moonlight助手，有什么可以帮您的吗？" },
+  { question: ["介绍", "简介"], answer: "Moonlight是由名（Likem）搭建的个人博客项目，用于记录分享软件操作技巧、生活日常、技术学习等。" },
+  { question: ["你是谁"], answer: "我是Moonlight助手，这个网站的问答机器人。" },
+  { question: ["更多"], answer: "您好！Moonlight博客目前正在建设中，功能尚不完善，敬请期待！" },
+  { question: ["帮助"], answer: "我可以帮您了解网站的功能、导航到特定页面，或者回答关于博客的问题。请告诉我您想了解什么？" },
+  { question: ["博主是谁？", "博主是谁"], answer: "博主热爱技术和创新，专注于AI、云计算和大数据、软件操作等。" },
+  { question: ["联系方式", "如何联系站长？", "博主的联系方式有哪些？"], answer: "您可以通过页面底部的社交媒体链接或邮箱联系博主。" },
+  { question: ["网站功能", "网站有哪些功能？"], answer: "本站支持文章浏览、评论、主题切换、聊天机器人等功能。" },
+  { question: ["如何切换主题", "如何切换主题？", "如何切换深色/浅色主题？", "主题切换"], answer: "点击右上角的月亮/太阳图标即可切换明暗主题。" },
+  { question: ["如何注册", "如何注册？"], answer: "目前本站暂未开放注册功能，敬请期待后续更新。" },
+  { question: ["推荐文章", "有推荐的文章吗？"], answer: "您可以在首页查看最新文章，或通过导航栏的'文章'页面浏览所有文章。" },
+  { question: ["技术栈", "博主的技术栈有哪些？"], answer: "前端：HTML5、CSS3、JavaScript、Vue、React；后端：PHP、Node.js、MySQL、Redis。" },
+  { question: ["AI工具", "博主推荐哪些AI工具？"], answer: "推荐ChatGPT、Notion AI、FLUX、Stable Diffusion等。" },
+  { question: ["数学公式", "博客支持哪些数学公式和代码高亮？"], answer: "支持LaTeX数学公式和多种编程语言的代码高亮。" },
+  { question: ["代码高亮"], answer: "支持多种编程语言的代码高亮。" },
+  { question: ["经验分享", "博主的学习/成长经历？"], answer: "博主正在学习中，热爱技术创新，喜欢分享和交流。" },
+  { question: ["编程语言", "博主最喜欢的编程语言？"], answer: "最喜欢JavaScript和Python，简单高效，生态丰富。" },
+  { question: ["书籍推荐", "博主推荐的书籍/资源？"], answer: "推荐《JavaScript高级程序设计》《深入浅出Node.js》《人工智能简史》等。" },
+  { question: ["移动端", "博客是否支持移动端访问？"], answer: "博客采用响应式设计，手机、平板均可流畅访问。" },
+  { question: ["收藏", "如何收藏/分享文章？"], answer: "可通过浏览器自带的收藏功能或复制链接分享。" },
+  { question: ["未来计划", "博主的未来计划是什么？"], answer: "持续优化博客功能，分享更多AI与软件操作技巧，欢迎关注！" }
 ];
-
-const presetAnswers = {
-  "你好": "你好！我是Moonlight助手，有什么可以帮您的吗？",
-  "你是谁": "我是Moonlight助手，这个网站的问答机器人。",
-  "更多": "您好！Moonlight博客目前正在建设中，功能尚不完善，敬请期待！",
-  "帮助": "我可以帮您了解网站的功能、导航到特定页面，或者回答关于博客的问题。请告诉我您想了解什么？",
-  "博主是谁": "博主是一名热爱技术和创新的学生，专注于AI、云计算和大数据。",
-  "联系方式": "您可以通过页面底部的社交媒体链接或邮箱联系博主。",
-  "网站功能": "本站支持文章浏览、评论、主题切换、聊天机器人等功能。",
-  "如何切换主题": "点击右上角的月亮/太阳图标即可切换明暗主题。",
-  "如何注册": "目前本站暂未开放注册功能，敬请期待后续更新。",
-  "推荐文章": "您可以在首页查看最新文章，或通过导航栏的'文章'页面浏览所有文章。",
-  "技术栈": "前端：HTML5、CSS3、JavaScript、Vue、React；后端：PHP、Node.js、MySQL、Redis。",
-  "AI工具": "推荐ChatGPT、Notion AI、Midjourney、Stable Diffusion等。",
-  "数学公式": "支持LaTeX数学公式，详情见文章页。",
-  "代码高亮": "支持多种编程语言的代码高亮。",
-  "主题切换": "点击右上角的月亮/太阳图标即可一键切换。",
-  "经验分享": "博主自学编程多年，热爱技术创新，喜欢分享和交流。",
-  "编程语言": "最喜欢JavaScript和Python，简单高效，生态丰富。",
-  "书籍推荐": "推荐《JavaScript高级程序设计》《深入浅出Node.js》《人工智能简史》等。",
-  "移动端": "博客采用响应式设计，手机、平板均可流畅访问。",
-  "收藏": "可通过浏览器自带的收藏功能或复制链接分享。",
-  "未来计划": "持续优化博客功能，分享更多AI与前端开发内容，欢迎关注！"
-};
 
 // 欢迎消息
 const welcomeMessages = [
@@ -131,21 +109,24 @@ document.addEventListener("DOMContentLoaded", function() {
     
     getResponse(message) {
       const msg = message.trim().toLowerCase();
-      // 1. 关键词精确匹配 presetAnswers
-      for (const key in presetAnswers) {
-        if (msg === key.toLowerCase() || msg.includes(key.toLowerCase())) {
-          return presetAnswers[key];
+      // 1. 精确匹配
+      for (const qa of presetQAList) {
+        for (const q of qa.question) {
+          if (msg === q.toLowerCase()) {
+            return qa.answer;
+          }
         }
       }
-      // 2. 智能模糊匹配 presetQA
-      for (const qa of presetQA) {
-        const q = qa.question.trim().toLowerCase();
-        if (msg === q || msg.includes(q) || q.includes(msg)) {
-          return qa.answer;
+      // 2. 模糊匹配
+      for (const qa of presetQAList) {
+        for (const q of qa.question) {
+          if (msg.includes(q.toLowerCase()) || q.toLowerCase().includes(msg)) {
+            return qa.answer;
+          }
         }
       }
       // 3. 默认回复
-      return '抱歉，我还在学习中，暂时无法回答这个问题。您可以尝试提问：' + presetQA.slice(0, 3).map(qa => qa.question).join(' / ');
+      return '抱歉，我还在学习中，暂时无法回答这个问题。您可以尝试提问：' + presetQAList.slice(0, 3).map(qa => qa.question[0]).join(' / ');
     },
     showWelcome() {
       this.addMessage('你好，我是Moonlight助手，有什么可以帮您的吗？', 'bot');

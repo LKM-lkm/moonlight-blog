@@ -1209,3 +1209,102 @@ mark {
   margin-right: 5px;
   color: var(--accent-color);
 }
+
+/* 后台文章弹窗样式 */
+.modal {
+  position: fixed;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.18);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(110,142,188,0.18);
+  padding: 28px 24px 18px 24px;
+  min-width: 320px;
+  max-width: 520px;
+  width: 96vw;
+  position: relative;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.modal-header h3 {
+  font-size: 1.15rem;
+  color: #4a6fa5;
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+.modal-close {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1.3rem;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: color 0.2s;
+}
+.modal-close:hover {
+  color: #d32f2f;
+}
+.form-group {
+  margin-bottom: 12px;
+}
+.form-group label {
+  display: block;
+  font-size: 0.98rem;
+  color: #4a6fa5;
+  margin-bottom: 4px;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e0e6ef;
+  font-size: 1rem;
+  resize: vertical;
+  box-sizing: border-box;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #4a6fa5;
+  outline: none;
+}
+.btn.btn-primary {
+  background: #4a6fa5;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background 0.2s;
+}
+.btn.btn-primary:hover {
+  background: #6e8ebc;
+}
+.btn.btn-outline {
+  background: none;
+  color: #4a6fa5;
+  border: 1px solid #4a6fa5;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+.btn.btn-outline:hover {
+  background: #f0f4fa;
+  color: #2d3e5e;
+}

@@ -1,8 +1,5 @@
 // 管理后台的主要功能脚本
 document.addEventListener('DOMContentLoaded', function() {
-    // 检查登录状态
-    checkLoginStatus();
-    
     // 初始化主题设置
     initTheme();
     
@@ -45,18 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(style);
 });
-
-// 检查登录状态
-function checkLoginStatus() {
-    // 在实际应用中,这里应该检查用户是否已登录
-    // 如果未登录,则重定向到登录页面
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    
-    // 如果当前不是登录页面,且未登录,则重定向到登录页面
-    if (!isLoggedIn && !window.location.href.includes('login.html')) {
-        window.location.href = 'login.html';
-    }
-}
 
 // 初始化主题设置
 function initTheme() {
@@ -650,43 +635,4 @@ function formatDate(dateString) {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
-}
-
-// 登录处理
-if (document.getElementById('login-form')) {
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const errorMessage = document.getElementById('error-message');
-        
-        // 清除之前的错误信息
-        errorMessage.textContent = '';
-        
-        // 使用固定的用户名和密码，但改进安全性
-        if (username === 'Likem' && password === 'Lkm76@#21') {
-            // 登录成功
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('user', JSON.stringify({
-                username: 'Likem',
-                role: 'admin'
-                // 注意：token不再存储在localStorage中
-            }));
-            window.location.href = 'index.html';
-        } else {
-            // 登录失败
-            errorMessage.textContent = '用户名或密码错误';
-        }
-    });
-}
-
-// 注销处理
-if (document.getElementById('logout-btn')) {
-    document.getElementById('logout-btn').addEventListener('click', function() {
-        // 清除登录状态
-        localStorage.removeItem('isLoggedIn');
-        // 跳转到登录页面
-        window.location.href = 'login.html';
-    });
 }

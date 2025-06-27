@@ -19,6 +19,7 @@
 <body>
     <div class="container">
         <h2>文章管理</h2>
+        <button id="new-article-btn" class="btn btn-primary" style="margin-bottom:18px;">新建文章</button>
         <table class="admin-table" id="admin-articles-table">
             <thead>
                 <tr>
@@ -33,6 +34,26 @@
                 <!-- 文章列表将通过JS动态加载 -->
             </tbody>
         </table>
+    </div>
+    <!-- 新建文章弹窗 -->
+    <div id="article-modal" class="modal" style="display:none;">
+      <div class="modal-content" style="max-width:520px;">
+        <div class="modal-header">
+          <h3>新建文章</h3>
+          <button class="modal-close" id="modal-close-btn">×</button>
+        </div>
+        <form id="article-form">
+          <div class="form-group"><label>标题</label><input type="text" id="article-title" required></div>
+          <div class="form-group"><label>作者</label><input type="text" id="article-author" value="匿名"></div>
+          <div class="form-group"><label>标签（逗号分隔）</label><input type="text" id="article-tags"></div>
+          <div class="form-group"><label>摘要</label><textarea id="article-excerpt" rows="2"></textarea></div>
+          <div class="form-group"><label>正文</label><textarea id="article-content" rows="8"></textarea></div>
+          <div class="form-actions" style="text-align:right;margin-top:12px;">
+            <button type="button" id="modal-cancel-btn" class="btn btn-outline">取消</button>
+            <button type="submit" class="btn btn-primary">生成并下载Markdown</button>
+          </div>
+        </form>
+      </div>
     </div>
     <script src="../../assets/js/main.js"></script>
     <script src="../js/articles.js"></script>
