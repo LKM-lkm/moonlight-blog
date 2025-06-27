@@ -173,6 +173,8 @@ async function renderArticle() {
         
         // 渲染导航
         renderNavigation();
+        // 更新阅读量统计
+        updateReadCount(file);
         // 渲染阅读量
         renderReadCount(file);
     } catch (e) {
