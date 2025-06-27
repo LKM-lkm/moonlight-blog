@@ -51,8 +51,8 @@ document.addEventListener("DOMContentLoaded", function() {
     toggle: document.querySelector(".chatbot-toggle"),
     container: document.querySelector(".chatbot-container"),
     messages: document.querySelector(".chatbot-messages"),
-    input: document.querySelector(".chatbot-input input"),
-    sendBtn: document.querySelector(".chatbot-send"),
+    input: document.querySelector(".chatbot-input"),
+    sendBtn: document.querySelector(".chatbot-submit"),
     
     init() {
       this.toggle.addEventListener('click', () => this.toggleChatbot());
@@ -69,6 +69,8 @@ document.addEventListener("DOMContentLoaded", function() {
           this.sendMessage();
         }
       });
+      // 自动显示欢迎消息
+      this.showWelcome();
     },
     
     toggleChatbot() {
@@ -78,11 +80,8 @@ document.addEventListener("DOMContentLoaded", function() {
     sendMessage() {
       const message = this.input.value.trim();
       if (!message) return;
-      
       this.addMessage(message, 'user');
       this.input.value = '';
-      
-      // 模拟机器人响应
       setTimeout(() => {
         const response = this.getResponse(message);
         this.addMessage(response, 'bot');
@@ -103,11 +102,12 @@ document.addEventListener("DOMContentLoaded", function() {
         '再见': '再见！祝你有个愉快的一天！',
         '默认': '抱歉，我还在学习中，暂时无法回答这个问题。'
       };
-      
       return responses[message] || responses['默认'];
+    },
+    showWelcome() {
+      this.addMessage('你好，我是Moonlight助手，有什么可以帮您的吗？', 'bot');
     }
   };
-  
   chatbot.init();
 });
 
