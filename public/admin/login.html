@@ -86,9 +86,8 @@
 <body>
     <form class="login-panel" id="login-form" autocomplete="off">
         <h2>后台登录</h2>
-        <div class="input-group" style="position:relative;">
+        <div class="input-group">
             <input type="password" id="password" placeholder="请输入后台密码" required autofocus>
-            <i class="fa fa-eye" id="togglePassword" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#888;"></i>
         </div>
         <div class="error" id="error-msg"></div>
         <button type="submit" class="login-btn">登录</button>
@@ -124,19 +123,6 @@
     if (sessionStorage.getItem(SESSION_KEY) === '1') {
         window.location.href = '/admin/views/articles';
     }
-    // 显示/隐藏密码
-    document.getElementById('togglePassword').addEventListener('click', function() {
-        const pwdInput = document.getElementById('password');
-        if (pwdInput.type === 'password') {
-            pwdInput.type = 'text';
-            this.classList.remove('fa-eye');
-            this.classList.add('fa-eye-slash');
-        } else {
-            pwdInput.type = 'password';
-            this.classList.remove('fa-eye-slash');
-            this.classList.add('fa-eye');
-        }
-    });
     </script>
 </body>
 </html> 
