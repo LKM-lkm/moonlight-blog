@@ -6,6 +6,8 @@ var currentPage = 1;
 var totalPages = 1;
 var allArticles = [];
 var currentTag = null;
+var searchQuery = '';
+var isSearching = false;
 
 // 文章数据
 var articles = [
@@ -38,6 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 加载文章
     loadArticles();
+    
+    // 初始化搜索
+    initSearch();
     
     // 设置滚动动画
     setupScrollAnimations();
@@ -126,24 +131,33 @@ function renderArticles() {
         return;
     }
     container.innerHTML = '';
+    
+    // 先按标签筛选，再按搜索词筛选
     var filtered = currentTag ? allArticles.filter(a => Array.isArray(a.tags) && a.tags.includes(currentTag)) : allArticles;
+    filtered = searchArticles(filtered, searchQuery);
+    
     var startIndex = (currentPage - 1) * pageSize;
     var endIndex = Math.min(startIndex + pageSize, filtered.length);
     var articlesToShow = filtered.slice(startIndex, endIndex);
+    
     if (articlesToShow.length === 0) {
+        const noResultsMsg = searchQuery ? 
+            `没有找到包含"${searchQuery}"的文章` : 
+            '没有找到文章';
         container.innerHTML = `
             <div class="empty-message">
-                <p>没有找到文章。</p>
+                <p>${noResultsMsg}</p>
             </div>
         `;
         return;
     }
+    
     for (var i = 0; i < articlesToShow.length; i++) {
         var article = articlesToShow[i];
         var articleCard = document.createElement('div');
         articleCard.className = 'article-card glass-panel';
         if (article.top) articleCard.classList.add('article-top');
-        // 创建发布日期对象
+        
         var dateStr = article.date || article.publishDate;
         var publishDate = dateStr ? new Date(dateStr) : new Date();
         var formattedDate = publishDate.toLocaleDateString('zh-CN', {
@@ -151,23 +165,26 @@ function renderArticles() {
             month: 'long',
             day: 'numeric'
         });
-        // 标签HTML
+        
+        // 高亮搜索结果
+        const highlightedTitle = highlightSearchResult(article.title, searchQuery);
+        const highlightedExcerpt = highlightSearchResult(article.excerpt || article.summary || "", searchQuery);
+        
         var tagsHTML = '';
         if (Array.isArray(article.tags) && article.tags.length > 0) {
             tagsHTML = '<div class="article-tags">' + article.tags.map(tag => `<span class="tag">${tag}</span>`).join('') + '</div>';
         }
-        // 置顶角标
         var topBadge = article.top ? '<span class="top-badge">置顶</span>' : '';
-        // 作者
         var authorHTML = article.author ? `<span class="article-author"><i class="fas fa-user"></i> ${article.author}</span>` : '';
+        
         articleCard.innerHTML = `
             <div class="article-image">
                 <img src="${article.image || '/assets/images/default-cover.jpg'}" alt="${article.title}">
                 ${topBadge}
             </div>
             <div class="article-content">
-                <h3>${article.title}</h3>
-                <p>${article.excerpt || article.summary || ""}</p>
+                <h3>${highlightedTitle}</h3>
+                <p>${highlightedExcerpt}</p>
                 ${tagsHTML}
                 <div class="article-meta">
                     <span>${formattedDate}</span>
@@ -175,11 +192,13 @@ function renderArticles() {
                 </div>
             </div>
         `;
+        
         (function(url) {
             articleCard.addEventListener('click', function() {
                 window.location.href = url || '#';
             });
         })(article.url);
+        
         container.appendChild(articleCard);
     }
 }
@@ -507,4 +526,66 @@ function renderTagFilter() {
 function getQueryParam(name) {
     const url = new URL(window.location.href);
     return url.searchParams.get(name);
+}
+
+// 搜索功能
+function initSearch() {
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
+    
+    if (!searchInput || !searchBtn) return;
+    
+    // 实时搜索
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            searchQuery = this.value.trim().toLowerCase();
+            currentPage = 1;
+            renderTagFilter();
+            renderArticles();
+        }, 300);
+    });
+    
+    // 搜索按钮点击
+    searchBtn.addEventListener('click', function() {
+        searchQuery = searchInput.value.trim().toLowerCase();
+        currentPage = 1;
+        renderTagFilter();
+        renderArticles();
+    });
+    
+    // 回车搜索
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchQuery = this.value.trim().toLowerCase();
+            currentPage = 1;
+            renderTagFilter();
+            renderArticles();
+        }
+    });
+}
+
+// 搜索文章
+function searchArticles(articles, query) {
+    if (!query) return articles;
+    
+    return articles.filter(article => {
+        const title = (article.title || '').toLowerCase();
+        const excerpt = (article.excerpt || '').toLowerCase();
+        const tags = Array.isArray(article.tags) ? article.tags.join(' ').toLowerCase() : '';
+        const author = (article.author || '').toLowerCase();
+        
+        return title.includes(query) || 
+               excerpt.includes(query) || 
+               tags.includes(query) || 
+               author.includes(query);
+    });
+}
+
+// 高亮搜索结果
+function highlightSearchResult(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${query})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
 }
