@@ -36,7 +36,6 @@ const presetQA = [
   { question: "博主的未来计划是什么？", answer: "持续优化博客功能，分享更多AI与前端开发内容，欢迎关注！" }
 ];
 
-// 聊天机器人回复
 const presetAnswers = {
   "你好": "你好！我是Moonlight助手，有什么可以帮您的吗？",
   "你是谁": "我是Moonlight助手，这个网站的问答机器人。",
@@ -131,12 +130,22 @@ document.addEventListener("DOMContentLoaded", function() {
     },
     
     getResponse(message) {
-      const responses = {
-        '你好': '你好！我是月光博客的AI助手，有什么可以帮你的吗？',
-        '再见': '再见！祝你有个愉快的一天！',
-        '默认': '抱歉，我还在学习中，暂时无法回答这个问题。'
-      };
-      return responses[message] || responses['默认'];
+      const msg = message.trim().toLowerCase();
+      // 1. 关键词精确匹配 presetAnswers
+      for (const key in presetAnswers) {
+        if (msg === key.toLowerCase() || msg.includes(key.toLowerCase())) {
+          return presetAnswers[key];
+        }
+      }
+      // 2. 智能模糊匹配 presetQA
+      for (const qa of presetQA) {
+        const q = qa.question.trim().toLowerCase();
+        if (msg === q || msg.includes(q) || q.includes(msg)) {
+          return qa.answer;
+        }
+      }
+      // 3. 默认回复
+      return '抱歉，我还在学习中，暂时无法回答这个问题。您可以尝试提问：' + presetQA.slice(0, 3).map(qa => qa.question).join(' / ');
     },
     showWelcome() {
       this.addMessage('你好，我是Moonlight助手，有什么可以帮您的吗？', 'bot');
@@ -144,125 +153,6 @@ document.addEventListener("DOMContentLoaded", function() {
   };
   chatbot.init();
 });
-
-// 发送消息
-function sendMessage() {
-  if (!messageInput || !messageInput.value.trim()) return;
-  
-  var message = messageInput.value.trim();
-  addUserMessage(message);
-  messageInput.value = "";
-  
-  // 显示正在输入指示器
-  showTypingIndicator();
-  
-  // 模拟延迟后回复
-  setTimeout(function() {
-    removeTypingIndicator();
-    handleUserMessage(message);
-  }, 1000);
-}
-
-// 处理用户消息
-function handleUserMessage(message) {
-  const lowerMessage = message.toLowerCase().trim();
-  
-  // 检查是否匹配预设问题
-  let matchedPreset = null;
-  for (const qa of presetQA) {
-    const questionLower = qa.question.toLowerCase();
-    if (questionLower.includes(lowerMessage) || lowerMessage.includes(questionLower)) {
-      matchedPreset = qa;
-      break;
-    }
-  }
-  
-  if (matchedPreset) {
-    addBotMessage(matchedPreset.answer);
-    return;
-  }
-  
-  // 检查是否匹配响应列表
-  let responseFound = false;
-  for (const key in presetAnswers) {
-    if (lowerMessage === key.toLowerCase() || lowerMessage.includes(key.toLowerCase())) {
-      console.log("匹配到关键词:", key);
-      addBotMessage(presetAnswers[key]);
-      responseFound = true;
-      break;
-    }
-  }
-  
-  // 如果没有匹配，显示默认回复
-  if (!responseFound) {
-    console.log("未匹配到回答，显示默认回复");
-    addBotMessage("抱歉，我还在学习中。您可以试试以下问题：");
-    showPresetQuestions();
-  }
-}
-
-// 添加用户消息
-function addUserMessage(message) {
-  if (!messagesList) return;
-  
-  const messageElement = document.createElement("div");
-  messageElement.className = "message user-message";
-  messageElement.innerHTML = '<div class="message-content">' + message + '</div>';
-  messagesList.appendChild(messageElement);
-  
-  scrollToBottom();
-}
-
-// 添加机器人消息
-function addBotMessage(message) {
-  if (!messagesList) return;
-  
-  const messageElement = document.createElement("div");
-  messageElement.className = "message bot-message";
-  messageElement.innerHTML = '<div class="message-content">' + message + '</div>';
-  messagesList.appendChild(messageElement);
-  
-  scrollToBottom();
-}
-
-// 显示预设问题
-function showPresetQuestions() {
-  if (!messagesList) return;
-  
-  // 检查是否已经存在预设问题
-  const existingQuestions = messagesList.querySelector('.preset-questions');
-  if (existingQuestions) {
-    existingQuestions.remove();
-  }
-  
-  const questionsElement = document.createElement("div");
-  questionsElement.className = "preset-questions";
-  
-  for (let i = 0; i < presetQA.length; i++) {
-    (function(qa) {
-      const questionButton = document.createElement("button");
-      questionButton.className = "preset-question";
-      questionButton.textContent = qa.question;
-      questionButton.onclick = function() {
-        addUserMessage(qa.question);
-        
-        // 显示正在输入指示器
-        showTypingIndicator();
-        
-        // 模拟延迟后回复
-        setTimeout(function() {
-          removeTypingIndicator();
-          addBotMessage(qa.answer);
-        }, 800);
-      };
-      
-      questionsElement.appendChild(questionButton);
-    })(presetQA[i]);
-  }
-  
-  messagesList.appendChild(questionsElement);
-  scrollToBottom();
-}
 
 // 显示正在输入指示器
 function showTypingIndicator() {
