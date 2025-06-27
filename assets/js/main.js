@@ -5,6 +5,7 @@ var pageSize = 6;
 var currentPage = 1;
 var totalPages = 1;
 var allArticles = [];
+var currentTag = null;
 
 // 文章数据
 var articles = [
@@ -85,25 +86,36 @@ function loadProfileInfo() {
 
 // 加载文章
 function loadArticles() {
-    try {
-        // 直接使用静态数据渲染文章
-        allArticles = articles;
-        totalPages = Math.ceil(allArticles.length / pageSize);
-        
-        if (typeof updatePageIndicator === 'function') updatePageIndicator();
-        renderArticles();
-        if (typeof updatePaginationButtons === 'function') updatePaginationButtons();
-    } catch (error) {
-        console.error('加载文章时出错:', error);
-        var articlesContainer = document.getElementById('articles-container');
-        if (articlesContainer) {
-            articlesContainer.innerHTML = `
-                <div class="error-message">
-                    <p>加载文章时出错。请稍后再试。</p>
-                </div>
-            `;
-        }
-    }
+    const urlTag = getQueryParam('tag');
+    if (urlTag) currentTag = urlTag;
+    fetch('articles/index.json')
+        .then(res => res.json())
+        .then(data => {
+            if (Array.isArray(data) && data.length > 0) {
+                allArticles = data.map(article => ({
+                    ...article,
+                    image: article.cover || '/assets/images/default-cover.jpg',
+                    url: `article.html?file=${encodeURIComponent(article.file)}`
+                }));
+                totalPages = Math.ceil(allArticles.length / pageSize);
+            } else {
+                allArticles = articles; // fallback
+                totalPages = Math.ceil(allArticles.length / pageSize);
+            }
+            if (typeof updatePageIndicator === 'function') updatePageIndicator();
+            renderTagFilter();
+            renderArticles();
+            if (typeof updatePaginationButtons === 'function') updatePaginationButtons();
+        })
+        .catch(err => {
+            console.error('加载文章索引失败，使用静态数据', err);
+            allArticles = articles;
+            totalPages = Math.ceil(allArticles.length / pageSize);
+            if (typeof updatePageIndicator === 'function') updatePageIndicator();
+            renderTagFilter();
+            renderArticles();
+            if (typeof updatePaginationButtons === 'function') updatePaginationButtons();
+        });
 }
 
 // 渲染文章卡片
@@ -113,14 +125,11 @@ function renderArticles() {
         console.error('未找到articles-container元素');
         return;
     }
-    
     container.innerHTML = '';
-    
+    var filtered = currentTag ? allArticles.filter(a => Array.isArray(a.tags) && a.tags.includes(currentTag)) : allArticles;
     var startIndex = (currentPage - 1) * pageSize;
-    var endIndex = Math.min(startIndex + pageSize, allArticles.length);
-    
-    var articlesToShow = allArticles.slice(startIndex, endIndex);
-    
+    var endIndex = Math.min(startIndex + pageSize, filtered.length);
+    var articlesToShow = filtered.slice(startIndex, endIndex);
     if (articlesToShow.length === 0) {
         container.innerHTML = `
             <div class="empty-message">
@@ -129,42 +138,48 @@ function renderArticles() {
         `;
         return;
     }
-    
     for (var i = 0; i < articlesToShow.length; i++) {
         var article = articlesToShow[i];
         var articleCard = document.createElement('div');
         articleCard.className = 'article-card glass-panel';
-        if (article.id) articleCard.dataset.id = article.id;
-        
+        if (article.top) articleCard.classList.add('article-top');
         // 创建发布日期对象
-        var publishDate = article.publishDate ? new Date(article.publishDate) : new Date();
+        var dateStr = article.date || article.publishDate;
+        var publishDate = dateStr ? new Date(dateStr) : new Date();
         var formattedDate = publishDate.toLocaleDateString('zh-CN', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
-        
+        // 标签HTML
+        var tagsHTML = '';
+        if (Array.isArray(article.tags) && article.tags.length > 0) {
+            tagsHTML = '<div class="article-tags">' + article.tags.map(tag => `<span class="tag">${tag}</span>`).join('') + '</div>';
+        }
+        // 置顶角标
+        var topBadge = article.top ? '<span class="top-badge">置顶</span>' : '';
+        // 作者
+        var authorHTML = article.author ? `<span class="article-author"><i class="fas fa-user"></i> ${article.author}</span>` : '';
         articleCard.innerHTML = `
             <div class="article-image">
                 <img src="${article.image || '/assets/images/default-cover.jpg'}" alt="${article.title}">
+                ${topBadge}
             </div>
             <div class="article-content">
                 <h3>${article.title}</h3>
                 <p>${article.excerpt || article.summary || ""}</p>
+                ${tagsHTML}
                 <div class="article-meta">
                     <span>${formattedDate}</span>
-                    <span>${article.readTime || "5"} 分钟阅读</span>
+                    ${authorHTML}
                 </div>
             </div>
         `;
-        
-        // 添加点击事件
         (function(url) {
             articleCard.addEventListener('click', function() {
                 window.location.href = url || '#';
             });
         })(article.url);
-        
         container.appendChild(articleCard);
     }
 }
@@ -451,3 +466,45 @@ async function renderArticlesList() {
 }
 
 document.addEventListener('DOMContentLoaded', renderArticlesList);
+
+function getAllTags() {
+    var tagSet = new Set();
+    allArticles.forEach(article => {
+        if (Array.isArray(article.tags)) {
+            article.tags.forEach(tag => tagSet.add(tag));
+        }
+    });
+    return Array.from(tagSet);
+}
+
+function renderTagFilter() {
+    var tagFilter = document.getElementById('tag-filter');
+    if (!tagFilter) return;
+    var tags = getAllTags();
+    if (tags.length === 0) {
+        tagFilter.innerHTML = '';
+        return;
+    }
+    var html = '<span class="tag-filter-label">标签筛选：</span>';
+    html += `<span class="tag tag-filter-item${currentTag===null?' active':''}" data-tag="">全部</span>`;
+    tags.forEach(tag => {
+        html += `<span class="tag tag-filter-item${currentTag===tag?' active':''}" data-tag="${tag}">${tag}</span>`;
+    });
+    tagFilter.innerHTML = html;
+    // 绑定点击事件
+    var items = tagFilter.querySelectorAll('.tag-filter-item');
+    items.forEach(item => {
+        item.onclick = function() {
+            var tag = this.getAttribute('data-tag');
+            currentTag = tag || null;
+            currentPage = 1;
+            renderTagFilter();
+            renderArticles();
+        };
+    });
+}
+
+function getQueryParam(name) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(name);
+}

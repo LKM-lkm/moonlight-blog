@@ -1,0 +1,12 @@
+[
+  {
+    "file": "hello-moonlight.md",
+    "title": "Hello Moonlight",
+    "date": "2024-06-01",
+    "cover": "/assets/images/articles/hello.jpg",
+    "excerpt": "欢迎使用Moonlight博客！这是你的第一篇Markdown文章。",
+    "tags": [],
+    "top": false,
+    "author": ""
+  }
+]

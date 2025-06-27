@@ -91,7 +91,10 @@ document.addEventListener("DOMContentLoaded", function() {
     addMessage(text, type) {
       const messageDiv = document.createElement('div');
       messageDiv.className = `chatbot-message ${type}`;
-      messageDiv.textContent = text;
+      const bubble = document.createElement('div');
+      bubble.className = 'message-bubble';
+      bubble.textContent = text;
+      messageDiv.appendChild(bubble);
       this.messages.appendChild(messageDiv);
       this.messages.scrollTop = this.messages.scrollHeight;
     },
