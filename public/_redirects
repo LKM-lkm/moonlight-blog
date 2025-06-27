@@ -4,4 +4,6 @@
 /images/* /images/:splat 200
 /fonts/* /fonts/:splat 200
 /assets/* /assets/:splat 200
-/admin/* /admin/:splat 200 
+/admin/* /admin/:splat 200
+/admin/login  /admin/login.html  200
+/admin/login.html  /admin/login.html  200 
