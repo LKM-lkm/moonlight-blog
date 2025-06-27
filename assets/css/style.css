@@ -95,6 +95,18 @@ input[type=number] {
     --cloud-color: rgba(255, 255, 255, 0.8);
     --sky-gradient: linear-gradient(135deg, #bbe1fa 0%, #6e8ebc 100%);
     --star-color: rgba(255, 255, 255, 0.8);
+    --surface-container: #e6f0fa;
+    --surface-container-high: #fff;
+    --primary: #6e8ebc;
+    --primary-hover: #4a6fa5;
+    --on-primary: #fff;
+    --on-surface: #222;
+    --outline-variant: #d1d5db;
+    --glass-bg: rgba(255,255,255,0.7);
+    --glass-border: #cbd5e1;
+    --text-primary: #222;
+    --accent-color: #6e8ebc;
+    --accent-color-transparent: rgba(110,142,188,0.2);
 }
 
 .theme-dark {
