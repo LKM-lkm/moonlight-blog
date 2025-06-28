@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="assets/css/chatbot.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-    /* 设置聊天机器人主题变量，确保能正确渲�?*/
+    /* 设置聊天机器人主题变量，确保能正确渲染 */
     :root {
         --primary-color: #6e8ebc;
         --primary-color-dark: #4a6fa5;
@@ -63,13 +63,13 @@
             <div class="container">
                 <div class="glass-panel hero-content">
                     <h2 class="fade-in">欢迎来到Moonlight博客</h2>
-                    <p class="fade-in delay-1">在这里，思绪如云，文字如月光般流�?/p>
+                    <p class="fade-in delay-1">在这里，思绪如云，文字如月光般流淌</p>
                     <a href="#articles" class="btn glass-btn fade-in delay-2">探索文章</a>
                 </div>
             </div>
         </section>
         
-        <!-- 新增：个人信息模�?-->
+        <!-- 新增：个人信息模块 -->
         <section id="profile" class="section">
             <div class="container">
                 <div class="section-title glass-panel">
@@ -81,36 +81,36 @@
                         <img src="/assets/images/avatar.jpg" alt="博主头像">
                     </div>
                     <div class="profile-info">
-                        <h3>�?/h3>
-                        <p class="profile-bio">学生，热爱技术和创新，专注于绘画、文字、乐谱排版，人工智能、云计算和大数据领域的研究与应用。喜欢探索新技术，用代码创造美好的数字世界�?/p>
+                        <h3>博主</h3>
+                        <p class="profile-bio">学生，热爱技术和创新，专注于绘画、文字、乐谱排版，人工智能、云计算和大数据领域的研究与应用。喜欢探索新技术，用代码创造美好的数字世界！</p>
                         <div class="profile-stats">
                             <div class="stat-item">
                                 <i class="fas fa-file-alt"></i>
-                                <span>2 篇文�?/span>
+                                <span>2 篇文章</span>
                             </div>
                             <div class="stat-item">
                                 <i class="fas fa-code"></i>
-                                <span>3 个项�?/span>
+                                <span>3 个项目</span>
                             </div>
                             <div class="stat-item">
                                 <i class="fas fa-calendar-alt"></i>
-                                <span>2025年加�?/span>
+                                <span>2025年加入</span>
                             </div>
                         </div>
-                        <div class="profile-social">
-                            <a href="https://github.com/LKM-lkm" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                            <a href="https://x.com/kmL1059813" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                            <a href="mailto:lkm836972@outlook.com" title="邮箱"><i class="fas fa-envelope"></i></a>
-                            <a href="https://space.bilibili.com/3546379817322728" target="_blank" rel="noopener noreferrer" aria-label="Bilibili"><i class="fab fa-bilibili"></i></a>
-                        </div>
                     </div>
+                </div>
+                <div class="profile-social">
+                    <a href="https://github.com/LKM-lkm" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://x.com/kmL1059813" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="mailto:lkm836972@outlook.com" title="邮箱"><i class="fas fa-envelope"></i></a>
+                    <a href="https://space.bilibili.com/3546379817322728" target="_blank" rel="noopener noreferrer" aria-label="Bilibili"><i class="fab fa-bilibili"></i></a>
                 </div>
             </div>
         </section>
         
         <section id="articles" class="section">
             <div class="container">
-                <h2 class="section-title">最新文�?/h2>
+                <h2 class="section-title">最新文章</h2>
                 <div class="search-container">
                     <div class="search-box">
                         <input type="text" id="search-input" class="search-input" placeholder="搜索文章标题、标签或内容..." autocomplete="off">
@@ -148,18 +148,19 @@
                     </div>
                 </div>
                 <div class="articles-pagination glass-panel">
-                    <button class="pagination-btn" id="prev-page" disabled title="前往上一�?>
-                        <i class="fas fa-chevron-left"></i> 上一�?                    </button>
+                    <button class="pagination-btn" id="prev-page" disabled title="前往上一页">
+                        <i class="fas fa-chevron-left"></i> 上一页
+                    </button>
                     <span id="page-indicator">1 / 1</span>
-                    <button class="pagination-btn" id="next-page" disabled title="前往下一�?>
-                        下一�?<i class="fas fa-chevron-right"></i>
+                    <button class="pagination-btn" id="next-page" disabled title="前往下一页">
+                        下一页 <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
             </div>
         </section>
     </main>
     
-    <!-- 聊天机器人组�?-->
+    <!-- 聊天机器人组件 -->
     <div class="chatbot-wrapper">
         <button class="chatbot-toggle" id="chatbot-toggle" title="打开聊天助手">
             <i class="fas fa-comments"></i>
@@ -174,12 +175,12 @@
             </div>
             
             <div class="chatbot-messages" id="chatbot-messages">
-                <!-- 消息将通过JavaScript动态加�?-->
+                <!-- 消息将通过JavaScript动态加载 -->
             </div>
             
             <form class="chatbot-form" id="chatbot-form">
-                <input type="text" id="chatbot-input" class="chatbot-input" placeholder="请输入您的问�?.." autocomplete="off">
-                <button type="submit" class="chatbot-submit" title="发送消�?>
+                <input type="text" id="chatbot-input" class="chatbot-input" placeholder="请输入您的问题..." autocomplete="off">
+                <button type="submit" class="chatbot-submit" title="发送消息">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </form>
@@ -212,7 +213,7 @@
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; <span id="year"></span> Moonlight博客 - 保留所有权�?/p>
+                <p>&copy; <span id="year"></span> Moonlight博客 - 保留所有权利?/p>
             </div>
         </div>
     </footer>
