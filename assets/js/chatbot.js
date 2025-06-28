@@ -32,7 +32,7 @@ const presetQAList = [
   { question: ["代码高亮"], answer: "支持多种编程语言的代码高亮。" },
   { question: ["经验分享", "博主的学习/成长经历？"], answer: "博主正在学习中，热爱技术创新，喜欢分享和交流。" },
   { question: ["编程语言", "博主最喜欢的编程语言？"], answer: "最喜欢JavaScript和Python，简单高效，生态丰富。" },
-  { question: ["书籍推荐", "博主推荐的书籍/资源？"], answer: "推荐《JavaScript高级程序设计》《深入浅出Node.js》《人工智能简史》等。" },
+  { question: ["书籍推荐", "博主推荐的书籍/资源？"], answer: "推荐《Behind Bars》《深入浅出Node.js》《人工智能简史》等。" },
   { question: ["移动端", "博客是否支持移动端访问？"], answer: "博客采用响应式设计，手机、平板均可流畅访问。" },
   { question: ["收藏", "如何收藏/分享文章？"], answer: "可通过浏览器自带的收藏功能或复制链接分享。" },
   { question: ["未来计划", "博主的未来计划是什么？"], answer: "持续优化博客功能，分享更多AI与软件操作技巧，欢迎关注！" }
