@@ -1,6 +1,7 @@
-name = "likemsblog"
+name = 'likems-blog'
 main = "src/worker.js"
-compatibility_date = "2024-06-20"
+compatibility_date = "2025-06-28"
 
-[site]
-bucket = "./dist" 
+[assets]
+directory = "./dist"
+binding = "ASSETS" 
