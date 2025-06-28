@@ -43,4 +43,9 @@ coverage/
 .cloudflare/
 
 # Decap CMS OAuth Provider (避免子模块问题)
-decap-cms-github-oauth-provider-cloudflare/ 
+decap-cms-github-oauth-provider-cloudflare/
+
+# 允许 dist/admin/api 及其子目录下的 index.html 被提交
+!dist/admin/api/index.html
+!dist/admin/api/auth/index.html
+!dist/admin/api/chat/index.html 
