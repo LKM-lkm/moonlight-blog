@@ -48,4 +48,6 @@ decap-cms-github-oauth-provider-cloudflare/
 # 允许 dist/admin/api 及其子目录下的 index.html 被提交
 !dist/admin/api/index.html
 !dist/admin/api/auth/index.html
-!dist/admin/api/chat/index.html 
+!dist/admin/api/chat/index.html
+# 允许 dashboard 页面被提交
+!dist/admin/dashboard/index.html 
