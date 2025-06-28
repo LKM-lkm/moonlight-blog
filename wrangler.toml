@@ -1,4 +1,4 @@
-name = "likemsblog"
+name = "likems-blog"
 main = "src/worker.js"
 compatibility_date = "2024-06-20"
 
