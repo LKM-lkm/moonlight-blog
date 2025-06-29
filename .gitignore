@@ -26,8 +26,7 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# Build output
-dist/
+# Build output (保留 dist 作为唯一部署目录)
 build/
 
 # Testing
@@ -44,6 +43,13 @@ coverage/
 
 # Decap CMS OAuth Provider (避免子模块问题)
 decap-cms-github-oauth-provider-cloudflare/
+
+# 忽略重复的部署目录，只保留 dist/
+public/admin/
+public/assets/
+
+# 允许 dist 目录被提交（作为唯一部署源）
+!dist/
 
 # 允许 dist/admin/api 及其子目录下的 index.html 被提交
 !dist/admin/api/index.html

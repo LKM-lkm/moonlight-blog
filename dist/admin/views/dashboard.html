@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理后台 - 月光云海博客</title>
-    <link rel="stylesheet" href="../assets/css/base.css">
-    <link rel="stylesheet" href="../assets/css/dashboard.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="theme-auto">
     <div class="stars-container">
@@ -88,7 +88,7 @@
                         <span class="badge">3</span>
                     </div>
                     <div class="user-menu">
-                        <img src="../assets/img/avatar.jpg" alt="用户头像" class="avatar">
+                        <img src="/assets/img/avatar.jpg" alt="用户头像" class="avatar">
                         <div class="dropdown-menu">
                             <a href="profile.html"><i class="fas fa-user"></i> 个人资料</a>
                             <a href="#"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
@@ -199,13 +199,26 @@
                             <i class="fas fa-file-alt"></i>
                         </div>
                         <div class="activity-content">
-                            <p><strong>用户2</strong> 发布了新文章 <a href="#">《AI 绘画入门》</a></p>
-                            <span class="time">5分钟前</span>
+                            <p><strong>管理员</strong> 发布了新文章 <a href="#">《React Hooks 最佳实践》</a></p>
+                            <span class="time">1小时前</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon user">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p><strong>用户2</strong> 注册成为新用户</p>
+                            <span class="time">3小时前</span>
                         </div>
                     </div>
                 </div>
             </section>
         </main>
     </div>
+
+    <!-- 引入脚本 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="/assets/js/dashboard.js"></script>
 </body>
 </html> 
