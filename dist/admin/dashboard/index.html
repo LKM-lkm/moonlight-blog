@@ -98,11 +98,11 @@
                         <i class="fas fa-eye"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>1,234</h3>
+                        <h3>--</h3>
                         <p>今日访问</p>
                         <div class="trend up">
                             <i class="fas fa-arrow-up"></i>
-                            <span>12%</span>
+                            <span>--</span>
                         </div>
                     </div>
                 </div>
@@ -111,11 +111,11 @@
                         <i class="fas fa-file-alt"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>56</h3>
+                        <h3>--</h3>
                         <p>文章总数</p>
                         <div class="trend up">
                             <i class="fas fa-arrow-up"></i>
-                            <span>8%</span>
+                            <span>--</span>
                         </div>
                     </div>
                 </div>
@@ -124,11 +124,11 @@
                         <i class="fas fa-comments"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>89</h3>
+                        <h3>--</h3>
                         <p>新增评论</p>
                         <div class="trend down">
                             <i class="fas fa-arrow-down"></i>
-                            <span>5%</span>
+                            <span>--</span>
                         </div>
                     </div>
                 </div>
@@ -137,11 +137,11 @@
                         <i class="fas fa-users"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>321</h3>
+                        <h3>--</h3>
                         <p>注册用户</p>
                         <div class="trend up">
                             <i class="fas fa-arrow-up"></i>
-                            <span>15%</span>
+                            <span>--</span>
                         </div>
                     </div>
                 </div>
@@ -180,31 +180,10 @@
                     <a href="#" class="view-all">查看全部</a>
                 </div>
                 <div class="activity-list">
+                    <!-- 活动列表将通过JavaScript动态加载 -->
                     <div class="activity-item">
-                        <div class="activity-icon comment">
-                            <i class="fas fa-comment"></i>
-                        </div>
                         <div class="activity-content">
-                            <p><a href="#">张三</a> 评论了文章 <a href="#">《如何优雅地写代码》</a></p>
-                            <span class="time">5分钟前</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon article">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <div class="activity-content">
-                            <p><a href="#">李四</a> 发布了新文章 <a href="#">《JavaScript最佳实践》</a></p>
-                            <span class="time">2小时前</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon user">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="activity-content">
-                            <p><a href="#">王五</a> 加入了我们的社区</p>
-                            <span class="time">1天前</span>
+                            <p>暂无活动记录</p>
                         </div>
                     </div>
                 </div>
@@ -253,6 +232,18 @@
         });
 
         // 这里可以添加图表初始化代码
+        
+        // 动态加载仪表盘数据
+        function loadDashboardData() {
+            // 这里可以添加从后端 API 获取数据的逻辑
+            // 目前显示占位符，等待真实数据接入
+            console.log('仪表盘数据加载完成');
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
     </script>
 </body>
 </html> 
