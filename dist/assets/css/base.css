@@ -234,11 +234,12 @@ body {
     z-index: 1000;
 }
 
-.user-menu:hover .dropdown-menu {
+/* 移除原来的 :hover 样式，让 JavaScript 控制 */
+/* .user-menu:hover .dropdown-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
-}
+} */
 
 .dropdown-menu a {
     display: flex;

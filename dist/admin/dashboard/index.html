@@ -81,6 +81,13 @@
                         <i class="fas fa-search"></i>
                         <input type="text" placeholder="搜索...">
                     </div>
+                    <div class="user-menu">
+                        <img src="/assets/images/avatar.jpg" alt="用户头像" class="avatar">
+                        <div class="dropdown-menu">
+                            <a href="/admin/profile.html"><i class="fas fa-user"></i> 个人资料</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
+                        </div>
+                    </div>
                 </div>
             </header>
 
@@ -209,6 +216,40 @@
         // 移动端菜单切换
         document.querySelector('.menu-toggle').addEventListener('click', function() {
             document.querySelector('.sidebar').classList.toggle('show');
+        });
+
+        // 用户菜单交互逻辑
+        const userMenu = document.querySelector('.user-menu');
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+        let menuTimeout;
+
+        // 鼠标进入用户菜单区域
+        userMenu.addEventListener('mouseenter', function() {
+            clearTimeout(menuTimeout);
+            dropdownMenu.style.opacity = '1';
+            dropdownMenu.style.visibility = 'visible';
+            dropdownMenu.style.transform = 'translateY(0)';
+        });
+
+        // 鼠标离开用户菜单区域
+        userMenu.addEventListener('mouseleave', function() {
+            menuTimeout = setTimeout(() => {
+                dropdownMenu.style.opacity = '0';
+                dropdownMenu.style.visibility = 'hidden';
+                dropdownMenu.style.transform = 'translateY(-10px)';
+            }, 100); // 100ms 延迟，给用户时间移动到菜单上
+        });
+
+        // 鼠标进入下拉菜单
+        dropdownMenu.addEventListener('mouseenter', function() {
+            clearTimeout(menuTimeout);
+        });
+
+        // 鼠标离开下拉菜单
+        dropdownMenu.addEventListener('mouseleave', function() {
+            dropdownMenu.style.opacity = '0';
+            dropdownMenu.style.visibility = 'hidden';
+            dropdownMenu.style.transform = 'translateY(-10px)';
         });
 
         // 这里可以添加图表初始化代码
