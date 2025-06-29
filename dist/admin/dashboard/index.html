@@ -49,19 +49,19 @@
             <nav class="sidebar-nav">
                 <ul>
                     <li class="active">
-                        <a href="#"><i class="fas fa-home"></i><span>仪表盘</span></a>
+                        <a href="/admin/dashboard/"><i class="fas fa-chart-line"></i><span>仪表盘</span></a>
                     </li>
                     <li>
-                        <a href="#"><i class="fas fa-file-alt"></i><span>文章管理</span></a>
+                        <a href="/admin/views/articles.html"><i class="fas fa-file-alt"></i><span>文章管理</span></a>
                     </li>
                     <li>
-                        <a href="#"><i class="fas fa-comments"></i><span>评论管理</span></a>
+                        <a href="/admin/views/comments.html"><i class="fas fa-comments"></i><span>评论管理</span></a>
                     </li>
                     <li>
-                        <a href="#"><i class="fas fa-users"></i><span>用户管理</span></a>
+                        <a href="/admin/views/users.html"><i class="fas fa-users"></i><span>用户管理</span></a>
                     </li>
                     <li>
-                        <a href="#"><i class="fas fa-cog"></i><span>系统设置</span></a>
+                        <a href="/admin/settings.html"><i class="fas fa-cog"></i><span>系统设置</span></a>
                     </li>
                 </ul>
             </nav>
@@ -85,7 +85,8 @@
                         <img src="/assets/images/avatar.jpg" alt="用户头像" class="avatar">
                         <div class="dropdown-menu">
                             <a href="/admin/profile.html"><i class="fas fa-user"></i> 个人资料</a>
-                            <a href="#"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
+                            <a href="/" target="_blank"><i class="fas fa-home"></i> 返回主页</a>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
                         </div>
                     </div>
                 </div>
@@ -235,15 +236,122 @@
         
         // 动态加载仪表盘数据
         function loadDashboardData() {
-            // 这里可以添加从后端 API 获取数据的逻辑
-            // 目前显示占位符，等待真实数据接入
+            // 模拟从后端 API 获取数据
+            const stats = {
+                visitors: { count: 0, trend: 0 },
+                articles: { count: 2, trend: 0 },
+                comments: { count: 0, trend: 0 },
+                users: { count: 1, trend: 0 }
+            };
+            
+            // 更新统计卡片
+            updateStatsCards(stats);
+            
+            // 更新最近活动
+            updateRecentActivities();
+            
             console.log('仪表盘数据加载完成');
+        }
+        
+        function updateStatsCards(stats) {
+            // 更新访问量
+            const visitorsCard = document.querySelector('.stat-card:nth-child(1) .stat-info h3');
+            const visitorsTrend = document.querySelector('.stat-card:nth-child(1) .trend span');
+            visitorsCard.textContent = stats.visitors.count;
+            visitorsTrend.textContent = stats.visitors.trend + '%';
+            
+            // 更新文章数
+            const articlesCard = document.querySelector('.stat-card:nth-child(2) .stat-info h3');
+            const articlesTrend = document.querySelector('.stat-card:nth-child(2) .trend span');
+            articlesCard.textContent = stats.articles.count;
+            articlesTrend.textContent = stats.articles.trend + '%';
+            
+            // 更新评论数
+            const commentsCard = document.querySelector('.stat-card:nth-child(3) .stat-info h3');
+            const commentsTrend = document.querySelector('.stat-card:nth-child(3) .trend span');
+            commentsCard.textContent = stats.comments.count;
+            commentsTrend.textContent = stats.comments.trend + '%';
+            
+            // 更新用户数
+            const usersCard = document.querySelector('.stat-card:nth-child(4) .stat-info h3');
+            const usersTrend = document.querySelector('.stat-card:nth-child(4) .trend span');
+            usersCard.textContent = stats.users.count;
+            usersTrend.textContent = stats.users.trend + '%';
+        }
+        
+        function updateRecentActivities() {
+            const activityList = document.querySelector('.activity-list');
+            const activities = [
+                {
+                    type: 'system',
+                    content: '系统初始化完成',
+                    time: '刚刚'
+                },
+                {
+                    type: 'article',
+                    content: '博客系统部署成功',
+                    time: '1小时前'
+                }
+            ];
+            
+            if (activities.length === 0) {
+                activityList.innerHTML = '<div class="activity-item"><div class="activity-content"><p>暂无活动记录</p></div></div>';
+                return;
+            }
+            
+            activityList.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon ${activity.type}">
+                        <i class="fas fa-${activity.type === 'system' ? 'cog' : 'file-alt'}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p>${activity.content}</p>
+                        <span class="time">${activity.time}</span>
+                    </div>
+                </div>
+            `).join('');
         }
         
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
             loadDashboardData();
+            initSearch();
         });
+
+        // 搜索功能
+        function initSearch() {
+            const searchInput = document.querySelector('.search-box input');
+            const searchBtn = document.querySelector('.search-box i');
+            
+            searchBtn.addEventListener('click', function() {
+                performSearch(searchInput.value);
+            });
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch(searchInput.value);
+                }
+            });
+        }
+        
+        function performSearch(query) {
+            if (query.trim()) {
+                // 这里可以添加搜索逻辑
+                console.log('搜索:', query);
+                alert('搜索功能: ' + query);
+            }
+        }
+        
+        // 退出登录功能
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                // 这里可以添加退出登录的逻辑
+                console.log('用户退出登录');
+                alert('退出登录成功！');
+                // 可以重定向到登录页面
+                // window.location.href = '/admin/login.html';
+            }
+        }
     </script>
 </body>
 </html> 
