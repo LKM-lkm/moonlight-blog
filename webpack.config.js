@@ -65,7 +65,8 @@ module.exports = {
       filename: 'admin/login.html',
       chunks: ['login'],
       inject: true,
-      minify: false
+      minify: false,
+      publicPath: '../'
     }),
     new CopyWebpackPlugin({
       patterns: [
