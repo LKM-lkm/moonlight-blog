@@ -12,7 +12,10 @@
     <!-- CSS 文件 -->
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/chatbot.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Font Awesome 6.4.0 - 使用CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- 备选方案：如果CDN失败，使用本地Font Awesome -->
+    <link rel="stylesheet" href="assets/fontawesome/css/all.min.css" media="print" onload="this.media='all'">
     <style>
     /* 设置聊天机器人主题变量，确保能正确渲染 */
     :root {
@@ -99,10 +102,18 @@
                         </div>
                     </div>
                     <div class="profile-social">
-                        <a href="https://github.com/LKM-lkm" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                        <a href="https://x.com/kmL1059813" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="mailto:lkm836972@outlook.com" title="邮箱"><i class="fas fa-envelope"></i></a>
-                        <a href="https://space.bilibili.com/3546379817322728" target="_blank" rel="noopener noreferrer" aria-label="Bilibili"><i class="fab fa-bilibili"></i></a>
+                        <a href="https://github.com/LKM-lkm" target="_blank" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://x.com/kmL1059813" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="mailto:lkm836972@outlook.com" title="邮箱">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                        <a href="https://space.bilibili.com/3546379817322728" target="_blank" rel="noopener noreferrer" aria-label="Bilibili">
+                            <i class="fas fa-video"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -222,4 +233,5 @@
     <script src="assets/js/theme.js"></script>
     <script src="assets/js/chatbot.js"></script>
     <script src="assets/js/article.js"></script>
+    <script src="assets/js/font-awesome-check.js"></script>
 </body>

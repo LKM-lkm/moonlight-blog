@@ -69,9 +69,12 @@ module.exports = {
         { from: 'assets/css', to: 'assets/css' },
         { from: 'assets/images', to: 'assets/images' },
         { from: 'assets/fonts', to: 'assets/fonts' },
+        { from: 'assets/js', to: 'assets/js' },
         { from: 'admin/api', to: 'admin/api' },
         { from: '_headers', to: '_headers' },
-        { from: 'admin/views', to: 'admin/views' }
+        { from: 'admin/views', to: 'admin/views' },
+        { from: 'node_modules/@fortawesome/fontawesome-free/css', to: 'assets/fontawesome/css' },
+        { from: 'node_modules/@fortawesome/fontawesome-free/webfonts', to: 'assets/fontawesome/webfonts' }
       ]
     })
   ],
