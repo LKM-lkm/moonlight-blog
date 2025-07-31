@@ -2,8 +2,8 @@
  * 管理后台主要JavaScript文件
  */
 
-import '../../assets/css/theme.css';
-import '../../assets/css/login.css';
+import '../../../assets/css/theme.css';
+import '../../../assets/css/login.css';
 
 // 管理后台工具函数
 var adminUtils = {
@@ -239,6 +239,7 @@ function initDarkModeToggle() {
 
 // 全局管理应用对象
 var adminApp = {
+    // 使用adminUtils中的showMessage方法
     showMessage: function(message, type) {
         if (adminUtils && adminUtils.showMessage) {
             adminUtils.showMessage(message, type);

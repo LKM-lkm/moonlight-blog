@@ -5,7 +5,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    main: './src/index.js'
+    main: './src/index.js',
+    admin: './admin/assets/js/admin.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -59,9 +60,9 @@ module.exports = {
       chunks: ['main']
     }),
     new HtmlWebpackPlugin({
-      template: './admin/views/dashboard.html',
-      filename: 'admin/dashboard/index.html',
-      chunks: ['main']
+      template: './admin/login.html',
+      filename: 'admin/login.html',
+      chunks: ['admin']
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -69,7 +70,8 @@ module.exports = {
         { from: 'assets/images', to: 'assets/images' },
         { from: 'assets/fonts', to: 'assets/fonts' },
         { from: 'admin/api', to: 'admin/api' },
-        { from: '_headers', to: '_headers' }
+        { from: '_headers', to: '_headers' },
+        { from: 'admin/views', to: 'admin/views' }
       ]
     })
   ],
