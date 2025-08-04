@@ -4,6 +4,7 @@
 
 // 导入样式
 import '../assets/css/style.css';
+import '../assets/css/login.css';
 
 // 登录页面初始化
 document.addEventListener('DOMContentLoaded', function() {

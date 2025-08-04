@@ -3,7 +3,7 @@
  */
 
 import '../../../assets/css/theme.css';
-import '../../../assets/css/login.css';
+import '../../../assets/css/style.css';
 
 // 管理后台工具函数
 var adminUtils = {
@@ -239,26 +239,16 @@ function initDarkModeToggle() {
 
 // 全局管理应用对象
 var adminApp = {
-    // 使用adminUtils中的showMessage方法
-    showMessage: function(message, type) {
-        if (adminUtils && adminUtils.showMessage) {
-            adminUtils.showMessage(message, type);
-        }
-    },
-    
-    formatDate: function(date) {
-        if (adminUtils && adminUtils.formatDate) {
-            return adminUtils.formatDate(date);
-        }
-        return date;
-    },
-    
-    debounce: function(func, wait) {
-        if (adminUtils && adminUtils.debounce) {
-            return adminUtils.debounce(func, wait);
-        }
-        return func;
-    }
+  // 直接引用adminUtils的方法，避免重复声明
+  showMessage: adminUtils.showMessage,
+  formatDate: adminUtils.formatDate,
+  debounce: adminUtils.debounce,
+  
+  // 管理后台特有的方法
+  init: function() {
+    this.checkAuthStatus();
+    this.initUserMenu();
+  }
 };
 
 // 检查用户登录状态

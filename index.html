@@ -9,22 +9,10 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Cache-Control" content="max-age=31536000, immutable">
     
-    <!-- CSS 文件 -->
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/chatbot.css">
     <!-- Font Awesome 6.4.0 - 使用CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <!-- 备选方案：如果CDN失败，使用本地Font Awesome -->
     <link rel="stylesheet" href="assets/fontawesome/css/all.min.css" media="print" onload="this.media='all'">
-    <style>
-    /* 设置聊天机器人主题变量，确保能正确渲染 */
-    :root {
-        --primary-color: #6e8ebc;
-        --primary-color-dark: #4a6fa5;
-        --primary-color-rgb: 110, 142, 188;
-    }
-    </style>
-    <!-- 不再手动引入assets/js/*.js，全部交给webpack打包注入 -->
 </head>
 <body class="theme-light">
     <div class="stars-container">
@@ -124,7 +112,7 @@
                 <h2 class="section-title">最新文章</h2>
                 <div class="search-container">
                     <div class="search-box">
-                        <input type="text" id="search-input" class="search-input" placeholder="搜索文章标题、标签或内容..." autocomplete="off">
+                        <input id="search-input" class="search-input" placeholder="搜索文章标题、标签或内容..." autocomplete="off">
                         <button type="button" id="search-btn" class="search-btn" title="搜索">
                             <i class="fas fa-search"></i>
                         </button>
@@ -132,7 +120,6 @@
                 </div>
                 <div id="tag-filter" class="tag-filter"></div>
                 <div class="articles-grid" id="articles-container">
-                    <!-- 文章卡片将通过JavaScript加载 -->
                     <div class="article-card glass-panel skeleton">
                         <div class="article-image skeleton-image"></div>
                         <div class="article-content">
@@ -159,11 +146,11 @@
                     </div>
                 </div>
                 <div class="articles-pagination glass-panel">
-                    <button class="pagination-btn" id="prev-page" disabled title="前往上一页">
+                    <button class="pagination-btn" id="prev-page" disabled="disabled" title="前往上一页">
                         <i class="fas fa-chevron-left"></i> 上一页
                     </button>
                     <span id="page-indicator">1 / 1</span>
-                    <button class="pagination-btn" id="next-page" disabled title="前往下一页">
+                    <button class="pagination-btn" id="next-page" disabled="disabled" title="前往下一页">
                         下一页 <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
@@ -171,12 +158,10 @@
         </section>
     </main>
     
-    <!-- 聊天机器人组件 -->
     <div class="chatbot-wrapper">
         <button class="chatbot-toggle" id="chatbot-toggle" title="打开聊天助手">
             <i class="fas fa-comments"></i>
         </button>
-        
         <div class="chatbot-container" id="chatbot-container">
             <div class="chatbot-header">
                 <h3>Moonlight助手</h3>
@@ -184,13 +169,9 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
-            <div class="chatbot-messages" id="chatbot-messages">
-                <!-- 消息将通过JavaScript动态加载 -->
-            </div>
-            
+            <div class="chatbot-messages" id="chatbot-messages"></div>
             <form class="chatbot-form" id="chatbot-form">
-                <input type="text" id="chatbot-input" class="chatbot-input" placeholder="请输入您的问题..." autocomplete="off">
+                <input id="chatbot-input" class="chatbot-input" placeholder="请输入您的问题..." autocomplete="off">
                 <button type="submit" class="chatbot-submit" title="发送消息">
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -208,9 +189,15 @@
                 <div class="footer-section">
                     <h3>联系方式</h3>
                     <div class="social-icons">
-                        <a href="https://github.com/LKM-lkm" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                        <a href="https://x.com/kmL1059813" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="mailto:lkm836972@outlook.com" title="邮箱"><i class="fas fa-envelope"></i></a>
+                        <a href="https://github.com/LKM-lkm" target="_blank" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://x.com/kmL1059813" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="mailto:lkm836972@outlook.com" title="邮箱">
+                            <i class="fas fa-envelope"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="footer-section">
@@ -228,10 +215,11 @@
             </div>
         </div>
     </footer>
-
+    
     <!-- JavaScript 文件 -->
     <script src="assets/js/theme.js"></script>
     <script src="assets/js/chatbot.js"></script>
     <script src="assets/js/article.js"></script>
     <script src="assets/js/font-awesome-check.js"></script>
 </body>
+</html>
