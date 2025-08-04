@@ -3,12 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理后台 - 月光云海博客</title>
-    <link rel="stylesheet" href="/assets/css/base.css">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>后台管理 - 月光云海博客</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.0/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <script src="../../assets/js/theme-switcher.js"></script>
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e1e8ed;
+        }
+        .admin-title {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .admin-nav {
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .nav-btn.active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .admin-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .admin-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .admin-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .admin-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .admin-table tr:hover {
+            background: #f8f9ff;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+        .tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin: 2px;
+        }
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            margin: 0 3px;
+            transition: all 0.3s ease;
+        }
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
 </head>
-<body class="theme-auto">
+<body class="theme-light">
     <div class="stars-container">
         <div class="stars"></div>
         <div class="stars2"></div>
@@ -23,50 +180,31 @@
     
     <div class="moonlight"></div>
 
-    <div class="admin-layout">
-        <!-- 侧边栏 -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-moon"></i>
-                    <span>月光云海</span>
-                </div>
-            </div>
-            <nav class="sidebar-nav">
-                <ul>
-                    <li class="active">
-                        <a href="dashboard.html">
-                            <i class="fas fa-chart-line"></i>
-                            <span>仪表盘</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="articles.html">
-                            <i class="fas fa-file-alt"></i>
-                            <span>文章管理</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="comments.html">
-                            <i class="fas fa-comments"></i>
-                            <span>评论管理</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="users.html">
-                            <i class="fas fa-users"></i>
-                            <span>用户管理</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="settings.html">
-                            <i class="fas fa-cog"></i>
-                            <span>系统设置</span>
-                        </a>
-                    </li>
-                </ul>
+    <div class="admin-container">
+        <header class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-moon"></i>
+                月光云海 - 后台管理
+            </h1>
+            <nav class="admin-nav">
+                <button class="nav-btn active" data-section="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    仪表盘
+                </button>
+                <button class="nav-btn" data-section="articles">
+                    <i class="fas fa-file-alt"></i>
+                    文章管理
+                </button>
+                <button class="nav-btn" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    系统设置
+                </button>
+                <button class="nav-btn" onclick="window.location.href='../../index.html'">
+                    <i class="fas fa-home"></i>
+                    返回首页
+                </button>
             </nav>
-        </aside>
+        </header>
 
         <!-- 主内容区 -->
         <main class="main-content">
@@ -98,127 +236,395 @@
             </header>
 
             <!-- 统计卡片 -->
-            <section class="stats-cards">
-                <div class="card">
-                    <div class="card-icon visitors">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3>访问量</h3>
-                        <p>1,234</p>
-                        <span class="trend up">
-                            <i class="fas fa-arrow-up"></i>
-                            12.5%
-                        </span>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon articles">
                         <i class="fas fa-file-alt"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3>文章数</h3>
-                        <p>56</p>
-                        <span class="trend up">
-                            <i class="fas fa-arrow-up"></i>
-                            8.3%
-                        </span>
+                        文章总数
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-icon comments">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-views">0</div>
+                    <div class="stat-label">
+                        <i class="fas fa-eye"></i>
+                        总访问量
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-comments">0</div>
+                    <div class="stat-label">
                         <i class="fas fa-comments"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3>评论数</h3>
-                        <p>328</p>
-                        <span class="trend down">
-                            <i class="fas fa-arrow-down"></i>
-                            3.2%
-                        </span>
+                        评论数量
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-icon users">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-users">1</div>
+                    <div class="stat-label">
                         <i class="fas fa-users"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3>用户数</h3>
-                        <p>892</p>
-                        <span class="trend up">
-                            <i class="fas fa-arrow-up"></i>
-                            15.7%
-                        </span>
+                        管理员
                     </div>
                 </div>
-            </section>
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center; color: #666;">
+                <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                <h3>欢迎使用月光云海博客管理系统</h3>
+                <p>请使用上方导航按钮切换到不同的管理功能</p>
+            </div>
+        </section>
 
-            <!-- 图表区域 -->
-            <section class="charts-section">
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h2>访问趋势</h2>
-                        <div class="chart-actions">
-                            <button class="active">日</button>
-                            <button>周</button>
-                            <button>月</button>
-                        </div>
-                    </div>
-                    <div class="chart" id="visitsChart"></div>
-                </div>
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h2>用户分布</h2>
-                        <div class="chart-actions">
-                            <button class="active">地区</button>
-                            <button>设备</button>
-                        </div>
-                    </div>
-                    <div class="chart" id="userDistributionChart"></div>
-                </div>
-            </section>
+        <!-- 文章管理区域 -->
+        <section id="articles-section" class="admin-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0; color: #2c3e50;">
+                    <i class="fas fa-file-alt"></i>
+                    文章管理
+                </h2>
+                <button class="btn-primary" id="new-article-btn">
+                    <i class="fas fa-plus"></i>
+                    新建文章
+                </button>
+            </div>
+            
+            <table class="admin-table" id="articles-table">
+                <thead>
+                    <tr>
+                        <th>标题</th>
+                        <th>作者</th>
+                        <th>日期</th>
+                        <th>标签</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="articles-tbody">
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
+                            <i class="fas fa-file-alt" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                            暂无文章，点击“新建文章”开始创作吧！
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
 
-            <!-- 最新动态 -->
-            <section class="recent-activities">
-                <div class="section-header">
-                    <h2>最新动态</h2>
-                    <a href="#" class="view-all">查看全部</a>
+        <!-- 系统设置区域 -->
+        <section id="settings-section" class="admin-section">
+            <h2 style="margin-bottom: 20px; color: #2c3e50;">
+                <i class="fas fa-cog"></i>
+                系统设置
+            </h2>
+            
+            <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">博客标题</label>
+                    <input type="text" value="月光云海博客" style="width: 100%; padding: 12px; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
                 </div>
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-icon comment">
-                            <i class="fas fa-comment"></i>
-                        </div>
-                        <div class="activity-content">
-                            <p><strong>用户1</strong> 评论了文章 <a href="#">《Vue3 组件开发实践》</a></p>
-                            <span class="time">2分钟前</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon article">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <div class="activity-content">
-                            <p><strong>管理员</strong> 发布了新文章 <a href="#">《React Hooks 最佳实践》</a></p>
-                            <span class="time">1小时前</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon user">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="activity-content">
-                            <p><strong>用户2</strong> 注册成为新用户</p>
-                            <span class="time">3小时前</span>
-                        </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">博客描述</label>
+                    <textarea rows="3" style="width: 100%; padding: 12px; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 14px; resize: vertical;">一个梦幻朗胧之美的个人博客空间</textarea>
+                </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">主题设置</label>
+                    <div style="display: flex; gap: 15px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="radio" name="theme" value="light" checked>
+                            <i class="fas fa-sun" style="color: #ffc107;"></i>
+                            亮色主题
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="radio" name="theme" value="dark">
+                            <i class="fas fa-moon" style="color: #6c757d;"></i>
+                            暗色主题
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="radio" name="theme" value="auto">
+                            <i class="fas fa-adjust" style="color: #007bff;"></i>
+                            跟随系统
+                        </label>
                     </div>
                 </div>
-            </section>
-        </main>
+                
+                <button class="btn-primary" style="margin-top: 15px;">
+                    <i class="fas fa-save"></i>
+                    保存设置
+                </button>
+            </div>
+        </section>
     </div>
 
-    <!-- 引入脚本 -->
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <script src="/assets/js/dashboard.js"></script>
+    <!-- 新建文章弹窗 -->
+    <div id="article-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 15px; padding: 30px; max-width: 1000px; width: 95%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="margin: 0; color: #2c3e50;">
+                    <i class="fas fa-plus-circle"></i>
+                    新建文章
+                </h3>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button type="button" id="preview-toggle" style="padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 12px;">
+                        <i class="fas fa-eye"></i>
+                        预览
+                    </button>
+                    <button id="close-modal" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">&times;</button>
+                </div>
+            </div>
+            
+            <form id="article-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">文章标题</label>
+                        <input type="text" id="article-title" required style="width: 100%; padding: 12px; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">作者</label>
+                        <input type="text" id="article-author" value="管理员" style="width: 100%; padding: 12px; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">标签（逗号分隔）</label>
+                        <input type="text" id="article-tags" placeholder="例如：技术,前端,JavaScript" style="width: 100%; padding: 12px; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">发布日期</label>
+                        <input type="datetime-local" id="article-date" style="width: 100%; padding: 12px; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">文章摘要</label>
+                    <textarea id="article-excerpt" rows="2" placeholder="简要描述文章内容..." style="width: 100%; padding: 12px; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 14px; resize: vertical;"></textarea>
+                </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label style="font-weight: 600; color: #2c3e50;">文章内容（Markdown格式）</label>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" id="insert-heading" style="padding: 4px 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; cursor: pointer; font-size: 12px;" title="插入标题">
+                                <i class="fas fa-heading"></i>
+                            </button>
+                            <button type="button" id="insert-bold" style="padding: 4px 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; cursor: pointer; font-size: 12px;" title="粗体">
+                                <i class="fas fa-bold"></i>
+                            </button>
+                            <button type="button" id="insert-italic" style="padding: 4px 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; cursor: pointer; font-size: 12px;" title="斜体">
+                                <i class="fas fa-italic"></i>
+                            </button>
+                            <button type="button" id="insert-code" style="padding: 4px 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; cursor: pointer; font-size: 12px;" title="代码">
+                                <i class="fas fa-code"></i>
+                            </button>
+                            <button type="button" id="insert-link" style="padding: 4px 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; cursor: pointer; font-size: 12px;" title="链接">
+                                <i class="fas fa-link"></i>
+                            </button>
+                            <button type="button" id="insert-list" style="padding: 4px 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; cursor: pointer; font-size: 12px;" title="列表">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="editor-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; height: 400px;">
+                        <div style="display: flex; flex-direction: column;">
+                            <div style="background: #f8f9fa; padding: 8px 12px; border: 1px solid #dee2e6; border-bottom: none; border-radius: 8px 8px 0 0; font-size: 12px; color: #6c757d;">
+                                <i class="fas fa-edit"></i> 编辑器
+                            </div>
+                            <textarea id="article-content" placeholder="请输入Markdown格式的文章内容..." style="flex: 1; padding: 12px; border: 1px solid #dee2e6; border-radius: 0 0 8px 8px; font-size: 14px; font-family: 'Courier New', monospace; resize: none; outline: none;"></textarea>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column;">
+                            <div style="background: #f8f9fa; padding: 8px 12px; border: 1px solid #dee2e6; border-bottom: none; border-radius: 8px 8px 0 0; font-size: 12px; color: #6c757d;">
+                                <i class="fas fa-eye"></i> 实时预览
+                            </div>
+                            <div id="article-preview" style="flex: 1; padding: 12px; border: 1px solid #dee2e6; border-radius: 0 0 8px 8px; background: white; overflow-y: auto; font-size: 14px; line-height: 1.6;">
+                                <div style="color: #999; text-align: center; padding: 50px 20px;">
+                                    <i class="fas fa-file-alt" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                                    在左侧编辑器中输入内容，这里将显示实时预览
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" id="cancel-article" style="padding: 12px 25px; background: #6c757d; color: white; border: none; border-radius: 25px; cursor: pointer;">
+                        <i class="fas fa-times"></i>
+                        取消
+                    </button>
+                    <button type="button" id="save-draft" style="padding: 12px 25px; background: #ffc107; color: #333; border: none; border-radius: 25px; cursor: pointer;">
+                        <i class="fas fa-save"></i>
+                        保存草稿
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        发布文章
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 导航切换功能
+        document.querySelectorAll('.nav-btn[data-section]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const section = this.dataset.section;
+                
+                // 更新按钮状态
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // 切换内容区域
+                document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(section + '-section').classList.add('active');
+            });
+        });
+        
+        // 文章管理功能
+        const articleModal = document.getElementById('article-modal');
+        const newArticleBtn = document.getElementById('new-article-btn');
+        const closeModalBtn = document.getElementById('close-modal');
+        const cancelArticleBtn = document.getElementById('cancel-article');
+        const articleForm = document.getElementById('article-form');
+        const articlesTableBody = document.getElementById('articles-tbody');
+        
+        let articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+        
+        // 打开新建文章弹窗
+        newArticleBtn.addEventListener('click', () => {
+            articleModal.style.display = 'flex';
+        });
+        
+        // 关闭弹窗
+        [closeModalBtn, cancelArticleBtn].forEach(btn => {
+            btn.addEventListener('click', () => {
+                articleModal.style.display = 'none';
+                articleForm.reset();
+            });
+        });
+        
+        // 点击弹窗外部关闭
+        articleModal.addEventListener('click', (e) => {
+            if (e.target === articleModal) {
+                articleModal.style.display = 'none';
+                articleForm.reset();
+            }
+        });
+        
+        // 保存文章
+        articleForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const article = {
+                id: Date.now(),
+                title: document.getElementById('article-title').value,
+                author: document.getElementById('article-author').value,
+                tags: document.getElementById('article-tags').value.split(',').map(t => t.trim()).filter(t => t),
+                excerpt: document.getElementById('article-excerpt').value,
+                content: document.getElementById('article-content').value,
+                date: new Date().toLocaleDateString('zh-CN'),
+                timestamp: Date.now()
+            };
+            
+            articles.unshift(article);
+            localStorage.setItem('blog-articles', JSON.stringify(articles));
+            
+            renderArticles();
+            updateStats();
+            
+            articleModal.style.display = 'none';
+            articleForm.reset();
+            
+            alert('文章保存成功！');
+        });
+        
+        // 渲染文章列表
+        function renderArticles() {
+            if (articles.length === 0) {
+                articlesTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
+                            <i class="fas fa-file-alt" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                            暂无文章，点击“新建文章”开始创作吧！
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            articlesTableBody.innerHTML = articles.map(article => `
+                <tr>
+                    <td><strong>${article.title}</strong></td>
+                    <td>${article.author}</td>
+                    <td>${article.date}</td>
+                    <td>
+                        ${article.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="editArticle(${article.id})">
+                            <i class="fas fa-edit"></i> 编辑
+                        </button>
+                        <button class="action-btn btn-delete" onclick="deleteArticle(${article.id})">
+                            <i class="fas fa-trash"></i> 删除
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // 更新统计数据
+        function updateStats() {
+            document.getElementById('total-articles').textContent = articles.length;
+            document.getElementById('total-views').textContent = articles.reduce((sum, a) => sum + (a.views || 0), 0);
+            document.getElementById('total-comments').textContent = articles.reduce((sum, a) => sum + (a.comments || 0), 0);
+        }
+        
+        // 删除文章
+        function deleteArticle(id) {
+            if (confirm('确定要删除这篇文章吗？')) {
+                articles = articles.filter(a => a.id !== id);
+                localStorage.setItem('blog-articles', JSON.stringify(articles));
+                renderArticles();
+                updateStats();
+            }
+        }
+        
+        // 编辑文章（简单实现）
+        function editArticle(id) {
+            const article = articles.find(a => a.id === id);
+            if (article) {
+                document.getElementById('article-title').value = article.title;
+                document.getElementById('article-author').value = article.author;
+                document.getElementById('article-tags').value = article.tags.join(', ');
+                document.getElementById('article-excerpt').value = article.excerpt;
+                document.getElementById('article-content').value = article.content;
+                
+                articleModal.style.display = 'flex';
+                
+                // 修改表单提交事件为更新模式
+                articleForm.onsubmit = function(e) {
+                    e.preventDefault();
+                    
+                    article.title = document.getElementById('article-title').value;
+                    article.author = document.getElementById('article-author').value;
+                    article.tags = document.getElementById('article-tags').value.split(',').map(t => t.trim()).filter(t => t);
+                    article.excerpt = document.getElementById('article-excerpt').value;
+                    article.content = document.getElementById('article-content').value;
+                    
+                    localStorage.setItem('blog-articles', JSON.stringify(articles));
+                    renderArticles();
+                    
+                    articleModal.style.display = 'none';
+                    articleForm.reset();
+                    
+                    // 恢复原有的提交事件
+                    articleForm.onsubmit = null;
+                    
+                    alert('文章更新成功！');
+                };
+            }
+        }
+        
+        // 初始化
+        renderArticles();
+        updateStats();
+    </script>
 </body>
-</html> 
+</html>

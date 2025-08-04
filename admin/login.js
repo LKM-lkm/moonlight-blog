@@ -30,8 +30,8 @@ function initLogin() {
     const passwordInput = document.getElementById('password');
     const errorMsg = document.getElementById('error-msg');
     
-    // moonlight 的 SHA-256 哈希（小写十六进制）
-    const PASSWORD_HASH = 'b7e23ec29af22b0b4e41da31e868d57226121c84b1a5e6e25f6cfc7cdcd8b0e5';
+    // 新密码的 SHA-256 哈希（小写十六进制）
+    const PASSWORD_HASH = '2020b3258cb31725edbdad976f82def0a5e38b24a23d8ba11a11484257cc9944';
     const SESSION_KEY = 'ml_admin_logged_in';
     
     // SHA-256 哈希函数
