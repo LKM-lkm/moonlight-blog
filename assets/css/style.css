@@ -416,6 +416,33 @@ main {
     transform: translateY(-3px);
 }
 
+/* 哔哩哔哩链接特殊样式 */
+.bilibili-link {
+    position: relative;
+    background: linear-gradient(135deg, #00a1d6, #00b5e5) !important;
+    color: white !important;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.bilibili-link:hover {
+    background: linear-gradient(135deg, #0088cc, #00a1d6) !important;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 161, 214, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.bilibili-link i {
+    color: white !important;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.bilibili-link:hover i {
+    transform: scale(1.1);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 /* 文章卡片网格 */
 .articles-grid {
     display: grid;
@@ -681,6 +708,30 @@ footer {
 .social-links a:hover {
     background: var(--btn-bg);
     transform: translateY(-3px);
+}
+
+/* 页脚社交链接中的哔哩哔哩样式 */
+.social-icons .bilibili-link {
+    background: linear-gradient(135deg, #00a1d6, #00b5e5) !important;
+    color: white !important;
+    border: 2px solid transparent;
+}
+
+.social-icons .bilibili-link:hover {
+    background: linear-gradient(135deg, #0088cc, #00a1d6) !important;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 161, 214, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.social-icons .bilibili-link i {
+    color: white !important;
+    font-size: 1.1rem;
+}
+
+.social-icons .bilibili-link:hover i {
+    transform: scale(1.1);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .copyright {
