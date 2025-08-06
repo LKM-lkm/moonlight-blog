@@ -445,6 +445,13 @@ body:not(.light-theme) .stars {
 .login-btn:active {
   transform: translateY(0);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  background: var(--btn-gradient) !important;
+  opacity: 0.9;
+}
+
+.login-btn:focus {
+  outline: none;
+  background: var(--btn-gradient);
 }
 
 .login-btn i {

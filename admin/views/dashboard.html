@@ -486,10 +486,152 @@
         const articlesTableBody = document.getElementById('articles-tbody');
         
         let articles = JSON.parse(localStorage.getItem('blog-articles') || '[]');
+        let currentEditingId = null;
+        
+        // Markdown编辑器相关元素
+        const articleContent = document.getElementById('article-content');
+        const articlePreview = document.getElementById('article-preview');
+        const saveDraftBtn = document.getElementById('save-draft');
+        
+        // 配置marked.js
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                sanitize: false,
+                highlight: function(code, lang) {
+                    return code; // 简单实现，可以集成代码高亮库
+                }
+            });
+        }
+        
+        // Markdown实时预览功能
+        function updatePreview() {
+            const content = articleContent.value;
+            if (content.trim() === '') {
+                articlePreview.innerHTML = `
+                    <div style="color: #999; text-align: center; padding: 50px 20px;">
+                        <i class="fas fa-file-alt" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                        在左侧编辑器中输入内容，这里将显示实时预览
+                    </div>
+                `;
+            } else {
+                try {
+                    if (typeof marked !== 'undefined') {
+                        articlePreview.innerHTML = marked.parse(content);
+                    } else {
+                        // 如果marked.js未加载，显示原始内容
+                        articlePreview.innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit;">${content}</pre>`;
+                    }
+                } catch (error) {
+                    articlePreview.innerHTML = `<div style="color: #dc3545; padding: 20px;">预览渲染错误: ${error.message}</div>`;
+                }
+            }
+        }
+        
+        // 编辑器工具栏功能
+        function insertText(before, after = '', placeholder = '') {
+            const start = articleContent.selectionStart;
+            const end = articleContent.selectionEnd;
+            const selectedText = articleContent.value.substring(start, end);
+            const textToInsert = before + (selectedText || placeholder) + after;
+            
+            articleContent.value = articleContent.value.substring(0, start) + textToInsert + articleContent.value.substring(end);
+            
+            // 设置光标位置
+            const newCursorPos = selectedText ? start + textToInsert.length : start + before.length + placeholder.length;
+            articleContent.focus();
+            articleContent.setSelectionRange(newCursorPos, newCursorPos);
+            
+            updatePreview();
+        }
+        
+        // 工具栏按钮事件
+        document.getElementById('insert-heading').addEventListener('click', () => {
+            insertText('## ', '', '标题文本');
+        });
+        
+        document.getElementById('insert-bold').addEventListener('click', () => {
+            insertText('**', '**', '粗体文本');
+        });
+        
+        document.getElementById('insert-italic').addEventListener('click', () => {
+            insertText('*', '*', '斜体文本');
+        });
+        
+        document.getElementById('insert-code').addEventListener('click', () => {
+            insertText('`', '`', '代码');
+        });
+        
+        document.getElementById('insert-link').addEventListener('click', () => {
+            insertText('[', '](http://example.com)', '链接文本');
+        });
+        
+        document.getElementById('insert-list').addEventListener('click', () => {
+            insertText('- ', '', '列表项');
+        });
+        
+        // 实时预览监听
+        articleContent.addEventListener('input', updatePreview);
+        
+        // 草稿保存功能
+        function saveDraft() {
+            const formData = {
+                title: document.getElementById('article-title').value,
+                author: document.getElementById('article-author').value,
+                tags: document.getElementById('article-tags').value,
+                date: document.getElementById('article-date').value,
+                excerpt: document.getElementById('article-excerpt').value,
+                content: articleContent.value,
+                isDraft: true,
+                savedAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('article-draft', JSON.stringify(formData));
+            
+            // 显示保存成功提示
+            const originalText = saveDraftBtn.innerHTML;
+            saveDraftBtn.innerHTML = '<i class="fas fa-check"></i> 已保存';
+            saveDraftBtn.style.background = '#28a745';
+            
+            setTimeout(() => {
+                saveDraftBtn.innerHTML = originalText;
+                saveDraftBtn.style.background = '#ffc107';
+            }, 2000);
+        }
+        
+        // 加载草稿
+        function loadDraft() {
+            const draft = localStorage.getItem('article-draft');
+            if (draft) {
+                const data = JSON.parse(draft);
+                document.getElementById('article-title').value = data.title || '';
+                document.getElementById('article-author').value = data.author || '管理员';
+                document.getElementById('article-tags').value = data.tags || '';
+                document.getElementById('article-date').value = data.date || '';
+                document.getElementById('article-excerpt').value = data.excerpt || '';
+                articleContent.value = data.content || '';
+                updatePreview();
+            }
+        }
+        
+        saveDraftBtn.addEventListener('click', saveDraft);
         
         // 打开新建文章弹窗
         newArticleBtn.addEventListener('click', () => {
+            currentEditingId = null;
+            articleForm.reset();
+            // 设置默认发布时间为当前时间
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('article-date').value = now.toISOString().slice(0, 16);
+            document.getElementById('article-author').value = '管理员';
+            
+            // 尝试加载草稿
+            loadDraft();
+            
             articleModal.style.display = 'flex';
+            updatePreview();
         });
         
         // 关闭弹窗
@@ -508,31 +650,63 @@
             }
         });
         
-        // 保存文章
-        articleForm.addEventListener('submit', (e) => {
+        // 提交文章表单
+        articleForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const title = document.getElementById('article-title').value;
+            const author = document.getElementById('article-author').value;
+            const tags = document.getElementById('article-tags').value;
+            const date = document.getElementById('article-date').value;
+            const excerpt = document.getElementById('article-excerpt').value;
+            const content = articleContent.value;
+            
+            if (!title.trim() || !content.trim()) {
+                alert('请填写文章标题和内容！');
+                return;
+            }
+            
             const article = {
-                id: Date.now(),
-                title: document.getElementById('article-title').value,
-                author: document.getElementById('article-author').value,
-                tags: document.getElementById('article-tags').value.split(',').map(t => t.trim()).filter(t => t),
-                excerpt: document.getElementById('article-excerpt').value,
-                content: document.getElementById('article-content').value,
-                date: new Date().toLocaleDateString('zh-CN'),
-                timestamp: Date.now()
+                id: currentEditingId || Date.now(),
+                title: title.trim(),
+                author: author.trim() || '管理员',
+                tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+                excerpt: excerpt.trim(),
+                content: content.trim(),
+                publishDate: date || new Date().toISOString(),
+                status: 'published',
+                isDraft: false,
+                createdAt: currentEditingId ? articles.find(a => a.id === currentEditingId)?.createdAt || new Date().toISOString() : new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             };
             
-            articles.unshift(article);
+            if (currentEditingId) {
+                // 编辑现有文章
+                const index = articles.findIndex(a => a.id === currentEditingId);
+                if (index !== -1) {
+                    articles[index] = article;
+                }
+            } else {
+                // 新建文章
+                articles.push(article);
+            }
+            
             localStorage.setItem('blog-articles', JSON.stringify(articles));
             
+            // 清除草稿
+            localStorage.removeItem('article-draft');
+            
+            // 重置表单并关闭弹窗
+            articleForm.reset();
+            articleModal.style.display = 'none';
+            currentEditingId = null;
+            
+            // 刷新文章列表和统计
             renderArticles();
             updateStats();
             
-            articleModal.style.display = 'none';
-            articleForm.reset();
-            
-            alert('文章保存成功！');
+            const action = currentEditingId ? '更新' : '发布';
+            alert(`文章${action}成功！`);
         });
         
         // 渲染文章列表
@@ -621,6 +795,132 @@
                 };
             }
         }
+        
+        // 文章预览功能
+        function previewArticle(id) {
+            const article = articles.find(a => a.id === id);
+            if (!article) return;
+            
+            const previewWindow = window.open('', '_blank', 'width=800,height=600,scrollbars=yes');
+            const renderedContent = typeof marked !== 'undefined' ? marked.parse(article.content) : `<pre style="white-space: pre-wrap;">${article.content}</pre>`;
+            
+            previewWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="zh-CN">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>${article.title} - 文章预览</title>
+                    <style>
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                            line-height: 1.6;
+                            max-width: 800px;
+                            margin: 0 auto;
+                            padding: 20px;
+                            color: #333;
+                        }
+                        h1, h2, h3, h4, h5, h6 {
+                            color: #2c3e50;
+                            margin-top: 1.5em;
+                            margin-bottom: 0.5em;
+                        }
+                        h1 { font-size: 2em; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+                        h2 { font-size: 1.5em; }
+                        h3 { font-size: 1.3em; }
+                        code {
+                            background: #f4f4f4;
+                            padding: 2px 6px;
+                            border-radius: 3px;
+                            font-family: 'Courier New', monospace;
+                        }
+                        pre {
+                            background: #f8f8f8;
+                            padding: 15px;
+                            border-radius: 5px;
+                            overflow-x: auto;
+                            border-left: 4px solid #667eea;
+                        }
+                        blockquote {
+                            border-left: 4px solid #ddd;
+                            margin: 0;
+                            padding-left: 20px;
+                            color: #666;
+                            font-style: italic;
+                        }
+                        .article-meta {
+                            background: #f8f9fa;
+                            padding: 15px;
+                            border-radius: 8px;
+                            margin-bottom: 20px;
+                            border-left: 4px solid #667eea;
+                        }
+                        .tags {
+                            margin-top: 10px;
+                        }
+                        .tag {
+                            background: #e3f2fd;
+                            color: #1976d2;
+                            padding: 4px 8px;
+                            border-radius: 12px;
+                            font-size: 12px;
+                            margin-right: 8px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="article-meta">
+                        <h1>${article.title}</h1>
+                        <p><strong>作者：</strong>${article.author} | <strong>发布时间：</strong>${new Date(article.publishDate || article.createdAt).toLocaleString('zh-CN')}</p>
+                        ${article.excerpt ? `<p><strong>摘要：</strong>${article.excerpt}</p>` : ''}
+                        ${article.tags && article.tags.length > 0 ? `
+                            <div class="tags">
+                                <strong>标签：</strong>
+                                ${article.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="article-content">
+                        ${renderedContent}
+                    </div>
+                </body>
+                </html>
+            `);
+            previewWindow.document.close();
+        }
+        
+        // 编辑文章功能
+        function editArticle(id) {
+            const article = articles.find(a => a.id === id);
+            if (!article) return;
+            
+            currentEditingId = id;
+            
+            // 填充表单数据
+            document.getElementById('article-title').value = article.title;
+            document.getElementById('article-author').value = article.author;
+            document.getElementById('article-tags').value = (article.tags || []).join(', ');
+            document.getElementById('article-excerpt').value = article.excerpt || '';
+            articleContent.value = article.content;
+            
+            // 设置发布日期
+            if (article.publishDate) {
+                const date = new Date(article.publishDate);
+                date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+                document.getElementById('article-date').value = date.toISOString().slice(0, 16);
+            }
+            
+            // 更新预览
+            updatePreview();
+            
+            // 显示弹窗
+            articleModal.style.display = 'flex';
+        }
+        
+        // 使函数全局可访问
+        window.editArticle = editArticle;
+        window.deleteArticle = deleteArticle;
+        window.previewArticle = previewArticle;
         
         // 初始化
         renderArticles();

@@ -93,6 +93,24 @@ module.exports = {
       },
       publicPath: '../'
     }),
+    new HtmlWebpackPlugin({
+      template: './admin/index.html',
+      filename: 'admin/index.html',
+      chunks: [],
+      inject: false,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true
+      }
+    }),
     new CopyWebpackPlugin({
       patterns: [
         { from: 'assets/css', to: 'assets/css' },
@@ -148,9 +166,18 @@ module.exports = {
       directory: path.join(__dirname, 'dist')
     },
     compress: true,
-    port: 9000,
+    port: 3000,
     hot: true,
-    historyApiFallback: true
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/admin\/$/, to: '/admin/index.html' },
+        { from: /^\/admin$/, to: '/admin/index.html' },
+        { from: /^\/login\.html$/, to: '/admin/login.html' },
+        { from: /^\/admin\/login$/, to: '/admin/login.html' },
+        { from: /.*/, to: '/index.html' }
+      ]
+    },
+    open: true
   },
   resolve: {
     extensions: ['.js', '.css'],

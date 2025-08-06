@@ -54,8 +54,19 @@ function initLogin() {
         try {
             const hash = await sha256(pwd);
             if (hash === PASSWORD_HASH) {
+                // 设置登录状态标记（同时支持旧系统和新系统）
                 sessionStorage.setItem(SESSION_KEY, '1');
-                window.location.href = 'views/articles.html';
+                localStorage.setItem('admin-logged-in', 'true');
+                localStorage.setItem('admin-login-time', Date.now().toString());
+                
+                // 显示登录成功提示
+                errorMsg.style.color = '#28a745';
+                errorMsg.textContent = '登录成功，正在跳转...';
+                
+                // 延迟跳转到dashboard页面
+                setTimeout(() => {
+                    window.location.href = 'views/dashboard.html';
+                }, 1000);
             } else {
                 errorMsg.textContent = '密码错误，请重试';
                 passwordInput.value = '';
@@ -68,8 +79,17 @@ function initLogin() {
     });
     
     // 已登录自动跳转
-    if (sessionStorage.getItem(SESSION_KEY) === '1') {
-        window.location.href = 'views/articles.html';
+    const isLoggedIn = sessionStorage.getItem(SESSION_KEY) === '1' || localStorage.getItem('admin-logged-in') === 'true';
+    const loginTime = localStorage.getItem('admin-login-time');
+    const isLoginExpired = loginTime && (Date.now() - parseInt(loginTime)) > 24 * 60 * 60 * 1000;
+    
+    if (isLoggedIn && !isLoginExpired) {
+        window.location.href = 'views/dashboard.html';
+    } else if (isLoginExpired) {
+        // 清除过期的登录信息
+        localStorage.removeItem('admin-logged-in');
+        localStorage.removeItem('admin-login-time');
+        sessionStorage.removeItem(SESSION_KEY);
     }
     
     // 密码输入框焦点处理
